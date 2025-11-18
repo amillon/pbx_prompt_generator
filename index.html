@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Générateur de prompt pour PBX</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f3f5f7;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      margin: 24px;
+      padding: 24px 28px 32px;
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 4px;
+      font-size: 26px;
+    }
+
+    h1 span {
+      font-size: 18px;
+      display: block;
+      color: #64748b;
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .badge-1 { background: #f97373; }
+    .badge-2 { background: #fb923c; }
+    .badge-3 { background: #22c55e; }
+    .badge-4 { background: #14b8a6; }
+    .badge-5 { background: #3b82f6; }
+    .badge-6 { background: #6366f1; }
+    .badge-7 { background: #f97373; }
+    .badge-8 { background: #f97373; }
+    .badge-9 { background: #94a3b8; }
+    .badge-10 { background: #94a3b8; }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .description {
+      margin: 2px 0 6px;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .description strong {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 70px;
+      resize: vertical;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      background: #f8fafc;
+    }
+
+    textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      background: #ffffff;
+    }
+
+    .helper-example {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+    }
+
+    .actions-left {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    #generateBtn {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    #copyBtn {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    #result {
+      min-height: 120px;
+      background: #020617;
+      color: #e5e7eb;
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: none;
+      margin-top: 4px;
+      white-space: pre-wrap;
+    }
+
+    .result-label {
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #16a34a;
+      margin-left: 8px;
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        margin: 12px;
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>
+    Générateur de prompt complet pour PBX
+    <span>Remplissez les blocs, puis générez un prompt clair pour l’IA.</span>
+  </h1>
+
+  <form id="promptForm" onsubmit="return false;">
+    <!-- 1. Contexte de la tâche -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-1">1</div>
+        Contexte de la tâche
+      </div>
+      <div class="description">
+        Expliquez <strong>à quoi sert la demande</strong>, pour qui, et dans quel cadre.
+      </div>
+      <div class="helper-example">
+        Exemple : « Je prépare une newsletter pour des développeurs juniors dans une startup SaaS. »
+      </div>
+      <textarea id="taskContext" placeholder="Décrivez le contexte général de la tâche..."></textarea>
+    </div>
+
+    <!-- 2. Contexte de ton -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-2">2</div>
+        Contexte de ton et style
+      </div>
+      <div class="description">
+        Précisez <strong>le ton</strong> et <strong>le style d’écriture</strong> souhaités.
+      </div>
+      <div class="helper-example">
+        Exemple : « Ton professionnel mais accessible, tutoiement, phrases courtes, un peu d’humour. »
+      </div>
+      <textarea id="toneContext" placeholder="Décrivez le ton, le niveau de langage, la personne (je/tu/vous), etc."></textarea>
+    </div>
+
+    <!-- 3. Données / documents -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-3">3</div>
+        Données, documents et éléments de contexte
+      </div>
+      <div class="description">
+        Listez ici les <strong>données importantes</strong> : chiffres, liens, extraits, contraintes métiers...
+      </div>
+      <div class="helper-example">
+        Exemple : « Le produit : outil de gestion de projet. Cible : PME. Lien fiche produit : … »
+      </div>
+      <textarea id="backgroundData" placeholder="Collez ou décrivez ici les infos importantes à prendre en compte."></textarea>
+    </div>
+
+    <!-- 4. Description détaillée & règles -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-4">4</div>
+        Description détaillée de la tâche & règles
+      </div>
+      <div class="description">
+        Décrivez <strong>exactement ce que l’IA doit faire</strong> et les règles à respecter / à éviter.
+      </div>
+      <div class="helper-example">
+        Exemple : « Écris un article de blog de 1200 mots, avec introduction, 3 parties, conclusion, sans jargon juridique. »
+      </div>
+      <textarea id="detailedTask" placeholder="Décrivez la tâche étape par étape et toutes les règles à suivre."></textarea>
+    </div>
+
+    <!-- 5. Exemples -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-5">5</div>
+        Exemples à suivre (ou à ne pas suivre)
+      </div>
+      <div class="description">
+        Donnez un ou plusieurs <strong>exemples de bonne réponse</strong> (ou de mauvaise réponse à éviter).
+      </div>
+      <div class="helper-example">
+        Exemple : « Exemple de bon paragraphe : … / Exemple de style à éviter : … »
+      </div>
+      <textarea id="examples" placeholder="Collez ici des exemples concrets ou des modèles à imiter / éviter."></textarea>
+    </div>
+
+    <!-- 6. Historique de conversation utile -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-6">6</div>
+        Historique de conversation ou contexte précédent
+      </div>
+      <div class="description">
+        Rappelez les <strong>éléments déjà échangés</strong> ou décisions prises auparavant.
+      </div>
+      <div class="helper-example">
+        Exemple : « Lors des messages précédents, tu as déjà proposé un plan d’article validé ci-dessous : … »
+      </div>
+      <textarea id="conversationHistory" placeholder="Résumé des échanges précédents pertinents pour cette demande."></textarea>
+    </div>
+
+    <!-- 7. Demande immédiate -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-7">7</div>
+        Demande immédiate (ce que tu veux maintenant)
+      </div>
+      <div class="description">
+        Écris ici la <strong>formulation simple et directe</strong> de ta demande actuelle.
+      </div>
+      <div class="helper-example">
+        Exemple : « Rédige maintenant l’introduction complète de l’article en 3 paragraphes. »
+      </div>
+      <textarea id="immediateRequest" placeholder="Formule ta demande principale de façon claire et directe."></textarea>
+    </div>
+
+    <!-- 8. Instructions de raisonnement -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-8">8</div>
+        Instructions de raisonnement (penser étape par étape)
+      </div>
+      <div class="description">
+        Indique comment l’IA doit <strong>raisonner</strong> : étapes, vérifications, contraintes de qualité.
+      </div>
+      <div class="helper-example">
+        Exemple : « Commence par proposer un plan en puces, fais-le valider, puis rédige. Vérifie que chaque partie répond au besoin. »
+      </div>
+      <textarea id="thinkingInstructions" placeholder="Décris comment tu veux que l’IA s’y prenne pour réfléchir et travailler."></textarea>
+    </div>
+
+    <!-- 9. Format de sortie -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-9">9</div>
+        Format de sortie souhaité
+      </div>
+      <div class="description">
+        Précise le <strong>format attendu</strong> : liste, tableau, markdown, JSON, longueur, etc.
+      </div>
+      <div class="helper-example">
+        Exemple : « Réponse en markdown, avec titres H2/H3, listes à puces, et un résumé final en 3 phrases. »
+      </div>
+      <textarea id="outputFormatting" placeholder="Indique le format exact de la réponse attendue."></textarea>
+    </div>
+
+    <!-- 10. Brouillon / réponse pré-remplie -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-10">10</div>
+        Brouillon ou réponse pré-remplie (facultatif)
+      </div>
+      <div class="description">
+        Collez ici un <strong>brouillon</strong> ou des éléments à améliorer / réécrire par l’IA.
+      </div>
+      <div class="helper-example">
+        Exemple : « Voici mon premier jet de texte, merci de le réécrire en appliquant les règles ci-dessus : … »
+      </div>
+      <textarea id="prefilledResponse" placeholder="Collez votre brouillon ou les éléments à retravailler. Laissez vide si vous n’en avez pas."></textarea>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <div class="actions-left">
+        Remplissez ce qui est utile, puis cliquez sur <strong>Générer le prompt</strong>.
+      </div>
+      <div>
+        <button id="generateBtn" type="button">⚙️ Générer le prompt</button>
+        <button id="copyBtn" type="button">📋 Copier</button>
+        <span id="status" class="status">Prompt copié !</span>
+      </div>
+    </div>
+
+    <!-- Résultat -->
+    <div class="result-label">Prompt généré :</div>
+    <textarea id="result" readonly placeholder="Le prompt complet apparaîtra ici..."></textarea>
+  </form>
+</div>
+
+<script>
+  function buildPromptSection(title, content) {
+    if (!content || !content.trim()) return "";
+    return title + ":\n" + content.trim() + "\n\n";
+  }
+
+  document.getElementById("generateBtn").addEventListener("click", function () {
+    const promptParts = [];
+
+    promptParts.push(buildPromptSection("1) Contexte de la tâche", document.getElementById("taskContext").value));
+    promptParts.push(buildPromptSection("2) Contexte de ton et style", document.getElementById("toneContext").value));
+    promptParts.push(buildPromptSection("3) Données, documents et éléments de contexte", document.getElementById("backgroundData").value));
+    promptParts.push(buildPromptSection("4) Description détaillée de la tâche & règles", document.getElementById("detailedTask").value));
+    promptParts.push(buildPromptSection("5) Exemples à suivre (ou à éviter)", document.getElementById("examples").value));
+    promptParts.push(buildPromptSection("6) Historique de conversation ou contexte précédent", document.getElementById("conversationHistory").value));
+    promptParts.push(buildPromptSection("7) Demande immédiate", document.getElementById("immediateRequest").value));
+    promptParts.push(buildPromptSection("8) Instructions de raisonnement", document.getElementById("thinkingInstructions").value));
+    promptParts.push(buildPromptSection("9) Format de sortie souhaité", document.getElementById("outputFormatting").value));
+    promptParts.push(buildPromptSection("10) Brouillon ou réponse pré-remplie", document.getElementById("prefilledResponse").value));
+
+    const finalPrompt =
+      "Tu es une IA à qui l’on fournit un brief structuré. Utilise toutes les sections suivantes pour produire la meilleure réponse possible.\n\n" +
+      promptParts.join("").trim();
+
+    document.getElementById("result").value = finalPrompt;
+    document.getElementById("status").style.display = "none";
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    const result = document.getElementById("result");
+    if (!result.value.trim()) return;
+
+    result.select();
+    result.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(result.value).then(function () {
+      const status = document.getElementById("status");
+      status.textContent = "Prompt copié !";
+      status.style.display = "inline";
+      setTimeout(() => { status.style.display = "none"; }, 2000);
+    });
+  });
+</script>
+</body>
+</html>
