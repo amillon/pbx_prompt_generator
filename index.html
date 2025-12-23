@@ -20,11 +20,9 @@
       --warn:#F59E0B;
       --bad:#EF4444;
 
-      --shadow: 0 14px 40px rgba(15, 23, 42, 0.10);
       --shadow2: 0 10px 26px rgba(15, 23, 42, 0.07);
 
       --r:18px;
-      --r2:14px;
     }
 
     *{ box-sizing:border-box; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
@@ -380,7 +378,7 @@
       color: var(--muted);
     }
 
-    /* Result */
+    /* Result box */
     .resultHead{
       display:flex;
       justify-content:space-between;
@@ -430,6 +428,13 @@
       font-size: 12.5px;
       text-align:center;
     }
+
+    /* Divider in sidebar */
+    .divider{
+      margin: 12px 0;
+      height: 1px;
+      background: var(--line);
+    }
   </style>
 </head>
 
@@ -466,7 +471,7 @@
                   <div class="heroIcon">①</div>
                   <div>
                     <p class="heroTitle">Contexte</p>
-                    <p class="heroDesc">URL / type de page / dynamique (overlay, lazy-load, “voir tout”).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> URL + type de page + états à couvrir (initial / après clic / overlay / lazy-load).</p>
                   </div>
                 </div>
                 <div class="tags">
@@ -479,10 +484,6 @@
                 <span class="counter" id="c_context"></span>
               </div>
               <textarea id="context" placeholder="Ex : URL: https://… / listing. Les tuiles sont présentes au chargement initial + ajoutées après clic sur “voir tout”. Une overlay détail peut s’ouvrir/fermer."></textarea>
-
-              <div class="hint">
-                <strong>À inclure :</strong> URL + états à couvrir (initial / après clic / overlay) + si contenu injecté dynamiquement.
-              </div>
             </div>
 
             <!-- Où -->
@@ -492,7 +493,7 @@
                   <div class="heroIcon">②</div>
                   <div>
                     <p class="heroTitle">Où ?</p>
-                    <p class="heroDesc">Cible sans ambiguïté : quelles tuiles / quel bloc / quelle zone exacte.</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> cibler <u>l’élément</u> et/ou la <u>position exacte</u> de la modification (dans la tuile, au-dessus du prix, sous l’image…).</p>
                   </div>
                 </div>
                 <div class="tags">
@@ -501,13 +502,13 @@
               </div>
 
               <div class="label">
-                <span>Où (cible + repères)</span>
+                <span>Où (cible + position)</span>
                 <span class="counter" id="c_where"></span>
               </div>
               <textarea id="where" placeholder="Ex : Cible : tuiles “iPhone 17”, “iPhone 17 Pro”, “iPhone 17 Pro Max”. Dans chaque tuile, insérer un texte sous l’image du téléphone, centré."></textarea>
 
               <div class="chips" aria-label="Exemples rapides (Où)">
-                <div class="chip" data-target="where" data-add="Cible : toutes les tuiles forfaits visibles au chargement initial + celles ajoutées via “voir tout” + celles dans l’overlay “voir le détail”.">Tuiles + overlay</div>
+                <div class="chip" data-target="where" data-add="Cible : toutes les tuiles forfaits visibles au chargement initial + celles ajoutées via “voir tout” + celles dans l’overlay “voir le détail”. Position : la ligne de texte située juste au-dessus du prix.">Tuiles + overlay</div>
                 <div class="chip" data-target="where" data-add="Dans chaque tuile, cibler la ligne de texte située juste au-dessus du prix affiché (bloc prix).">Texte au-dessus du prix</div>
                 <div class="chip" data-target="where" data-add="Sous l’image produit dans la tuile, aligné au centre, dans le même conteneur que le titre/sous-titre.">Sous image, centré</div>
               </div>
@@ -520,7 +521,7 @@
                   <div class="heroIcon">③</div>
                   <div>
                     <p class="heroTitle">Quoi ?</p>
-                    <p class="heroDesc">Le changement exact (Add / Replace / Transform) + contenu / calcul / format.</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> séparer <u>l’action</u> (Add/Replace/Transform/Calculate) du <u>contenu</u> (texte exact, format, formule).</p>
                   </div>
                 </div>
                 <div class="tags">
@@ -528,15 +529,25 @@
                 </div>
               </div>
 
-              <div class="label">
-                <span>Quoi (action + contenu)</span>
-                <span class="counter" id="c_what"></span>
+              <div class="row2">
+                <div>
+                  <div class="label">
+                    <span>Action</span>
+                    <span class="counter" id="c_action"></span>
+                  </div>
+                  <textarea id="action" placeholder="Ex : Ajouter un message / Remplacer la ligne au-dessus du prix / Calculer et afficher le prix total."></textarea>
+                </div>
+                <div>
+                  <div class="label">
+                    <span>Contenu (texte exact / format / formule)</span>
+                    <span class="counter" id="c_content"></span>
+                  </div>
+                  <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU format “9,99€/mois” calculé = prix affiché + |remise|."></textarea>
+                </div>
               </div>
-              <textarea id="what" placeholder="Ex : Ajouter le texte EXACT : “À partir d’1€ avec la souscription sur le forfait 410 Go, après rachat de votre iPhone 14 Pro (ou ultérieur)”."></textarea>
 
               <div class="hint">
-                <strong>Si calcul :</strong> décrire valeurs à extraire + formule + format final (ex : “9,99€/mois”).<br>
-                <strong>Si remplacement :</strong> préciser “remplacer uniquement X, ne pas toucher à Y”.
+                <strong>Rappel :</strong> si calcul → préciser <em>valeurs à extraire</em> + <em>formule</em> + <em>format</em>. Si remplacement → préciser “uniquement X”.
               </div>
             </div>
 
@@ -547,7 +558,7 @@
                   <div class="heroIcon">④</div>
                   <div>
                     <p class="heroTitle">Limites</p>
-                    <p class="heroDesc">Ce qui ne doit pas bouger (charte, layout) + règles de style non négociables.</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> ce qui ne doit pas bouger (charte, fond greige, typographies, layout) + règles de style.</p>
                   </div>
                 </div>
                 <div class="tags">
@@ -559,7 +570,7 @@
                 <span>Limites / contraintes</span>
                 <span class="counter" id="c_limits"></span>
               </div>
-              <textarea id="limits" placeholder="Ex : Respecter la charte graphique (fond greige), typographie, taille et position. Ne pas changer la grille / layout. Le message doit rester lisible sans dénaturer le design."></textarea>
+              <textarea id="limits" placeholder="Ex : Respecter la charte graphique (fond greige), typographie, taille et position. Ne pas changer la grille / layout. Message lisible sans dénaturer le design."></textarea>
             </div>
 
             <!-- Approche -->
@@ -569,7 +580,7 @@
                   <div class="heroIcon">⑤</div>
                   <div>
                     <p class="heroTitle">Approche</p>
-                    <p class="heroDesc">Robustesse : dynamique, overlays, ré-application, idempotence (pas de doublons).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> robustesse (dynamique/overlay), ré-application, idempotence (pas de doublons), fallback sans erreur.</p>
                   </div>
                 </div>
                 <div class="tags">
@@ -581,12 +592,12 @@
                 <span>Approche technique</span>
                 <span class="counter" id="c_approach"></span>
               </div>
-              <textarea id="approach" placeholder="Ex : Le code doit s’appliquer au chargement + se réappliquer lors des ajouts dynamiques (MutationObserver). Idempotent (marquer data-processed). Doit fonctionner dans l’overlay après ouverture/fermeture."></textarea>
+              <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer lors des ajouts DOM (MutationObserver). Idempotent (data-processed). Fonctionner dans l’overlay après ouverture/fermeture. Fallback : ne rien faire si cible introuvable."></textarea>
 
               <div class="chips" aria-label="Exemples rapides (Approche)">
-                <div class="chip" data-target="approach" data-add="Appliquer au chargement initial + réappliquer sur ajouts DOM via MutationObserver. Idempotent : ne jamais dupliquer les éléments (data-processed).">MutationObserver + idempotent</div>
+                <div class="chip" data-target="approach" data-add="Appliquer au chargement initial + réappliquer sur ajouts DOM via MutationObserver. Idempotent : ne jamais dupliquer (data-processed).">MutationObserver + idempotent</div>
                 <div class="chip" data-target="approach" data-add="Écouter les clics sur “voir tout” et “voir le détail”, puis relancer apply() après rendu. Maintenir le comportement après ouverture/fermeture d’overlay.">Clics + overlays</div>
-                <div class="chip" data-target="approach" data-add="Fallback : si la tuile ne contient pas les éléments attendus, ne rien modifier (pas d’erreur console).">Fallback safe</div>
+                <div class="chip" data-target="approach" data-add="Fallback : si l’élément attendu est absent ou non parsable, ne rien modifier et ne pas générer d’erreur console.">Fallback safe</div>
               </div>
             </div>
 
@@ -597,7 +608,7 @@
                   <div class="heroIcon">⑥</div>
                   <div>
                     <p class="heroTitle">Vérification attendue</p>
-                    <p class="heroDesc">Critères de succès visibles (persistance, overlay, style barré/gras, etc.).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> critères visibles (persistance après interactions, overlay, style barré/gris, etc.).</p>
                   </div>
                 </div>
                 <div class="tags">
@@ -609,19 +620,7 @@
                 <span>Vérification</span>
                 <span class="counter" id="c_verify"></span>
               </div>
-              <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si affichage d’un prix calculé, il doit être barré et gris dans tous les états."></textarea>
-            </div>
-
-            <!-- RESULT -->
-            <div class="card">
-              <div class="inner">
-                <div class="resultHead">
-                  <h3>Prompt PBX prêt à coller</h3>
-                  <span class="badge" id="genBadge">Incomplet</span>
-                </div>
-                <textarea id="result" readonly placeholder="Clique “Valider” (questions) ou “Générer”."></textarea>
-                <div class="toast" id="toast">Copié ✅</div>
-              </div>
+              <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si prix calculé, il est barré et gris dans tous les états."></textarea>
             </div>
 
           </div>
@@ -650,6 +649,17 @@
             <div class="mini">
               La génération est bloquée si <strong>Contexte / Où / Quoi</strong> sont trop vagues.
             </div>
+
+            <div class="divider"></div>
+
+            <!-- RESULT MOVED TO BOTTOM OF SIDEBAR -->
+            <div class="resultHead">
+              <h3>Prompt PBX prêt à coller</h3>
+              <span class="badge" id="genBadge">Incomplet</span>
+            </div>
+            <textarea id="result" readonly placeholder="Clique “Valider” (questions) ou “Générer”."></textarea>
+            <div class="toast" id="toast">Copié ✅</div>
+
           </div>
         </div>
       </div>
@@ -659,12 +669,15 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
-  const SKEY = "pbx_prompt_form_v2";
+  const SKEY = "pbx_prompt_form_v3";
 
   const els = {
     context: $("context"),
     where: $("where"),
-    what: $("what"),
+
+    action: $("action"),
+    content: $("content"),
+
     limits: $("limits"),
     approach: $("approach"),
     verify: $("verify"),
@@ -687,18 +700,17 @@
 
     c_context: $("c_context"),
     c_where: $("c_where"),
-    c_what: $("c_what"),
+    c_action: $("c_action"),
+    c_content: $("c_content"),
     c_limits: $("c_limits"),
     c_approach: $("c_approach"),
     c_verify: $("c_verify"),
   };
 
-  // Heuristiques "anti-vague"
   const vagueMarkers = [
     "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
     "make it better","optimize","improve"
   ];
-
   const actionVerbsFR = ["ajouter","remplacer","modifier","déplacer","supprimer","réécrire","insérer","mettre à jour","transformer","calculer","afficher"];
   const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
 
@@ -708,48 +720,49 @@
   function looksVagueSection(text, kind){
     const t = (text || "").trim();
     if(!t) return true;
-
     const low = t.toLowerCase();
     const hasVague = vagueMarkers.some(m => low.includes(m));
 
-    // Contexte: veut URL/états, pas juste "page produit"
     if(kind === "context"){
       const hasUrl = /(https?:\/\/|www\.)/i.test(t);
-      const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll)/i.test(t);
+      const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)/i.test(t);
       if(t.length < 40) return true;
-      if(hasVague && !hasUrl && !hasState) return true;
       if(!hasUrl && !hasState) return true;
+      if(hasVague && !hasUrl && !hasState) return true;
       return false;
     }
 
-    // Où: veut cible/zone, pas "sur la page"
     if(kind === "where"){
       const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal)/i.test(t);
       const hasSpecific = /["“”']|\b(iPhone|forfait|prix|€/mois)\b/i.test(t);
       if(t.length < 35) return true;
-      if(hasVague && !hasTargetHint) return true;
       if(!hasTargetHint && !hasSpecific) return true;
+      if(hasVague && !hasTargetHint) return true;
       return false;
     }
 
-    // Quoi: veut action + contenu/format (ou formule)
-    if(kind === "what"){
+    if(kind === "action"){
       const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
-      const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
-      if(t.length < 35) return true;
+      if(t.length < 12) return true;
       if(!hasVerb) return true;
+      if(hasVague) return true;
+      return false;
+    }
+
+    if(kind === "content"){
+      const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
+      if(t.length < 15) return true;
       if(hasVague && !hasConcrete) return true;
+      // content can be short if it's a quoted sentence, so don't require long
       if(!hasConcrete) return true;
       return false;
     }
 
-    // Limites: facultatif mais si rempli trop vague, on warn
     if(kind === "limits"){
       if(t.length < 18) return true;
       return false;
     }
 
-    // Approche: facultatif mais important si dynamique mentionné
     if(kind === "approach"){
       if(t.length < 18) return true;
       return false;
@@ -769,29 +782,30 @@
 
     const ctx = els.context.value.trim();
     const whr = els.where.value.trim();
-    const wht = els.what.value.trim();
+    const act = els.action.value.trim();
+    const cnt = els.content.value.trim();
     const lim = els.limits.value.trim();
     const app = els.approach.value.trim();
 
-    // Critiques : Contexte / Où / Quoi
     if(!ctx || looksVagueSection(ctx,"context")){
       missing.push({t:"Contexte insuffisant", d:"Ajoute URL + états (initial / après clic / overlay) ou mention explicite du dynamisme.", lvl:"bad"});
     }
     if(!whr || looksVagueSection(whr,"where")){
-      missing.push({t:"Où ? trop flou", d:"Précise la cible (tuiles / bloc) + position exacte (ex : sous l’image, au-dessus du prix).", lvl:"bad"});
+      missing.push({t:"Où ? trop flou", d:"Précise la cible (élément) et/ou la position exacte de la modification.", lvl:"bad"});
     }
-    if(!wht || looksVagueSection(wht,"what")){
-      missing.push({t:"Quoi ? trop vague", d:"Donne l’action (ajouter/remplacer/calculer) + texte exact ou format / formule.", lvl:"bad"});
+    if(!act || looksVagueSection(act,"action")){
+      missing.push({t:"Action manquante", d:"Indique un verbe d’action (ajouter / remplacer / calculer / déplacer…).", lvl:"bad"});
+    }
+    if(!cnt || looksVagueSection(cnt,"content")){
+      missing.push({t:"Contenu / format manquant", d:"Donne le texte exact OU le format/formule attendus (ex : “9,99€/mois”).", lvl:"bad"});
     }
 
-    // Limites recommandées
     if(!lim){
       warnings.push({t:"Limites manquantes (reco)", d:"Ajoute ce qui ne doit pas bouger : charte, fond greige, typo, layout.", lvl:"warn"});
     } else if(looksVagueSection(lim,"limits")){
       warnings.push({t:"Limites imprécises", d:"Sois concret : “ne pas changer layout”, “respecter fond greige”, “garder typo/tailles”.", lvl:"warn"});
     }
 
-    // Approche recommandée si dynamique
     const needApp = needsApproachFromContext();
     if(needApp && !app){
       warnings.push({t:"Approche manquante (reco)", d:"La page semble dynamique : demande ré-application (MutationObserver / apply idempotent / overlays).", lvl:"warn"});
@@ -799,9 +813,8 @@
       warnings.push({t:"Approche trop courte", d:"Décris : ré-application, idempotence (data-processed), overlay open/close, fallback sans erreur.", lvl:"warn"});
     }
 
-    // Score
     let score = 100;
-    score -= missing.length * 38;
+    score -= missing.length * 30;
     score -= warnings.length * 12;
     score = Math.max(0, Math.min(100, score));
 
@@ -829,10 +842,13 @@
     add(ctxOk ? "ok" : "bad", "Contexte", ctxOk ? "OK — URL/états suffisamment décrits." : "Ajoute URL + états (initial / après clic / overlay).");
 
     const whereOk = els.where.value.trim() && !looksVagueSection(els.where.value,"where");
-    add(whereOk ? "ok" : "bad", "Où (cible)", whereOk ? "OK — cible/zone identifiables." : "Précise tuiles/bloc + position exacte.");
+    add(whereOk ? "ok" : "bad", "Où (cible/position)", whereOk ? "OK — élément/position identifiables." : "Précise l’élément et/ou la position exacte de la modif.");
 
-    const whatOk = els.what.value.trim() && !looksVagueSection(els.what.value,"what");
-    add(whatOk ? "ok" : "bad", "Quoi (changement)", whatOk ? "OK — action + contenu/format." : "Donne action + texte exact ou format/formule.");
+    const actOk = els.action.value.trim() && !looksVagueSection(els.action.value,"action");
+    add(actOk ? "ok" : "bad", "Action", actOk ? "OK — verbe d’action clair." : "Indique ajouter/remplacer/calculer/déplacer…");
+
+    const cntOk = els.content.value.trim() && !looksVagueSection(els.content.value,"content");
+    add(cntOk ? "ok" : "bad", "Contenu / format", cntOk ? "OK — texte exact ou format/formule." : "Donne la copie exacte ou le format attendu.");
 
     const lim = els.limits.value.trim();
     add(lim ? "ok" : "warn", "Limites", lim ? "OK — garde-fous présents." : "Recommandé : charte, fond, typo, layout, interdits.");
@@ -851,7 +867,8 @@
   function updateUI(){
     setCounter(els.c_context, els.context.value);
     setCounter(els.c_where, els.where.value);
-    setCounter(els.c_what, els.what.value);
+    setCounter(els.c_action, els.action.value);
+    setCounter(els.c_content, els.content.value);
     setCounter(els.c_limits, els.limits.value);
     setCounter(els.c_approach, els.approach.value);
     setCounter(els.c_verify, els.verify.value);
@@ -887,30 +904,28 @@
   }
 
   function buildQuestions(){
-    // max 3 questions, ciblées sur Contexte/Où/Quoi (+ Approche si dynamique)
     const qs = [];
     const add = (q, ex) => {
       if(qs.length >= 3) return;
       qs.push(`- ${q}\n  - Exemple : ${ex}`);
     };
 
-    const ctx = els.context.value.trim();
-    const whr = els.where.value.trim();
-    const wht = els.what.value.trim();
-
-    if(!ctx || looksVagueSection(ctx,"context")){
+    if(!els.context.value.trim() || looksVagueSection(els.context.value,"context")){
       add("Quel est le contexte exact (URL + états à couvrir : initial / après clic / overlay) ?",
           "“URL: https://… Listing. Appliquer au chargement + après clic ‘voir tout’ + dans overlay ‘voir le détail’.”");
     }
-    if(!whr || looksVagueSection(whr,"where")){
-      add("Où exactement sur la page (cible + position) ?",
-          "“Dans les tuiles iPhone 17/17 Pro/17 Pro Max, insérer le message sous l’image, centré.”");
+    if(!els.where.value.trim() || looksVagueSection(els.where.value,"where")){
+      add("Où exactement (élément ciblé et/ou position de la modification) ?",
+          "“Dans les tuiles iPhone 17/17 Pro/17 Pro Max, ajouter le message sous l’image, centré.”");
     }
-    if(!wht || looksVagueSection(wht,"what")){
-      add("Quel changement exact (action + contenu/format) ?",
-          "“Ajouter le texte EXACT ‘…’” / “Remplacer la ligne au-dessus du prix par ‘9,99€/mois’ calculé.”");
+    if(!els.action.value.trim() || looksVagueSection(els.action.value,"action")){
+      add("Quelle action précise (ajouter / remplacer / calculer / déplacer) ?",
+          "“Remplacer la ligne au-dessus du prix” / “Calculer et afficher le prix total”");
     }
-
+    if(qs.length < 3 && (!els.content.value.trim() || looksVagueSection(els.content.value,"content"))){
+      add("Quel contenu exact (texte) ou quel format/formule ?",
+          "“À partir d’1€ …” OU “Afficher ‘9,99€/mois’ où 9,99 = prix + |remise|.”");
+    }
     if(qs.length < 3 && needsApproachFromContext() && !els.approach.value.trim()){
       add("Quelle approche pour le contenu dynamique (ré-application / overlay) ?",
           "“MutationObserver + apply() idempotent (data-processed). Relancer après ouverture/fermeture overlay.”");
@@ -927,12 +942,12 @@ ${qs.join("\n\n")}
 
   function buildPBXPrompt(){
     const blocks = [];
-
     blocks.push("Front-end variation only (no back-end changes).");
 
     blocks.push("\nContexte :\n" + els.context.value.trim());
     blocks.push("\nOù :\n" + els.where.value.trim());
-    blocks.push("\nQuoi :\n" + els.what.value.trim());
+    blocks.push("\nAction :\n" + els.action.value.trim());
+    blocks.push("\nContenu :\n" + els.content.value.trim());
 
     if(els.limits.value.trim()){
       blocks.push("\nLimites :\n" + els.limits.value.trim());
@@ -941,7 +956,6 @@ ${qs.join("\n\n")}
     if(els.approach.value.trim()){
       blocks.push("\nApproche :\n" + els.approach.value.trim());
     } else if(needsApproachFromContext()){
-      // Petit safety-net si contexte dynamique mais approche vide
       blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
     }
 
@@ -991,7 +1005,8 @@ ${qs.join("\n\n")}
     const payload = {
       context: els.context.value,
       where: els.where.value,
-      what: els.what.value,
+      action: els.action.value,
+      content: els.content.value,
       limits: els.limits.value,
       approach: els.approach.value,
       verify: els.verify.value
@@ -1006,7 +1021,8 @@ ${qs.join("\n\n")}
       const p = JSON.parse(raw);
       if(p.context != null) els.context.value = p.context;
       if(p.where != null) els.where.value = p.where;
-      if(p.what != null) els.what.value = p.what;
+      if(p.action != null) els.action.value = p.action;
+      if(p.content != null) els.content.value = p.content;
       if(p.limits != null) els.limits.value = p.limits;
       if(p.approach != null) els.approach.value = p.approach;
       if(p.verify != null) els.verify.value = p.verify;
@@ -1018,7 +1034,8 @@ ${qs.join("\n\n")}
     if(!ok) return;
     els.context.value = "";
     els.where.value = "";
-    els.what.value = "";
+    els.action.value = "";
+    els.content.value = "";
     els.limits.value = "";
     els.approach.value = "";
     els.verify.value = "";
@@ -1030,7 +1047,7 @@ ${qs.join("\n\n")}
   // chips (multi-target)
   document.querySelectorAll(".chip").forEach(chip=>{
     chip.addEventListener("click", ()=>{
-      const target = chip.getAttribute("data-target") || "what";
+      const target = chip.getAttribute("data-target") || "content";
       const add = chip.getAttribute("data-add") || "";
       if(!add) return;
       const el = $(target);
@@ -1043,7 +1060,7 @@ ${qs.join("\n\n")}
   });
 
   // watchers
-  ["context","where","what","limits","approach","verify"].forEach(id=>{
+  ["context","where","action","content","limits","approach","verify"].forEach(id=>{
     $(id).addEventListener("input", updateUI);
     $(id).addEventListener("change", updateUI);
   });
