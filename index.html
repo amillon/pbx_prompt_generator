@@ -21,7 +21,6 @@
       --bad:#EF4444;
 
       --shadow2: 0 10px 26px rgba(15, 23, 42, 0.07);
-
       --r:18px;
     }
 
@@ -71,12 +70,7 @@
       letter-spacing:-0.3px;
       flex-shrink:0;
     }
-    h1{
-      margin:0;
-      font-size: 22px;
-      letter-spacing:-0.2px;
-      line-height:1.2;
-    }
+    h1{ margin:0; font-size: 22px; letter-spacing:-0.2px; line-height:1.2; }
     .sub{
       margin:5px 0 0;
       color: var(--muted);
@@ -106,10 +100,7 @@
       color: var(--muted);
       white-space:nowrap;
     }
-    .dot{
-      width:9px; height:9px; border-radius:999px;
-      background: var(--muted2);
-    }
+    .dot{ width:9px; height:9px; border-radius:999px; background: var(--muted2); }
 
     /* Layout */
     .grid{
@@ -188,11 +179,7 @@
       flex-wrap:wrap;
       margin: 10px 0 6px;
     }
-    .label span{
-      font-size: 12.7px;
-      font-weight: 950;
-      letter-spacing:-0.1px;
-    }
+    .label span{ font-size: 12.7px; font-weight: 950; letter-spacing:-0.1px; }
     .counter{ font-size: 11.7px; color: var(--muted2); white-space:nowrap; }
 
     textarea{
@@ -216,28 +203,6 @@
 
     .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
-
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top: 10px;
-    }
-    .chip{
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--ink);
-      font-weight: 900;
-      font-size: 12.5px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      cursor:pointer;
-      user-select:none;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.04);
-      transition: transform .06s ease, border-color .15s ease;
-    }
-    .chip:active{ transform: translateY(1px); }
-    .chip:hover{ border-color: rgba(109,40,217,0.35); }
 
     .hint{
       margin-top: 10px;
@@ -335,11 +300,46 @@
     .itT{ margin:0; font-size: 12.6px; font-weight: 950; letter-spacing:-0.1px; }
     .itD{ margin: 2px 0 0; font-size: 12px; color: var(--muted); line-height:1.35; }
 
-    .divider{
-      margin: 12px 0;
-      height: 1px;
-      background: var(--line);
+    .divider{ margin: 12px 0; height: 1px; background: var(--line); }
+
+    /* Sidebar actions (keep only these 3) */
+    .actions{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top: 12px;
     }
+    .btn{
+      border: none;
+      border-radius: 16px;
+      padding: 11px 12px;
+      font-size: 13.7px;
+      font-weight: 950;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      user-select:none;
+      transition: transform .06s ease, opacity .15s ease, box-shadow .15s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--primary), var(--teal));
+      color:#fff;
+      box-shadow: 0 14px 30px rgba(109,40,217,0.20);
+    }
+    .btn.ghost{
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn.danger{
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.22);
+      color: #991B1B;
+    }
+    .btn[disabled]{ opacity:.45; cursor:not-allowed; box-shadow:none; }
 
     /* Result */
     .resultHead{
@@ -379,6 +379,18 @@
       line-height: 1.45;
       white-space: pre-wrap;
     }
+    .toast{
+      display:none;
+      margin-top: 8px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(34,197,94,0.25);
+      background: rgba(34,197,94,0.08);
+      color: #14532D;
+      font-weight: 950;
+      font-size: 12.5px;
+      text-align:center;
+    }
   </style>
 </head>
 
@@ -391,7 +403,7 @@
           <h1>PBX Prompt Builder — Formulaire</h1>
           <p class="sub">
             Objectif : produire un prompt PBX <strong>réplicable</strong> et <strong>robuste</strong> (Contexte / Où / Quoi / Limites / Approche).
-            Le score explique <strong>ce qui manque</strong> pour être “PBX-ready”.
+            Le contrôle qualité explique <strong>ce qui manque</strong> pour être “PBX-ready”.
           </p>
         </div>
       </div>
@@ -417,14 +429,9 @@
                     <p class="heroDesc"><strong>Attendu :</strong> URL + type de page + états à couvrir (initial / après clic / overlay / lazy-load).</p>
                   </div>
                 </div>
-                <div class="tags">
-                  <span class="tag req">Obligatoire</span>
-                </div>
+                <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <div class="label">
-                <span>Contexte</span>
-                <span class="counter" id="c_context"></span>
-              </div>
+              <div class="label"><span>Contexte</span><span class="counter" id="c_context"></span></div>
               <textarea id="context" placeholder="Ex : URL: https://… / listing. Tuiles présentes au chargement + ajoutées après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
               <div class="hint"><strong>Astuce :</strong> mentionne “dynamique / overlay / voir tout” si c’est le cas.</div>
             </div>
@@ -439,21 +446,10 @@
                     <p class="heroDesc"><strong>Attendu :</strong> cibler <u>l’élément</u> et/ou la <u>position exacte</u> de la modification (dans la tuile, au-dessus du prix, sous l’image…).</p>
                   </div>
                 </div>
-                <div class="tags">
-                  <span class="tag req">Obligatoire</span>
-                </div>
+                <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <div class="label">
-                <span>Où (cible + position)</span>
-                <span class="counter" id="c_where"></span>
-              </div>
+              <div class="label"><span>Où (cible + position)</span><span class="counter" id="c_where"></span></div>
               <textarea id="where" placeholder="Ex : Cible : tuiles “iPhone 17”, “iPhone 17 Pro”, “iPhone 17 Pro Max”. Position : sous l’image du téléphone, centré."></textarea>
-
-              <div class="chips" aria-label="Exemples rapides (Où)">
-                <div class="chip" data-target="where" data-add="Cible : toutes les tuiles forfaits visibles au chargement + celles ajoutées via “voir tout” + celles dans l’overlay “voir le détail”. Position : la ligne de texte juste au-dessus du prix.">Tuiles + overlay</div>
-                <div class="chip" data-target="where" data-add="Dans chaque tuile, cibler la ligne de texte située juste au-dessus du prix affiché (bloc prix).">Texte au-dessus du prix</div>
-                <div class="chip" data-target="where" data-add="Sous l’image produit dans la tuile, aligné au centre, dans le même conteneur que le titre/sous-titre.">Sous image, centré</div>
-              </div>
             </div>
 
             <!-- Quoi -->
@@ -466,24 +462,16 @@
                     <p class="heroDesc"><strong>Attendu :</strong> séparer <u>l’action</u> (Add/Replace/Transform/Calculate) du <u>contenu</u> (texte exact, format, formule).</p>
                   </div>
                 </div>
-                <div class="tags">
-                  <span class="tag req">Obligatoire</span>
-                </div>
+                <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
 
               <div class="row2">
                 <div>
-                  <div class="label">
-                    <span>Action</span>
-                    <span class="counter" id="c_action"></span>
-                  </div>
+                  <div class="label"><span>Action</span><span class="counter" id="c_action"></span></div>
                   <textarea id="action" placeholder="Ex : Ajouter un message / Remplacer la ligne au-dessus du prix / Calculer et afficher le prix total."></textarea>
                 </div>
                 <div>
-                  <div class="label">
-                    <span>Contenu (texte exact / format / formule)</span>
-                    <span class="counter" id="c_content"></span>
-                  </div>
+                  <div class="label"><span>Contenu (texte exact / format / formule)</span><span class="counter" id="c_content"></span></div>
                   <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU format “9,99€/mois” où 9,99 = prix + |remise|."></textarea>
                 </div>
               </div>
@@ -503,14 +491,9 @@
                     <p class="heroDesc"><strong>Attendu :</strong> ce qui ne doit pas bouger (charte, fond greige, typographies, layout) + règles de style.</p>
                   </div>
                 </div>
-                <div class="tags">
-                  <span class="tag">Recommandé</span>
-                </div>
+                <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
-              <div class="label">
-                <span>Limites / contraintes</span>
-                <span class="counter" id="c_limits"></span>
-              </div>
+              <div class="label"><span>Limites / contraintes</span><span class="counter" id="c_limits"></span></div>
               <textarea id="limits" placeholder="Ex : Respecter fond greige + typographie. Ne pas modifier la grille/layout. Le message doit rester lisible sans dénaturer."></textarea>
             </div>
 
@@ -524,21 +507,10 @@
                     <p class="heroDesc"><strong>Attendu :</strong> robustesse (dynamique/overlay), ré-application, idempotence (pas de doublons), fallback sans erreur.</p>
                   </div>
                 </div>
-                <div class="tags">
-                  <span class="tag">Recommandé</span>
-                </div>
+                <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
-              <div class="label">
-                <span>Approche technique</span>
-                <span class="counter" id="c_approach"></span>
-              </div>
+              <div class="label"><span>Approche technique</span><span class="counter" id="c_approach"></span></div>
               <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer sur ajouts DOM (MutationObserver). Idempotent (data-processed). Fonctionner dans l’overlay. Fallback : ne rien faire si cible introuvable."></textarea>
-
-              <div class="chips" aria-label="Exemples rapides (Approche)">
-                <div class="chip" data-target="approach" data-add="Appliquer au chargement initial + réappliquer sur ajouts DOM via MutationObserver. Idempotent : ne jamais dupliquer (data-processed).">MutationObserver + idempotent</div>
-                <div class="chip" data-target="approach" data-add="Écouter les clics sur “voir tout” et “voir le détail”, puis relancer apply() après rendu. Maintenir le comportement après ouverture/fermeture d’overlay.">Clics + overlays</div>
-                <div class="chip" data-target="approach" data-add="Fallback : si l’élément attendu est absent ou non parsable, ne rien modifier et ne pas générer d’erreur console.">Fallback safe</div>
-              </div>
             </div>
 
             <!-- Vérification -->
@@ -551,14 +523,9 @@
                     <p class="heroDesc"><strong>Attendu :</strong> critères visibles (persistance après interactions, overlay, style barré/gris, etc.).</p>
                   </div>
                 </div>
-                <div class="tags">
-                  <span class="tag">Optionnel</span>
-                </div>
+                <div class="tags"><span class="tag">Optionnel</span></div>
               </div>
-              <div class="label">
-                <span>Vérification</span>
-                <span class="counter" id="c_verify"></span>
-              </div>
+              <div class="label"><span>Vérification</span><span class="counter" id="c_verify"></span></div>
               <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si prix calculé : barré + gris partout."></textarea>
             </div>
 
@@ -576,14 +543,22 @@
             </div>
             <div class="bar"><div id="scoreBar"></div></div>
 
-            <div class="explain" id="explainBox">
-              <strong>Comment le score est calculé</strong><br>
-              • <strong>Contexte / Où / Action / Contenu</strong> sont requis (sinon score ↓ fort).<br>
-              • <strong>Limites</strong> et <strong>Approche</strong> sont recommandés (score ↓ modéré).<br>
-              • Si le contexte mentionne <em>overlay/dynamique</em>, l’<strong>Approche</strong> devient quasi indispensable.
+            <div class="explain">
+              <strong>Comment je détermine la qualité</strong><br>
+              • <strong>Obligatoire :</strong> Contexte + Où + Action + Contenu (sinon “PBX ne peut pas exécuter”).<br>
+              • <strong>Recommandé :</strong> Limites (éviter de casser le design).<br>
+              • <strong>Recommandé fort :</strong> Approche si la page est <em>dynamique</em> (overlay / “voir tout”).<br>
+              • Dans la liste ci-dessous, tu vois exactement <strong>ce qui manque</strong> + un <strong>exemple</strong> à copier.
             </div>
 
             <div class="checks" id="checks"></div>
+
+            <!-- ✅ GARDER CES 3 BOUTONS UNIQUEMENT -->
+            <div class="actions">
+              <button class="btn primary" id="btnGenerate" type="button">⚙️ Générer le prompt</button>
+              <button class="btn ghost" id="btnCopy" type="button" disabled>📋 Copier</button>
+              <button class="btn danger" id="btnReset" type="button">🗑️ Réinitialiser</button>
+            </div>
 
             <div class="divider"></div>
 
@@ -592,7 +567,8 @@
               <h3>Prompt PBX prêt à coller</h3>
               <span class="badge" id="genBadge">Incomplet</span>
             </div>
-            <textarea id="result" readonly></textarea>
+            <textarea id="result" readonly placeholder="Clique “Générer le prompt”."></textarea>
+            <div class="toast" id="toast">Copié ✅</div>
 
           </div>
         </div>
@@ -603,7 +579,7 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
-  const SKEY = "pbx_prompt_form_v4_no_cta";
+  const SKEY = "pbx_prompt_form_v5_keep3buttons_remove_question_buttons";
 
   const els = {
     context: $("context"),
@@ -615,6 +591,11 @@
     verify: $("verify"),
 
     result: $("result"),
+    toast: $("toast"),
+
+    btnGenerate: $("btnGenerate"),
+    btnCopy: $("btnCopy"),
+    btnReset: $("btnReset"),
 
     scorePill: $("scorePill"),
     scoreBar: $("scoreBar"),
@@ -652,7 +633,7 @@
     if(kind === "context"){
       const hasUrl = /(https?:\/\/|www\.)/i.test(t);
       const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)/i.test(t);
-      if(t.length < 35) return true;
+      if(t.length < 30) return true;
       if(!hasUrl && !hasState) return true;
       if(hasVague && !hasUrl && !hasState) return true;
       return false;
@@ -661,7 +642,7 @@
     if(kind === "where"){
       const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)/i.test(t);
       const hasSpecific = /["“”']|\b(iPhone|forfait|€/mois|prix)\b/i.test(t);
-      if(t.length < 25) return true;
+      if(t.length < 20) return true;
       if(!hasTargetHint && !hasSpecific) return true;
       if(hasVague && !hasTargetHint) return true;
       return false;
@@ -710,7 +691,7 @@
         key:"Contexte",
         t:"Contexte insuffisant",
         d:"Ajoute l’URL + au moins 1 état (initial / après clic / overlay / dynamique).",
-        example:"URL: https://… / listing. Appliquer au chargement + après clic “voir tout” + dans overlay."
+        example:"URL: https://… / listing. Appliquer au chargement + après clic “voir tout” + overlay détail."
       });
     }
     if(!whr || looksVagueSection(whr,"where")){
@@ -797,7 +778,6 @@
       `);
     };
 
-    // état par section
     const ctxOk = els.context.value.trim() && !looksVagueSection(els.context.value,"context");
     add(ctxOk ? "ok" : "bad", "Contexte", ctxOk ? "OK — URL/états décrits." : "Manque : URL + états (initial / après clic / overlay).");
 
@@ -810,30 +790,27 @@
     const cntOk = els.content.value.trim() && !looksVagueSection(els.content.value,"content");
     add(cntOk ? "ok" : "bad", "Contenu / format", cntOk ? "OK — texte exact ou format/formule." : "Manque : texte exact OU format/formule.");
 
-    const lim = els.limits.value.trim();
-    add(lim ? "ok" : "warn", "Limites", lim ? "OK — garde-fous présents." : "Recommandé : charte/fond/typo/layout.");
+    add(els.limits.value.trim() ? "ok" : "warn", "Limites", els.limits.value.trim() ? "OK — garde-fous présents." : "Recommandé : charte/fond/typo/layout.");
+    add(!q.needApp ? "ok" : (els.approach.value.trim() ? "ok" : "warn"), "Approche (robustesse)",
+      !q.needApp ? "N/A — pas d’indice fort de dynamisme." : (els.approach.value.trim() ? "OK — dynamique cadré." : "Recommandé : ré-application + idempotence + overlays."));
 
-    const needApp = q.needApp;
-    const app = els.approach.value.trim();
-    add(!needApp ? "ok" : (app ? "ok" : "warn"), "Approche (robustesse)",
-      !needApp ? "N/A — pas d’indice fort de dynamisme." : (app ? "OK — dynamique cadré." : "Recommandé : ré-application + idempotence + overlays."));
+    add(els.verify.value.trim() ? "ok" : "warn", "Vérification", els.verify.value.trim() ? "OK — critères décrits." : "Optionnel : persistance + overlay + style.");
 
-    const ver = els.verify.value.trim();
-    add(ver ? "ok" : "warn", "Vérification", ver ? "OK — critères décrits." : "Optionnel : persistance + overlay + style.");
-
-    // Ce qui manque (explicite + exemples)
     const miss = [...q.missing, ...q.warnings];
     if(miss.length){
-      const lines = miss.slice(0, 6).map(m => `
-        <div class="item ${q.missing.includes(m) ? "bad" : "warn"}">
-          <div class="ico">${q.missing.includes(m) ? "×" : "!"}</div>
-          <div>
-            <p class="itT">${m.key} — ${m.t}</p>
-            <p class="itD">${m.d}<br><span style="color: var(--muted2);">Ex : ${m.example}</span></p>
+      items.push(`<div style="margin-top:6px;"></div>`);
+      miss.slice(0, 8).forEach(m => {
+        const isBad = q.missing.includes(m);
+        items.push(`
+          <div class="item ${isBad ? "bad" : "warn"}">
+            <div class="ico">${isBad ? "×" : "!"}</div>
+            <div>
+              <p class="itT">${m.key} — ${m.t}</p>
+              <p class="itD">${m.d}<br><span style="color: var(--muted2);">Ex : ${m.example}</span></p>
+            </div>
           </div>
-        </div>
-      `).join("");
-      items.push(`<div style="margin-top:6px;"></div>${lines}`);
+        `);
+      });
     }
 
     els.checks.innerHTML = items.join("");
@@ -848,9 +825,7 @@
     blocks.push("\nAction :\n" + els.action.value.trim());
     blocks.push("\nContenu :\n" + els.content.value.trim());
 
-    if(els.limits.value.trim()){
-      blocks.push("\nLimites :\n" + els.limits.value.trim());
-    }
+    if(els.limits.value.trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
 
     if(els.approach.value.trim()){
       blocks.push("\nApproche :\n" + els.approach.value.trim());
@@ -858,9 +833,7 @@
       blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
     }
 
-    if(els.verify.value.trim()){
-      blocks.push("\nVérification :\n" + els.verify.value.trim());
-    }
+    if(els.verify.value.trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
 
     blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
     return blocks.join("\n").trim();
@@ -868,7 +841,7 @@
 
   function buildMissingPreview(q){
     const lines = [];
-    lines.push("Complète les sections ci-dessous pour obtenir un prompt PBX exploitable :\n");
+    lines.push("Ce qui manque pour un prompt PBX exploitable :\n");
     q.missing.forEach(m => {
       lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}`);
       lines.push(`  Ex : ${m.example}\n`);
@@ -878,6 +851,12 @@
       lines.push(`  Ex : ${w.example}\n`);
     });
     return lines.join("\n").trim();
+  }
+
+  function toast(msg){
+    els.toast.textContent = msg;
+    els.toast.style.display = "block";
+    setTimeout(()=> els.toast.style.display="none", 1800);
   }
 
   function updateUI(){
@@ -899,23 +878,25 @@
       els.dotState.style.background = "var(--good)";
       els.stateLabel.textContent = "Prompt prêt";
       els.genBadge.textContent = "PBX-ready";
-      els.result.value = buildPBXPrompt(q);
     } else if(q.state === "warn"){
       els.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
       els.dotState.style.background = "var(--warn)";
       els.stateLabel.textContent = "Presque prêt";
       els.genBadge.textContent = "Incomplet";
-      els.result.value = buildMissingPreview(q);
     } else {
       els.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
       els.dotState.style.background = "var(--bad)";
       els.stateLabel.textContent = "Prompt incomplet";
       els.genBadge.textContent = "Incomplet";
-      els.result.value = buildMissingPreview(q);
     }
+
+    // On garde le bouton "Générer" utilisable, mais on peut le désactiver si tu veux.
+    // Ici: activé tout le temps, il génère soit le prompt final, soit la liste de manques.
+    els.btnGenerate.disabled = false;
 
     renderChecks(q);
     save();
+    return q;
   }
 
   function save(){
@@ -946,25 +927,58 @@
     }catch(e){}
   }
 
-  // chips
-  document.querySelectorAll(".chip").forEach(chip=>{
-    chip.addEventListener("click", ()=>{
-      const target = chip.getAttribute("data-target") || "content";
-      const add = chip.getAttribute("data-add") || "";
-      if(!add) return;
-      const el = $(target);
-      if(!el) return;
-      el.value = el.value.trim() ? (el.value.trim() + "\n\n" + add).trim() : add;
-      el.focus();
-      updateUI();
-    });
-  });
+  function generate(){
+    const q = computeQuality();
+    if(q.ready){
+      els.result.value = buildPBXPrompt(q);
+      toast("Prompt généré ✅");
+    } else {
+      els.result.value = buildMissingPreview(q);
+      toast("À compléter ⚠️");
+    }
+    els.btnCopy.disabled = !els.result.value.trim();
+  }
+
+  async function copy(){
+    const v = els.result.value.trim();
+    if(!v) return;
+    try{
+      await navigator.clipboard.writeText(v);
+      toast("Copié ✅");
+    }catch(e){
+      els.result.select();
+      document.execCommand("copy");
+      toast("Copié ✅");
+    }
+  }
+
+  function resetAll(){
+    const ok = confirm("Réinitialiser ?");
+    if(!ok) return;
+    els.context.value = "";
+    els.where.value = "";
+    els.action.value = "";
+    els.content.value = "";
+    els.limits.value = "";
+    els.approach.value = "";
+    els.verify.value = "";
+    els.result.value = "";
+    els.btnCopy.disabled = true;
+    try{ localStorage.removeItem(SKEY); }catch(e){}
+    updateUI();
+    toast("Réinitialisé ✅");
+  }
 
   // watchers
   ["context","where","action","content","limits","approach","verify"].forEach(id=>{
     $(id).addEventListener("input", updateUI);
     $(id).addEventListener("change", updateUI);
   });
+
+  // buttons (keep these 3 only)
+  els.btnGenerate.addEventListener("click", generate);
+  els.btnCopy.addEventListener("click", copy);
+  els.btnReset.addEventListener("click", resetAll);
 
   // init
   load();
