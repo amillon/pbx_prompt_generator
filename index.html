@@ -216,6 +216,29 @@
     }
     .hint strong{ color: var(--ink); }
 
+    /* chips */
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .chip{
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 12.5px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor:pointer;
+      user-select:none;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.04);
+      transition: transform .06s ease, border-color .15s ease;
+    }
+    .chip:active{ transform: translateY(1px); }
+    .chip:hover{ border-color: rgba(109,40,217,0.35); }
+
     /* Sidebar */
     .side{ position: sticky; top: 14px; }
 
@@ -256,18 +279,6 @@
       transition: width .2s ease, background .2s ease;
     }
 
-    .explain{
-      margin-top: 10px;
-      padding: 10px 11px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.86);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-    .explain strong{ color: var(--ink); }
-
     .checks{
       display:grid;
       gap:10px;
@@ -296,9 +307,7 @@
     .item.ok .ico{ background: var(--good); }
     .item.warn .ico{ background: var(--warn); }
     .item.bad .ico{ background: var(--bad); }
-
     .itT{ margin:0; font-size: 12.6px; font-weight: 950; letter-spacing:-0.1px; }
-    .itD{ margin: 2px 0 0; font-size: 12px; color: var(--muted); line-height:1.35; }
 
     .divider{ margin: 12px 0; height: 1px; background: var(--line); }
 
@@ -403,7 +412,6 @@
           <h1>PBX Prompt Builder — Formulaire</h1>
           <p class="sub">
             Objectif : produire un prompt PBX <strong>réplicable</strong> et <strong>robuste</strong> (Contexte / Où / Quoi / Limites / Approche).
-            Le contrôle qualité explique <strong>ce qui manque</strong> pour être “PBX-ready”.
           </p>
         </div>
       </div>
@@ -426,13 +434,13 @@
                   <div class="heroIcon">①</div>
                   <div>
                     <p class="heroTitle">Contexte</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> URL + type de page + états à couvrir (initial / après clic / overlay / lazy-load).</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> URL + type de page + quand ça s’applique (chargement / après clic / overlay).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
               <div class="label"><span>Contexte</span><span class="counter" id="c_context"></span></div>
-              <textarea id="context" placeholder="Ex : URL: https://… / listing. Tuiles présentes au chargement + ajoutées après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
+              <textarea id="context" placeholder="Ex : URL: https://… / listing. Tuiles au chargement + ajoutées après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
               <div class="hint"><strong>Astuce :</strong> mentionne “dynamique / overlay / voir tout” si c’est le cas.</div>
             </div>
 
@@ -443,13 +451,13 @@
                   <div class="heroIcon">②</div>
                   <div>
                     <p class="heroTitle">Où ?</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> cibler <u>l’élément</u> et/ou la <u>position exacte</u> de la modification (dans la tuile, au-dessus du prix, sous l’image…).</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> la cible + repères (tuile X, bloc Y) et la position exacte (sous l’image, au-dessus du prix…).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
               <div class="label"><span>Où (cible + position)</span><span class="counter" id="c_where"></span></div>
-              <textarea id="where" placeholder="Ex : Cible : tuiles “iPhone 17”, “iPhone 17 Pro”, “iPhone 17 Pro Max”. Position : sous l’image du téléphone, centré."></textarea>
+              <textarea id="where" placeholder="Ex : Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image du téléphone, centré."></textarea>
             </div>
 
             <!-- Quoi -->
@@ -459,7 +467,7 @@
                   <div class="heroIcon">③</div>
                   <div>
                     <p class="heroTitle">Quoi ?</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> séparer <u>l’action</u> (Add/Replace/Transform/Calculate) du <u>contenu</u> (texte exact, format, formule).</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> 1 verbe d’action + le contenu exact (texte / format / formule).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
@@ -468,11 +476,23 @@
               <div class="row2">
                 <div>
                   <div class="label"><span>Action</span><span class="counter" id="c_action"></span></div>
-                  <textarea id="action" placeholder="Ex : Ajouter un message / Remplacer la ligne au-dessus du prix / Calculer et afficher le prix total."></textarea>
+                  <textarea id="action" placeholder="Ex : Ajouter / Remplacer / Calculer / Déplacer… (1 verbe minimum)."></textarea>
+
+                  <div class="chips" aria-label="Verbes d’action">
+                    <div class="chip" data-target="action" data-add="Ajouter">Ajouter</div>
+                    <div class="chip" data-target="action" data-add="Remplacer">Remplacer</div>
+                    <div class="chip" data-target="action" data-add="Supprimer">Supprimer</div>
+                    <div class="chip" data-target="action" data-add="Déplacer">Déplacer</div>
+                    <div class="chip" data-target="action" data-add="Calculer">Calculer</div>
+                    <div class="chip" data-target="action" data-add="Afficher">Afficher</div>
+                    <div class="chip" data-target="action" data-add="Mettre en avant">Mettre en avant</div>
+                    <div class="chip" data-target="action" data-add="Restyler">Restyler</div>
+                  </div>
                 </div>
+
                 <div>
                   <div class="label"><span>Contenu (texte exact / format / formule)</span><span class="counter" id="c_content"></span></div>
-                  <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU format “9,99€/mois” où 9,99 = prix + |remise|."></textarea>
+                  <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU “9,99€/mois = prix + |remise|” (format final)."></textarea>
                 </div>
               </div>
 
@@ -488,13 +508,13 @@
                   <div class="heroIcon">④</div>
                   <div>
                     <p class="heroTitle">Limites</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> ce qui ne doit pas bouger (charte, fond greige, typographies, layout) + règles de style.</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> ce qui ne doit pas bouger (layout, charte, typo, couleurs) + règles “ne pas”.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
               <div class="label"><span>Limites / contraintes</span><span class="counter" id="c_limits"></span></div>
-              <textarea id="limits" placeholder="Ex : Respecter fond greige + typographie. Ne pas modifier la grille/layout. Le message doit rester lisible sans dénaturer."></textarea>
+              <textarea id="limits" placeholder="Ex : Ne pas modifier le layout. Respecter fond greige + typographie. Ne pas casser la grille."></textarea>
             </div>
 
             <!-- Approche -->
@@ -504,13 +524,13 @@
                   <div class="heroIcon">⑤</div>
                   <div>
                     <p class="heroTitle">Approche</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> robustesse (dynamique/overlay), ré-application, idempotence (pas de doublons), fallback sans erreur.</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> si c’est dynamique : ré-appliquer (overlay/voir tout), éviter doublons, fallback safe.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
               <div class="label"><span>Approche technique</span><span class="counter" id="c_approach"></span></div>
-              <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer sur ajouts DOM (MutationObserver). Idempotent (data-processed). Fonctionner dans l’overlay. Fallback : ne rien faire si cible introuvable."></textarea>
+              <textarea id="approach" placeholder="Ex : MutationObserver + apply() idempotent (data-processed). Fonctionne dans overlay. Fallback : ne rien faire si cible introuvable."></textarea>
             </div>
 
             <!-- Vérification -->
@@ -520,13 +540,13 @@
                   <div class="heroIcon">⑥</div>
                   <div>
                     <p class="heroTitle">Vérification attendue</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> critères visibles (persistance après interactions, overlay, style barré/gris, etc.).</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> comment vérifier en 10s (visible partout, persiste après clic, overlay OK…).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Optionnel</span></div>
               </div>
               <div class="label"><span>Vérification</span><span class="counter" id="c_verify"></span></div>
-              <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si prix calculé : barré + gris partout."></textarea>
+              <textarea id="verify" placeholder="Ex : Le texte persiste après interactions. Visible dans overlay. Si prix calculé : barré + gris partout."></textarea>
             </div>
 
           </div>
@@ -543,17 +563,8 @@
             </div>
             <div class="bar"><div id="scoreBar"></div></div>
 
-            <div class="explain">
-              <strong>Comment je détermine la qualité</strong><br>
-              • <strong>Obligatoire :</strong> Contexte + Où + Action + Contenu (sinon “PBX ne peut pas exécuter”).<br>
-              • <strong>Recommandé :</strong> Limites (éviter de casser le design).<br>
-              • <strong>Recommandé fort :</strong> Approche si la page est <em>dynamique</em> (overlay / “voir tout”).<br>
-              • Dans la liste ci-dessous, tu vois exactement <strong>ce qui manque</strong> + un <strong>exemple</strong> à copier.
-            </div>
-
             <div class="checks" id="checks"></div>
 
-            <!-- ✅ GARDER CES 3 BOUTONS UNIQUEMENT -->
             <div class="actions">
               <button class="btn primary" id="btnGenerate" type="button">⚙️ Générer le prompt</button>
               <button class="btn ghost" id="btnCopy" type="button" disabled>📋 Copier</button>
@@ -562,7 +573,6 @@
 
             <div class="divider"></div>
 
-            <!-- Prompt prêt à coller en dernière position de la sidebar -->
             <div class="resultHead">
               <h3>Prompt PBX prêt à coller</h3>
               <span class="badge" id="genBadge">Incomplet</span>
@@ -578,7 +588,7 @@
   </div>
 
 <script>
-  console.log("[DEBUG] PBX_FORM_SCRIPT_V3");
+  console.log("[DEBUG] PBX_FORM_SCRIPT_V4");
 
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
@@ -592,7 +602,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const SKEY = "pbx_prompt_form_v3";
+    const SKEY = "pbx_prompt_form_v4";
 
     const els = {
       context: $("context"),
@@ -630,15 +640,14 @@
     if (!els.btnGenerate || !els.btnCopy || !els.btnReset || !els.scorePill || !els.scoreBar) {
       if (els.result) {
         els.result.value =
-          "❌ PBX_FORM_SCRIPT_V3 : éléments manquants.\n" +
+          "❌ PBX_FORM_SCRIPT_V4 : éléments manquants.\n" +
           "Attendus: btnGenerate, btnCopy, btnReset, scorePill, scoreBar.";
       }
       return;
     }
 
-    // Regex compiled once (safe)
     const reHasUrl = RX("(https?:\\/\\/|www\\.)");
-    const reHasState = RX("(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)");
+    const reHasDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
     const reWhereHints = RX("(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)");
     const reWhereSpecific = RX('(["“”\\\']|\\b(iPhone|forfait|€\\/mois|prix)\\b)');
     const reContentConcrete = RX('(["“”\\\']|\\b\\d+([,.]\\d+)?\\b|€|\\/mois|format|formule|calcul)');
@@ -647,8 +656,13 @@
       "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
       "make it better","optimize","improve"
     ];
-    const actionVerbsFR = ["ajouter","remplacer","modifier","déplacer","supprimer","réécrire","insérer","mettre à jour","transformer","calculer","afficher"];
-    const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
+
+    // ✅ Action words (FR) — pour valider Action + chips
+    const ACTION_WORDS = [
+      "ajouter","remplacer","supprimer","déplacer","réécrire","modifier","mettre à jour",
+      "insérer","calculer","afficher","masquer","renommer","restyler","mettre en avant",
+      "repositionner","réordonner","surligner"
+    ];
 
     const countChars = (v) => (v || "").trim().length;
     const setCounter = (el, v) => { if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; };
@@ -660,13 +674,12 @@
       const hasVague = vagueMarkers.some(m => low.includes(m));
 
       if(kind === "context"){
-        const hasUrl = testRX(reHasUrl, t);
-        const hasState = testRX(reHasState, t);
-        if(t.length < 20) return true;               // un peu moins strict pour score progressif
-        if(!hasUrl && !hasState) return true;
-        if(hasVague && !hasUrl && !hasState) return true;
+        // Progressif: on accepte du texte descriptif. (PBX-ready sera plus strict)
+        if(t.length < 15) return true;
+        if(hasVague && t.length < 25) return true;
         return false;
       }
+
       if(kind === "where"){
         const hasHint = testRX(reWhereHints, t);
         const hasSpecific = testRX(reWhereSpecific, t);
@@ -675,13 +688,13 @@
         if(hasVague && !hasHint) return true;
         return false;
       }
+
       if(kind === "action"){
-        const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
-        if(t.length < 6) return true;
-        if(!hasVerb) return true;
-        if(hasVague) return true;
-        return false;
+        if(t.length < 4) return true;
+        const hasVerb = ACTION_WORDS.some(w => low.includes(w));
+        return !hasVerb;
       }
+
       if(kind === "content"){
         const hasConcrete = testRX(reContentConcrete, t);
         if(t.length < 8) return true;
@@ -689,6 +702,7 @@
         if(!hasConcrete) return true;
         return false;
       }
+
       if(kind === "limits"){ return t.length < 10; }
       if(kind === "approach"){ return t.length < 10; }
       return false;
@@ -696,14 +710,10 @@
 
     function needsApproachFromContext(){
       const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
-      const reDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
-      return testRX(reDyn, t);
+      return testRX(reHasDyn, t);
     }
 
-    // ✅ SCORE PROGRESSIF
-    // - 4 blocs obligatoires = 80 pts (20 chacun)
-    // - Limites = +10
-    // - Approche = +10 (ou +5 si pas nécessaire)
+    // ✅ SCORE PROGRESSIF (comme tu l’as demandé)
     function computeQuality(){
       const ctx = (els.context?.value || "").trim();
       const whr = (els.where?.value || "").trim();
@@ -728,22 +738,22 @@
       score += ok.where   ? 20 : 0;
       score += ok.action  ? 20 : 0;
       score += ok.content ? 20 : 0;
-
       score += ok.limits ? 10 : 0;
-
       if (needApp) score += ok.approach ? 10 : 0;
-      else score += ok.approach ? 5 : 0; // bonus faible si pas "requis"
+      else score += ok.approach ? 5 : 0;
 
       score = Math.max(0, Math.min(100, score));
 
-      const ready = ok.context && ok.where && ok.action && ok.content && (score >= 70);
+      // ✅ PBX-ready (plus strict) : Contexte doit inclure URL OU (URL implicite via www) + idéalement dynamique mentionnée si besoin
+      const strictContextOk = testRX(reHasUrl, ctx) || testRX(RX("\\burl\\b"), ctx.toLowerCase());
+      const strictActionOk = ACTION_WORDS.some(w => act.toLowerCase().includes(w));
+
+      const ready = ok.context && ok.where && ok.action && ok.content && strictContextOk && strictActionOk && score >= 70;
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
 
-      // On renvoie aussi le détail des checks
       return { score, ready, state, needApp, ok };
     }
 
-    // ✅ CHECKS : titre uniquement
     function renderChecks(q){
       if(!els.checks) return;
 
@@ -752,9 +762,7 @@
         return `
           <div class="item ${state}">
             <div class="ico">${icon}</div>
-            <div>
-              <p class="itT">${title}</p>
-            </div>
+            <div><p class="itT">${title}</p></div>
           </div>
         `;
       };
@@ -764,11 +772,9 @@
       items.push(makeItem(q.ok.where   ? "ok" : "bad", "Où (cible/position)"));
       items.push(makeItem(q.ok.action  ? "ok" : "bad", "Action"));
       items.push(makeItem(q.ok.content ? "ok" : "bad", "Contenu / format"));
-
-      // Recommandés
       items.push(makeItem(q.ok.limits ? "ok" : "warn", "Limites"));
-      if (q.needApp) items.push(makeItem(q.ok.approach ? "ok" : "warn", "Approche"));
-      else items.push(makeItem(q.ok.approach ? "ok" : "warn", "Approche (optionnel)"));
+      items.push(makeItem(q.needApp ? (q.ok.approach ? "ok" : "warn") : (q.ok.approach ? "ok" : "warn"),
+        q.needApp ? "Approche" : "Approche (optionnel)"));
 
       els.checks.innerHTML = items.join("");
     }
@@ -808,25 +814,21 @@
       return q;
     }
 
-    function buildPBXPrompt(q){
+    function buildPBXPrompt(){
       const blocks = [];
       blocks.push("Front-end variation only (no back-end changes).");
       blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
       blocks.push("\nOù :\n" + (els.where?.value || "").trim());
       blocks.push("\nAction :\n" + (els.action?.value || "").trim());
       blocks.push("\nContenu :\n" + (els.content?.value || "").trim());
-
       if((els.limits?.value || "").trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
       if((els.approach?.value || "").trim()) blocks.push("\nApproche :\n" + els.approach.value.trim());
       if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
-
       blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
       return blocks.join("\n").trim();
     }
 
     function buildMissingPreview(){
-      // Ici, tu ne veux plus de descriptifs dans la sidebar,
-      // donc on laisse "Générer" produire soit le prompt, soit une phrase minimale.
       return "Complète les sections marquées d’une croix pour devenir PBX-ready.";
     }
 
@@ -840,7 +842,7 @@
     function generate(){
       const q = updateUI();
       if(!els.result) return;
-      els.result.value = q.ready ? buildPBXPrompt(q) : buildMissingPreview();
+      els.result.value = q.ready ? buildPBXPrompt() : buildMissingPreview();
       els.btnCopy.disabled = !els.result.value.trim();
       toast(q.ready ? "Prompt généré ✅" : "À compléter ⚠️");
     }
@@ -878,6 +880,20 @@
       const el = $(id);
       on(el, "input", updateUI);
       on(el, "change", updateUI);
+    });
+
+    // Chips
+    document.querySelectorAll(".chip[data-target]").forEach(chip => {
+      chip.addEventListener("click", () => {
+        const target = chip.getAttribute("data-target");
+        const add = chip.getAttribute("data-add") || "";
+        const el = document.getElementById(target);
+        if(!el || !add) return;
+        const v = (el.value || "").trim();
+        el.value = v ? `${v} ${add}` : add;
+        el.focus();
+        updateUI();
+      });
     });
 
     // Bind CTAs
