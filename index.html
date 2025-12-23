@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PBX Prompt Builder — Prompt utile (anti-crédits)</title>
+  <title>PBX Prompt Builder — Formulaire (Contexte / Où / Quoi / Limites / Approche)</title>
   <style>
     :root{
       --bg:#F6F7FB;
@@ -143,7 +143,7 @@
     }
     .card .inner{ padding: 16px; }
 
-    /* Main prompt block */
+    /* Form blocks */
     .hero{
       border: 1px solid var(--line);
       border-radius: 18px;
@@ -219,12 +219,15 @@
       transition: border-color .15s, box-shadow .15s, background .15s;
       line-height: 1.35;
     }
-    textarea{ min-height: 140px; resize: vertical; }
+    textarea{ min-height: 120px; resize: vertical; }
     textarea:focus, input:focus{
       border-color: rgba(109,40,217,0.55);
       box-shadow: 0 0 0 3px rgba(109,40,217,0.18);
       background: #fff;
     }
+
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
 
     .chips{
       display:flex;
@@ -259,32 +262,6 @@
       line-height: 1.35;
     }
     .hint strong{ color: var(--ink); }
-
-    /* Advanced */
-    details.adv{
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(255,255,255,0.78);
-      padding: 10px 12px;
-      margin-bottom: 12px;
-    }
-    details.adv summary{
-      cursor:pointer;
-      list-style:none;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 6px 4px;
-      font-weight: 950;
-      letter-spacing:-0.1px;
-      font-size: 13px;
-    }
-    details.adv summary::-webkit-details-marker{ display:none; }
-    .advSub{ margin: 4px 4px 10px; color: var(--muted); font-size: 12.2px; line-height:1.35; }
-
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
 
     /* Sidebar */
     .side{ position: sticky; top: 14px; }
@@ -429,7 +406,7 @@
     }
     #result{
       width:100%;
-      min-height: 220px;
+      min-height: 240px;
       border-radius: 16px;
       border: none;
       outline:none;
@@ -462,9 +439,10 @@
       <div class="brand">
         <div class="logo">PBX</div>
         <div>
-          <h1>PBX Prompt Builder — minimal & utile</h1>
+          <h1>PBX Prompt Builder — Formulaire</h1>
           <p class="sub">
-            Objectif : écrire <strong>un prompt de variation</strong> actionnable. On bloque la génération tant que le prompt est trop vague (pour éviter de consommer des crédits pour rien).
+            Objectif : produire un prompt PBX <strong>réplicable</strong> et <strong>robuste</strong> (Contexte / Où / Quoi / Limites / Approche).
+            La génération est bloquée si une section critique est trop vague (anti-crédits).
           </p>
         </div>
       </div>
@@ -481,89 +459,160 @@
         <div class="card">
           <div class="inner">
 
+            <!-- Contexte -->
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">✦</div>
+                  <div class="heroIcon">①</div>
                   <div>
-                    <p class="heroTitle">Le prompt (c’est tout ce dont PBX a besoin)</p>
-                    <p class="heroDesc">
-                      Décris <strong>le changement UI</strong> à appliquer sur la page (front-end). Évite “optimiser / améliorer” sans préciser quoi.
-                    </p>
+                    <p class="heroTitle">Contexte</p>
+                    <p class="heroDesc">URL / type de page / dynamique (overlay, lazy-load, “voir tout”).</p>
                   </div>
                 </div>
                 <div class="tags">
                   <span class="tag req">Obligatoire</span>
-                  <span class="tag">1 prompt = 1 crédit</span>
                 </div>
               </div>
 
               <div class="label">
-                <span>What do you want to build or fix ?</span>
-                <span class="counter" id="c_prompt"></span>
+                <span>Contexte</span>
+                <span class="counter" id="c_context"></span>
               </div>
-              <textarea id="prompt" placeholder="Ex : Remplace le libellé du bouton CTA “Demander une démo” par “Voir les tarifs” (2–4 mots, sans emoji), sans changer la mise en page."></textarea>
-
-              <div class="chips" aria-label="Exemples rapides">
-                <div class="chip" data-add="Replace the main CTA text with a clearer, shorter label. Keep layout unchanged.">CTA plus clair</div>
-                <div class="chip" data-add="Rewrite the hero headline to be more specific and benefit-led. Keep the same length.">Headline plus spécifique</div>
-                <div class="chip" data-add="Add a small trust badge next to the main CTA (e.g., 'No credit card'). Keep it subtle and aligned with existing style.">Badge de confiance</div>
-                <div class="chip" data-add="Move the primary CTA above the fold within the hero section. Keep styling consistent.">CTA au-dessus du fold</div>
-                <div class="chip" data-add="Reduce visual clutter in the pricing card area by simplifying spacing and hierarchy. Do not change content.">Hiérarchie pricing</div>
-              </div>
+              <textarea id="context" placeholder="Ex : URL: https://… / listing. Les tuiles sont présentes au chargement initial + ajoutées après clic sur “voir tout”. Une overlay détail peut s’ouvrir/fermer."></textarea>
 
               <div class="hint">
-                <strong>Checklist mental (1 phrase suffit) :</strong>
-                <br>• <strong>Verbe</strong> (Replace / Add / Remove / Move / Rewrite) + <strong>élément</strong> (CTA, H1, badge, input…)
-                <br>• <strong>Détails</strong> (texte exact, longueur, style) si nécessaire
-                <br>• <strong>Limite</strong> (ne pas changer le layout / ne pas toucher à X)
+                <strong>À inclure :</strong> URL + états à couvrir (initial / après clic / overlay) + si contenu injecté dynamiquement.
               </div>
             </div>
 
-            <details class="adv" id="adv">
-              <summary>
-                Options avancées (si nécessaire)
-                <span class="help">réduit les itérations</span>
-              </summary>
-              <div class="advSub">
-                Ajoute seulement ce qui aide PBX à ne pas “deviner”. Sinon laisse vide.
-              </div>
-
-              <div class="row2">
-                <div>
-                  <div class="label">
-                    <span>Contraintes / interdits</span>
-                    <span class="counter" id="c_constraints"></span>
+            <!-- Où -->
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">②</div>
+                  <div>
+                    <p class="heroTitle">Où ?</p>
+                    <p class="heroDesc">Cible sans ambiguïté : quelles tuiles / quel bloc / quelle zone exacte.</p>
                   </div>
-                  <textarea id="constraints" placeholder="Ex : FR. 2–4 mots. Pas d’emoji. Pas de claims non prouvables. Ne pas modifier le layout."></textarea>
                 </div>
-                <div>
-                  <div class="label">
-                    <span>Responsive (si tu changes layout)</span>
-                    <span class="counter" id="c_responsive"></span>
-                  </div>
-                  <textarea id="responsive" placeholder="Ex : doit rester clean sur mobile, pas de scroll horizontal, garder la grille existante."></textarea>
+                <div class="tags">
+                  <span class="tag req">Obligatoire</span>
                 </div>
               </div>
 
-              <div class="row2">
-                <div>
-                  <div class="label">
-                    <span>Format de sortie (rarement utile)</span>
-                    <span class="counter" id="c_format"></span>
+              <div class="label">
+                <span>Où (cible + repères)</span>
+                <span class="counter" id="c_where"></span>
+              </div>
+              <textarea id="where" placeholder="Ex : Cible : tuiles “iPhone 17”, “iPhone 17 Pro”, “iPhone 17 Pro Max”. Dans chaque tuile, insérer un texte sous l’image du téléphone, centré."></textarea>
+
+              <div class="chips" aria-label="Exemples rapides (Où)">
+                <div class="chip" data-target="where" data-add="Cible : toutes les tuiles forfaits visibles au chargement initial + celles ajoutées via “voir tout” + celles dans l’overlay “voir le détail”.">Tuiles + overlay</div>
+                <div class="chip" data-target="where" data-add="Dans chaque tuile, cibler la ligne de texte située juste au-dessus du prix affiché (bloc prix).">Texte au-dessus du prix</div>
+                <div class="chip" data-target="where" data-add="Sous l’image produit dans la tuile, aligné au centre, dans le même conteneur que le titre/sous-titre.">Sous image, centré</div>
+              </div>
+            </div>
+
+            <!-- Quoi -->
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">③</div>
+                  <div>
+                    <p class="heroTitle">Quoi ?</p>
+                    <p class="heroDesc">Le changement exact (Add / Replace / Transform) + contenu / calcul / format.</p>
                   </div>
-                  <textarea id="format" placeholder="Ex : Donne 1 résultat final + checklist QA (5 points max)."></textarea>
                 </div>
-                <div>
-                  <div class="label">
-                    <span>Si info manquante</span>
-                    <span class="help">anti-crédits</span>
-                  </div>
-                  <input id="missing" type="text" value="If something important is missing, ask up to 3 questions and WAIT." />
+                <div class="tags">
+                  <span class="tag req">Obligatoire</span>
                 </div>
               </div>
-            </details>
 
+              <div class="label">
+                <span>Quoi (action + contenu)</span>
+                <span class="counter" id="c_what"></span>
+              </div>
+              <textarea id="what" placeholder="Ex : Ajouter le texte EXACT : “À partir d’1€ avec la souscription sur le forfait 410 Go, après rachat de votre iPhone 14 Pro (ou ultérieur)”."></textarea>
+
+              <div class="hint">
+                <strong>Si calcul :</strong> décrire valeurs à extraire + formule + format final (ex : “9,99€/mois”).<br>
+                <strong>Si remplacement :</strong> préciser “remplacer uniquement X, ne pas toucher à Y”.
+              </div>
+            </div>
+
+            <!-- Limites -->
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">④</div>
+                  <div>
+                    <p class="heroTitle">Limites</p>
+                    <p class="heroDesc">Ce qui ne doit pas bouger (charte, layout) + règles de style non négociables.</p>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span class="tag">Recommandé (fort)</span>
+                </div>
+              </div>
+
+              <div class="label">
+                <span>Limites / contraintes</span>
+                <span class="counter" id="c_limits"></span>
+              </div>
+              <textarea id="limits" placeholder="Ex : Respecter la charte graphique (fond greige), typographie, taille et position. Ne pas changer la grille / layout. Le message doit rester lisible sans dénaturer le design."></textarea>
+            </div>
+
+            <!-- Approche -->
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">⑤</div>
+                  <div>
+                    <p class="heroTitle">Approche</p>
+                    <p class="heroDesc">Robustesse : dynamique, overlays, ré-application, idempotence (pas de doublons).</p>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span class="tag">Recommandé</span>
+                </div>
+              </div>
+
+              <div class="label">
+                <span>Approche technique</span>
+                <span class="counter" id="c_approach"></span>
+              </div>
+              <textarea id="approach" placeholder="Ex : Le code doit s’appliquer au chargement + se réappliquer lors des ajouts dynamiques (MutationObserver). Idempotent (marquer data-processed). Doit fonctionner dans l’overlay après ouverture/fermeture."></textarea>
+
+              <div class="chips" aria-label="Exemples rapides (Approche)">
+                <div class="chip" data-target="approach" data-add="Appliquer au chargement initial + réappliquer sur ajouts DOM via MutationObserver. Idempotent : ne jamais dupliquer les éléments (data-processed).">MutationObserver + idempotent</div>
+                <div class="chip" data-target="approach" data-add="Écouter les clics sur “voir tout” et “voir le détail”, puis relancer apply() après rendu. Maintenir le comportement après ouverture/fermeture d’overlay.">Clics + overlays</div>
+                <div class="chip" data-target="approach" data-add="Fallback : si la tuile ne contient pas les éléments attendus, ne rien modifier (pas d’erreur console).">Fallback safe</div>
+              </div>
+            </div>
+
+            <!-- Verification -->
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">⑥</div>
+                  <div>
+                    <p class="heroTitle">Vérification attendue</p>
+                    <p class="heroDesc">Critères de succès visibles (persistance, overlay, style barré/gras, etc.).</p>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span class="tag">Optionnel</span>
+                </div>
+              </div>
+
+              <div class="label">
+                <span>Vérification</span>
+                <span class="counter" id="c_verify"></span>
+              </div>
+              <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si affichage d’un prix calculé, il doit être barré et gris dans tous les états."></textarea>
+            </div>
+
+            <!-- RESULT -->
             <div class="card">
               <div class="inner">
                 <div class="resultHead">
@@ -599,7 +648,7 @@
             </div>
 
             <div class="mini">
-              Le score bloque la génération si le prompt est trop vague (pour éviter de brûler des crédits).
+              La génération est bloquée si <strong>Contexte / Où / Quoi</strong> sont trop vagues.
             </div>
           </div>
         </div>
@@ -610,16 +659,15 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
-
-  const SKEY = "pbx_minimal_prompt_v1";
+  const SKEY = "pbx_prompt_form_v2";
 
   const els = {
-    prompt: $("prompt"),
-    constraints: $("constraints"),
-    responsive: $("responsive"),
-    format: $("format"),
-    missing: $("missing"),
-    adv: $("adv"),
+    context: $("context"),
+    where: $("where"),
+    what: $("what"),
+    limits: $("limits"),
+    approach: $("approach"),
+    verify: $("verify"),
 
     result: $("result"),
     toast: $("toast"),
@@ -637,83 +685,133 @@
     stateLabel: $("stateLabel"),
     genBadge: $("genBadge"),
 
-    c_prompt: $("c_prompt"),
-    c_constraints: $("c_constraints"),
-    c_responsive: $("c_responsive"),
-    c_format: $("c_format"),
+    c_context: $("c_context"),
+    c_where: $("c_where"),
+    c_what: $("c_what"),
+    c_limits: $("c_limits"),
+    c_approach: $("c_approach"),
+    c_verify: $("c_verify"),
   };
 
-  const vagueMarkers = ["améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe","make it better","optimize"];
-  const actionVerbs = ["replace","rewrite","change","add","remove","move","reorder","insert","update","shorten","simplify","highlight","increase","decrease","swap","rename","restyle"];
-  const uiKeywords = ["cta","button","headline","h1","title","banner","modal","form","field","input","label","pricing","card","badge","tooltip","navbar","header","footer","hero","copy","text","microcopy"];
+  // Heuristiques "anti-vague"
+  const vagueMarkers = [
+    "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
+    "make it better","optimize","improve"
+  ];
+
+  const actionVerbsFR = ["ajouter","remplacer","modifier","déplacer","supprimer","réécrire","insérer","mettre à jour","transformer","calculer","afficher"];
+  const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
 
   function countChars(v){ return (v || "").trim().length; }
   function setCounter(el, v){ el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; }
 
-  function looksVague(text){
-    if(!text) return true;
-    const t = text.trim().toLowerCase();
-    if(t.length < 40) return true;
+  function looksVagueSection(text, kind){
+    const t = (text || "").trim();
+    if(!t) return true;
 
-    const hasVague = vagueMarkers.some(m => t.includes(m));
-    const hasVerb = actionVerbs.some(v => t.includes(v));
-    const hasUI = uiKeywords.some(k => t.includes(k));
-    const hasConcrete = /["“”']|(\d+)|(?:px)|(?:mobile)|(?:desktop)|(?:without changing)|(?:keep layout)|(?:ne pas)/i.test(text);
+    const low = t.toLowerCase();
+    const hasVague = vagueMarkers.some(m => low.includes(m));
 
-    // vague if it triggers vague markers OR lacks core structure
-    if(hasVague && !hasConcrete) return true;
-    if(!hasVerb) return true;
-    if(!hasUI && !hasConcrete) return true;
+    // Contexte: veut URL/états, pas juste "page produit"
+    if(kind === "context"){
+      const hasUrl = /(https?:\/\/|www\.)/i.test(t);
+      const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll)/i.test(t);
+      if(t.length < 40) return true;
+      if(hasVague && !hasUrl && !hasState) return true;
+      if(!hasUrl && !hasState) return true;
+      return false;
+    }
+
+    // Où: veut cible/zone, pas "sur la page"
+    if(kind === "where"){
+      const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal)/i.test(t);
+      const hasSpecific = /["“”']|\b(iPhone|forfait|prix|€/mois)\b/i.test(t);
+      if(t.length < 35) return true;
+      if(hasVague && !hasTargetHint) return true;
+      if(!hasTargetHint && !hasSpecific) return true;
+      return false;
+    }
+
+    // Quoi: veut action + contenu/format (ou formule)
+    if(kind === "what"){
+      const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
+      const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
+      if(t.length < 35) return true;
+      if(!hasVerb) return true;
+      if(hasVague && !hasConcrete) return true;
+      if(!hasConcrete) return true;
+      return false;
+    }
+
+    // Limites: facultatif mais si rempli trop vague, on warn
+    if(kind === "limits"){
+      if(t.length < 18) return true;
+      return false;
+    }
+
+    // Approche: facultatif mais important si dynamique mentionné
+    if(kind === "approach"){
+      if(t.length < 18) return true;
+      return false;
+    }
+
     return false;
   }
 
-  function needsResponsive(text){
-    if(!text) return false;
-    const t = text.toLowerCase();
-    return /(layout|grid|spacing|margin|padding|move|reorder|header|navbar|hero|card)/i.test(t);
+  function needsApproachFromContext(){
+    const t = `${els.context.value} ${els.where.value}`.toLowerCase();
+    return /(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)/i.test(t);
   }
 
   function computeQuality(){
     const missing = [];
     const warnings = [];
 
-    const p = els.prompt.value.trim();
-    const c = els.constraints.value.trim();
-    const r = els.responsive.value.trim();
+    const ctx = els.context.value.trim();
+    const whr = els.where.value.trim();
+    const wht = els.what.value.trim();
+    const lim = els.limits.value.trim();
+    const app = els.approach.value.trim();
 
-    if(!p || p.length < 40){
-      missing.push({t:"Prompt non exploitable", d:"Trop court. Ajoute verbe + élément + détail.", lvl:"bad"});
-    } else if(looksVague(p)){
-      missing.push({t:"Prompt trop vague", d:"Évite “optimiser/améliorer”. Dis quoi changer exactement.", lvl:"bad"});
-    } else {
-      // ok
+    // Critiques : Contexte / Où / Quoi
+    if(!ctx || looksVagueSection(ctx,"context")){
+      missing.push({t:"Contexte insuffisant", d:"Ajoute URL + états (initial / après clic / overlay) ou mention explicite du dynamisme.", lvl:"bad"});
+    }
+    if(!whr || looksVagueSection(whr,"where")){
+      missing.push({t:"Où ? trop flou", d:"Précise la cible (tuiles / bloc) + position exacte (ex : sous l’image, au-dessus du prix).", lvl:"bad"});
+    }
+    if(!wht || looksVagueSection(wht,"what")){
+      missing.push({t:"Quoi ? trop vague", d:"Donne l’action (ajouter/remplacer/calculer) + texte exact ou format / formule.", lvl:"bad"});
     }
 
-    // Reco: constraints
-    if(!c){
-      warnings.push({t:"Contraintes (reco)", d:"Ajoute 1–2 règles : langue, longueur, interdits.", lvl:"warn"});
+    // Limites recommandées
+    if(!lim){
+      warnings.push({t:"Limites manquantes (reco)", d:"Ajoute ce qui ne doit pas bouger : charte, fond greige, typo, layout.", lvl:"warn"});
+    } else if(looksVagueSection(lim,"limits")){
+      warnings.push({t:"Limites imprécises", d:"Sois concret : “ne pas changer layout”, “respecter fond greige”, “garder typo/tailles”.", lvl:"warn"});
     }
 
-    // Responsive needed when layout-ish
-    if(needsResponsive(p) && !r){
-      warnings.push({t:"Responsive (reco)", d:"Si tu touches au layout, précise mobile/desktop.", lvl:"warn"});
+    // Approche recommandée si dynamique
+    const needApp = needsApproachFromContext();
+    if(needApp && !app){
+      warnings.push({t:"Approche manquante (reco)", d:"La page semble dynamique : demande ré-application (MutationObserver / apply idempotent / overlays).", lvl:"warn"});
+    } else if(app && looksVagueSection(app,"approach")){
+      warnings.push({t:"Approche trop courte", d:"Décris : ré-application, idempotence (data-processed), overlay open/close, fallback sans erreur.", lvl:"warn"});
     }
 
     // Score
     let score = 100;
-    score -= missing.length * 45;
+    score -= missing.length * 38;
     score -= warnings.length * 12;
     score = Math.max(0, Math.min(100, score));
 
     const ready = (missing.length === 0 && score >= 70);
     const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
-
-    return {score, ready, state, missing, warnings};
+    return {score, ready, state, missing, warnings, needApp};
   }
 
   function renderChecks(q){
     const items = [];
-
     const add = (state, title, desc) => {
       const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
       items.push(`
@@ -727,27 +825,36 @@
       `);
     };
 
-    const p = els.prompt.value.trim();
-    const okPrompt = p.length >= 40 && !looksVague(p);
-    add(okPrompt ? "ok" : "bad", "Prompt actionnable", okPrompt ? "OK — PBX peut exécuter." : "Ajoute verbe + élément + détail. Pas “optimiser” seul.");
+    const ctxOk = els.context.value.trim() && !looksVagueSection(els.context.value,"context");
+    add(ctxOk ? "ok" : "bad", "Contexte", ctxOk ? "OK — URL/états suffisamment décrits." : "Ajoute URL + états (initial / après clic / overlay).");
 
-    add(els.constraints.value.trim() ? "ok" : "warn", "Contraintes (reco)", els.constraints.value.trim() ? "OK — garde-fous présents." : "Ajoute langue/longueur/interdits pour stabiliser.");
+    const whereOk = els.where.value.trim() && !looksVagueSection(els.where.value,"where");
+    add(whereOk ? "ok" : "bad", "Où (cible)", whereOk ? "OK — cible/zone identifiables." : "Précise tuiles/bloc + position exacte.");
 
-    const respNeeded = needsResponsive(p);
-    add(!respNeeded ? "ok" : (els.responsive.value.trim() ? "ok" : "warn"),
-        "Responsive",
-        !respNeeded ? "N/A — pas de changement layout évident." : (els.responsive.value.trim() ? "OK — mobile/desktop cadré." : "Si tu changes le layout, précise mobile/desktop."));
+    const whatOk = els.what.value.trim() && !looksVagueSection(els.what.value,"what");
+    add(whatOk ? "ok" : "bad", "Quoi (changement)", whatOk ? "OK — action + contenu/format." : "Donne action + texte exact ou format/formule.");
 
-    add(els.format.value.trim() ? "ok" : "warn", "Format (optionnel)", els.format.value.trim() ? "OK — sortie cadrée." : "Souvent inutile, mais tu peux demander un output + checklist QA.");
+    const lim = els.limits.value.trim();
+    add(lim ? "ok" : "warn", "Limites", lim ? "OK — garde-fous présents." : "Recommandé : charte, fond, typo, layout, interdits.");
+
+    const needApp = q.needApp;
+    const app = els.approach.value.trim();
+    add(!needApp ? "ok" : (app ? "ok" : "warn"), "Approche (robustesse)",
+      !needApp ? "N/A — pas d’indice fort de dynamisme." : (app ? "OK — dynamique cadré." : "Recommandé : ré-application + idempotence + overlays."));
+
+    const ver = els.verify.value.trim();
+    add(ver ? "ok" : "warn", "Vérification", ver ? "OK — critères de succès décrits." : "Optionnel : persistance après interactions, overlays, style barré/gris, etc.");
 
     els.checks.innerHTML = items.join("");
   }
 
   function updateUI(){
-    setCounter(els.c_prompt, els.prompt.value);
-    setCounter(els.c_constraints, els.constraints.value);
-    setCounter(els.c_responsive, els.responsive.value);
-    setCounter(els.c_format, els.format.value);
+    setCounter(els.c_context, els.context.value);
+    setCounter(els.c_where, els.where.value);
+    setCounter(els.c_what, els.what.value);
+    setCounter(els.c_limits, els.limits.value);
+    setCounter(els.c_approach, els.approach.value);
+    setCounter(els.c_verify, els.verify.value);
 
     const q = computeQuality();
 
@@ -780,42 +887,36 @@
   }
 
   function buildQuestions(){
-    // max 3, only the essentials, PBX-style
-    const p = els.prompt.value.trim();
+    // max 3 questions, ciblées sur Contexte/Où/Quoi (+ Approche si dynamique)
     const qs = [];
-
     const add = (q, ex) => {
       if(qs.length >= 3) return;
       qs.push(`- ${q}\n  - Exemple : ${ex}`);
     };
 
-    if(!p || p.length < 40 || looksVague(p)){
-      add("Quel est le changement EXACT (verbe + élément) ?",
-          "“Replace the main CTA text with ‘Voir les tarifs’, keep layout unchanged.”");
+    const ctx = els.context.value.trim();
+    const whr = els.where.value.trim();
+    const wht = els.what.value.trim();
+
+    if(!ctx || looksVagueSection(ctx,"context")){
+      add("Quel est le contexte exact (URL + états à couvrir : initial / après clic / overlay) ?",
+          "“URL: https://… Listing. Appliquer au chargement + après clic ‘voir tout’ + dans overlay ‘voir le détail’.”");
+    }
+    if(!whr || looksVagueSection(whr,"where")){
+      add("Où exactement sur la page (cible + position) ?",
+          "“Dans les tuiles iPhone 17/17 Pro/17 Pro Max, insérer le message sous l’image, centré.”");
+    }
+    if(!wht || looksVagueSection(wht,"what")){
+      add("Quel changement exact (action + contenu/format) ?",
+          "“Ajouter le texte EXACT ‘…’” / “Remplacer la ligne au-dessus du prix par ‘9,99€/mois’ calculé.”");
     }
 
-    // Target clarity if missing UI keyword + no quotes/number
-    const lower = p.toLowerCase();
-    const hasUI = uiKeywords.some(k => lower.includes(k));
-    const hasConcrete = /["“”']|(\d+)|(?:px)|(?:ne pas)|(?:keep layout)/i.test(p);
-    if(!hasUI && !hasConcrete){
-      add("Quel élément précis est modifié (CTA, H1, badge, champ…) ?",
-          "“The hero H1 headline” / “The primary button CTA”");
+    if(qs.length < 3 && needsApproachFromContext() && !els.approach.value.trim()){
+      add("Quelle approche pour le contenu dynamique (ré-application / overlay) ?",
+          "“MutationObserver + apply() idempotent (data-processed). Relancer après ouverture/fermeture overlay.”");
     }
 
-    if(!els.constraints.value.trim()){
-      add("Quelles contraintes/interdits non négociables ?",
-          "“FR, 2–4 words, no emoji, no unprovable claims, do not change layout.”");
-    }
-
-    if(needsResponsive(p) && !els.responsive.value.trim()){
-      add("Quelles contraintes responsive (mobile/desktop) ?",
-          "“No horizontal scroll on mobile, keep existing grid and spacing.”");
-    }
-
-    if(qs.length === 0){
-      qs.push("- Ton prompt est déjà exploitable ✅");
-    }
+    if(qs.length === 0) qs.push("- Ton prompt est déjà PBX-ready ✅");
 
     return `
 🧪 Validation (anti-crédits) — questions utiles (max 3)
@@ -825,23 +926,31 @@ ${qs.join("\n\n")}
   }
 
   function buildPBXPrompt(){
-    const p = els.prompt.value.trim();
     const blocks = [];
 
-    blocks.push(p);
+    blocks.push("Front-end variation only (no back-end changes).");
 
-    const c = els.constraints.value.trim();
-    const r = els.responsive.value.trim();
-    const f = els.format.value.trim();
-    const m = els.missing.value.trim();
+    blocks.push("\nContexte :\n" + els.context.value.trim());
+    blocks.push("\nOù :\n" + els.where.value.trim());
+    blocks.push("\nQuoi :\n" + els.what.value.trim());
 
-    if(c) blocks.push(`\nConstraints / avoid:\n${c}`);
-    if(r) blocks.push(`\nResponsive:\n${r}`);
-    if(f) blocks.push(`\nOutput format:\n${f}`);
-    if(m) blocks.push(`\nMissing info policy:\n${m}`);
+    if(els.limits.value.trim()){
+      blocks.push("\nLimites :\n" + els.limits.value.trim());
+    }
 
-    // Keep it minimal + explicit about front-end only
-    return `Front-end variation only (no back-end changes).\n\n${blocks.join("\n")}`.trim();
+    if(els.approach.value.trim()){
+      blocks.push("\nApproche :\n" + els.approach.value.trim());
+    } else if(needsApproachFromContext()){
+      // Petit safety-net si contexte dynamique mais approche vide
+      blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
+    }
+
+    if(els.verify.value.trim()){
+      blocks.push("\nVérification :\n" + els.verify.value.trim());
+    }
+
+    blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
+    return blocks.join("\n").trim();
   }
 
   function validate(){
@@ -880,12 +989,12 @@ ${qs.join("\n\n")}
 
   function save(){
     const payload = {
-      prompt: els.prompt.value,
-      constraints: els.constraints.value,
-      responsive: els.responsive.value,
-      format: els.format.value,
-      missing: els.missing.value,
-      advOpen: els.adv.open
+      context: els.context.value,
+      where: els.where.value,
+      what: els.what.value,
+      limits: els.limits.value,
+      approach: els.approach.value,
+      verify: els.verify.value
     };
     try{ localStorage.setItem(SKEY, JSON.stringify(payload)); }catch(e){}
   }
@@ -894,47 +1003,47 @@ ${qs.join("\n\n")}
     try{
       const raw = localStorage.getItem(SKEY);
       if(!raw) return;
-      const payload = JSON.parse(raw);
-      if(payload.prompt != null) els.prompt.value = payload.prompt;
-      if(payload.constraints != null) els.constraints.value = payload.constraints;
-      if(payload.responsive != null) els.responsive.value = payload.responsive;
-      if(payload.format != null) els.format.value = payload.format;
-      if(payload.missing != null) els.missing.value = payload.missing;
-      if(payload.advOpen != null) els.adv.open = !!payload.advOpen;
+      const p = JSON.parse(raw);
+      if(p.context != null) els.context.value = p.context;
+      if(p.where != null) els.where.value = p.where;
+      if(p.what != null) els.what.value = p.what;
+      if(p.limits != null) els.limits.value = p.limits;
+      if(p.approach != null) els.approach.value = p.approach;
+      if(p.verify != null) els.verify.value = p.verify;
     }catch(e){}
   }
 
   function resetAll(){
     const ok = confirm("Réinitialiser ?");
     if(!ok) return;
-    els.prompt.value = "";
-    els.constraints.value = "";
-    els.responsive.value = "";
-    els.format.value = "";
-    els.missing.value = "If something important is missing, ask up to 3 questions and WAIT.";
+    els.context.value = "";
+    els.where.value = "";
+    els.what.value = "";
+    els.limits.value = "";
+    els.approach.value = "";
+    els.verify.value = "";
     els.result.value = "";
-    els.adv.open = false;
     try{ localStorage.removeItem(SKEY); }catch(e){}
     updateUI();
   }
 
-  // chips
+  // chips (multi-target)
   document.querySelectorAll(".chip").forEach(chip=>{
     chip.addEventListener("click", ()=>{
+      const target = chip.getAttribute("data-target") || "what";
       const add = chip.getAttribute("data-add") || "";
       if(!add) return;
-      if(!els.prompt.value.trim()){
-        els.prompt.value = add;
-      } else {
-        els.prompt.value = (els.prompt.value.trim() + "\n\n" + add).trim();
-      }
-      els.prompt.focus();
+      const el = $(target);
+      if(!el) return;
+      if(!el.value.trim()) el.value = add;
+      else el.value = (el.value.trim() + "\n\n" + add).trim();
+      el.focus();
       updateUI();
     });
   });
 
   // watchers
-  ["prompt","constraints","responsive","format","missing"].forEach(id=>{
+  ["context","where","what","limits","approach","verify"].forEach(id=>{
     $(id).addEventListener("input", updateUI);
     $(id).addEventListener("change", updateUI);
   });
