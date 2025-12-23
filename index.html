@@ -171,6 +171,17 @@
       font-weight: 900;
     }
 
+    .label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin: 10px 0 6px;
+    }
+    .label span{ font-size: 12.7px; font-weight: 950; letter-spacing:-0.1px; }
+    .counter{ font-size: 11.7px; color: var(--muted2); white-space:nowrap; }
+
     textarea{
       width:100%;
       border-radius: 14px;
@@ -194,6 +205,9 @@
       cursor:not-allowed;
       background: rgba(248,250,252,0.55);
     }
+
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
 
     .hint{
       margin-top: 10px;
@@ -307,7 +321,7 @@
 
     .divider{ margin: 12px 0; height: 1px; background: var(--line); }
 
-    /* Sidebar actions */
+    /* Sidebar actions (keep only these 3) */
     .actions{
       display:flex;
       flex-direction:column;
@@ -433,8 +447,8 @@
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <textarea id="context" placeholder="Ex : Je souhaite une variante qui me permet de mettre en avant le prix / ajouter un message promo / clarifier une information."></textarea>
-              <div class="hint"><strong>Astuce :</strong> restez macro, le détail viendra dans les sections suivantes.</div>
+              <textarea id="context" placeholder="Ex : Je souhaite une variante qui me permet de mieux mettre en avant le prix final sur les tuiles."></textarea>
+              <div class="hint"><strong>Astuce :</strong> restez macro, le détail vient après.</div>
             </div>
 
             <!-- Quand appliquer -->
@@ -444,12 +458,40 @@
                   <div class="heroIcon">②</div>
                   <div>
                     <p class="heroTitle">Quand appliquer la variation ?</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> URL + type de page + quand ça s’applique (chargement / après clic / overlay).</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> à quel(s) moment(s) la variation doit s’appliquer (chargement / après clic / overlay / lazy-load…).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <textarea id="when" placeholder="Ex : URL: https://… (listing). Appliquer au chargement + après clic “voir tout” + dans l’overlay “voir le détail”."></textarea>
+
+              <input id="when" type="hidden" value="" />
+              <div class="chips" id="whenChips" aria-label="Quand appliquer">
+                <div class="chip" data-when="Au chargement">Au chargement</div>
+                <div class="chip" data-when="Après clic">Après clic</div>
+                <div class="chip" data-when="Dans overlay / modal">Dans overlay / modal</div>
+                <div class="chip" data-when="Après “voir tout” / pagination">Après “voir tout” / pagination</div>
+                <div class="chip" data-when="Après filtre / tri">Après filtre / tri</div>
+                <div class="chip" data-when="Après lazy-load / contenu injecté">Après lazy-load / contenu injecté</div>
+              </div>
+
+              <div class="hint">
+                <strong>But :</strong> éviter que la modif “revienne à l’état initial” après une interaction.
+              </div>
+
+              <div style="margin-top:12px"></div>
+
+              <div class="heroHead" style="margin-bottom:6px">
+                <div class="heroLeft">
+                  <div class="heroIcon">②</div>
+                  <div>
+                    <p class="heroTitle">Description (Quand)</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> détaillez le scénario (ex : “au chargement + après clic voir tout + dans overlay détail”).</p>
+                  </div>
+                </div>
+              </div>
+
+              <textarea id="whenDesc" placeholder="Sélectionne d’abord un moment." disabled></textarea>
+
               <div class="hint"><strong>Astuce :</strong> si c’est dynamique, écris-le (overlay / lazy-load / voir tout).</div>
             </div>
 
@@ -460,7 +502,7 @@
                   <div class="heroIcon">③</div>
                   <div>
                     <p class="heroTitle">Où ?</p>
-                    <p class="heroDesc"><strong>À indiquer :</strong> l’élément concerné et sa position précise sur la page (repères visuels).</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> l’élément concerné <u>et</u> sa position précise (repères visuels).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
@@ -468,7 +510,7 @@
               <textarea id="where" placeholder="Ex : Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image du téléphone, centré."></textarea>
             </div>
 
-            <!-- Quoi — Action -->
+            <!-- Quoi -->
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
@@ -499,13 +541,12 @@
 
               <div style="margin-top:12px"></div>
 
-              <!-- Quoi — Contenu -->
               <div class="heroHead" style="margin-bottom:6px">
                 <div class="heroLeft">
-                  <div class="heroIcon">⑤</div>
+                  <div class="heroIcon">④</div>
                   <div>
                     <p class="heroTitle">Quoi ? — Contenu</p>
-                    <p class="heroDesc"><strong>À indiquer :</strong> décrivez l’action (texte exact ou format ou formule).</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> décrivez l’action (texte exact <u>ou</u> format <u>ou</u> formule).</p>
                   </div>
                 </div>
               </div>
@@ -523,10 +564,10 @@
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">⑥</div>
+                  <div class="heroIcon">⑤</div>
                   <div>
                     <p class="heroTitle">Limites</p>
-                    <p class="heroDesc"><strong>À indiquer :</strong> ce qui ne doit pas bouger (layout ou typo ou couleurs) et les interdits.</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> ce qui ne doit pas bouger (layout / typo / couleurs) + interdits.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
@@ -538,10 +579,10 @@
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">⑦</div>
+                  <div class="heroIcon">⑥</div>
                   <div>
                     <p class="heroTitle">Approche</p>
-                    <p class="heroDesc"><strong>À indiquer :</strong> comment ça tient si la page est dynamique (MutationObserver ou events) et éviter les doublons.</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> comment rester stable si dynamique (MutationObserver / events) + éviter les doublons.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
@@ -553,10 +594,10 @@
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">⑧</div>
+                  <div class="heroIcon">⑦</div>
                   <div>
                     <p class="heroTitle">Vérification attendue</p>
-                    <p class="heroDesc"><strong>À indiquer :</strong> comment on vérifie visuellement (persistant / overlay OK / style barré/gris…).</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> comment on vérifie visuellement (persistant / overlay OK / style barré/gris).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Optionnel</span></div>
@@ -621,11 +662,17 @@
 
     const els = {
       context: $("context"),
-      when: $("when"),
+
+      when: $("when"),              // hidden
+      whenChips: $("whenChips"),
+      whenDesc: $("whenDesc"),
+
       where: $("where"),
+
       action: $("action"),          // hidden
       actionChips: $("actionChips"),
       content: $("content"),
+
       limits: $("limits"),
       approach: $("approach"),
       verify: $("verify"),
@@ -646,9 +693,7 @@
       genBadge: $("genBadge"),
     };
 
-    const reHasUrl = RX("(https?:\\/\\/|www\\.)");
     const reHasDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
-    const reWhenHasTrigger = RX("(chargement|initial|après clic|apres clic|after click|overlay|modal|voir tout|voir le détail|lazy|dynamique|ajax|scroll)", "i");
     const reWhereHints = RX("(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)");
     const reWhereSpecific = RX('(["“”\\\']|\\b(iPhone|forfait|€\\/mois|prix)\\b)');
     const reContentConcrete = RX('(["“”\\\']|\\b\\d+([,.]\\d+)?\\b|€|\\/mois|format|formule|calcul)');
@@ -659,49 +704,52 @@
       "make it better","optimize","improve"
     ];
 
-    const ACTIONS = [
-      "Ajouter","Remplacer","Supprimer","Déplacer","Calculer","Afficher","Mettre en avant","Restyler"
+    const ACTIONS = ["Ajouter","Remplacer","Supprimer","Déplacer","Calculer","Afficher","Mettre en avant","Restyler"];
+    const WHEN = [
+      "Au chargement",
+      "Après clic",
+      "Dans overlay / modal",
+      "Après “voir tout” / pagination",
+      "Après filtre / tri",
+      "Après lazy-load / contenu injecté"
     ];
 
-    function getSelectedActions(){
+    function getSelected(selector){
       const selected = [];
-      document.querySelectorAll("#actionChips .chip.active[data-action]").forEach(c=>{
-        const a = (c.getAttribute("data-action") || "").trim();
-        if(a) selected.push(a);
+      document.querySelectorAll(selector).forEach(c=>{
+        const v = (c.getAttribute("data-action") || c.getAttribute("data-when") || "").trim();
+        if(v && c.classList.contains("active")) selected.push(v);
       });
       return selected;
     }
 
-    function needsApproachFromText(){
-      const t = `${els.when?.value || ""} ${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
+    function needsApproach(){
+      const t = `${els.context?.value || ""} ${els.whenDesc?.value || ""} ${els.where?.value || ""}`.toLowerCase();
       return testRX(reHasDyn, t);
     }
 
-    function looksVagueSection(text, kind){
+    function looksVague(text, kind){
       const t = (text || "").trim();
       if(!t) return true;
       const low = t.toLowerCase();
       const hasVague = vagueMarkers.some(m => low.includes(m));
 
       if(kind === "context"){
-        if(t.length < 15) return true;
-        if(hasVague && t.length < 25) return true;
+        if(t.length < 12) return true;
+        if(hasVague && t.length < 22) return true;
         return false;
       }
 
-      if(kind === "when"){
-        const hasUrl = testRX(reHasUrl, t);
-        const hasTrigger = testRX(reWhenHasTrigger, t);
-        if(t.length < 18) return true;
-        if(!hasUrl && !hasTrigger) return true;
-        if(hasVague && !hasUrl) return true;
+      if(kind === "whenDesc"){
+        if(t.length < 10) return true;
+        if(hasVague && t.length < 18) return true;
         return false;
       }
 
       if(kind === "where"){
         const hasHint = testRX(reWhereHints, t);
         const hasSpecific = testRX(reWhereSpecific, t);
-        if(t.length < 14) return true;
+        if(t.length < 12) return true;
         if(!hasHint && !hasSpecific) return true;
         if(hasVague && !hasHint) return true;
         return false;
@@ -720,55 +768,61 @@
       return false;
     }
 
+    // Score progressif (obligatoires = 80)
+    // Contexte 16 / Quand 16 / Où 16 / Action 16 / Contenu 16
+    // Limites +10
+    // Approche +10 (si nécessaire) sinon +5
     function computeQuality(){
       const ctx = (els.context?.value || "").trim();
-      const whn = (els.when?.value || "").trim();
+
+      const whenSel = getSelected("#whenChips .chip[data-when]");
+      const whenText = whenSel.join("\n");
+      const whenDesc = (els.whenDesc?.value || "").trim();
+
       const whr = (els.where?.value || "").trim();
-      const actions = getSelectedActions();
+
+      const actions = getSelected("#actionChips .chip[data-action]");
+      const actText = actions.join("\n");
       const cnt = (els.content?.value || "").trim();
+
       const lim = (els.limits?.value || "").trim();
       const app = (els.approach?.value || "").trim();
 
-      const needApp = needsApproachFromText();
+      const needApp = needsApproach();
 
-      // multi-actions => contenu numéroté
       const requiresNumbering = actions.length > 1;
       const hasNumbering = testRX(reNumbered, cnt);
 
       const ok = {
-        context: !!ctx && !looksVagueSection(ctx,"context"),
-        when:    !!whn && !looksVagueSection(whn,"when"),
-        where:   !!whr && !looksVagueSection(whr,"where"),
-        action:  actions.length >= 1,
-        content: !!cnt && !looksVagueSection(cnt,"content") && (!requiresNumbering || hasNumbering),
-        limits:  !!lim && !looksVagueSection(lim,"limits"),
-        approach: !!app && !looksVagueSection(app,"approach"),
+        context: !!ctx && !looksVague(ctx, "context"),
+        when: whenSel.length >= 1 && !!whenDesc && !looksVague(whenDesc, "whenDesc"),
+        where: !!whr && !looksVague(whr, "where"),
+        action: actions.length >= 1,
+        content: !!cnt && !looksVague(cnt, "content") && (!requiresNumbering || hasNumbering),
+        limits: !!lim && !looksVague(lim, "limits"),
+        approach: !!app && !looksVague(app, "approach"),
       };
 
-      // score progressif
-      // 5 obligatoires = 80 (16 chacun)
-      // limites = +10
-      // approche = +10 si dynamique, sinon +5
       let score = 0;
       score += ok.context ? 16 : 0;
-      score += ok.when    ? 16 : 0;
-      score += ok.where   ? 16 : 0;
-      score += ok.action  ? 16 : 0;
+      score += ok.when ? 16 : 0;
+      score += ok.where ? 16 : 0;
+      score += ok.action ? 16 : 0;
       score += ok.content ? 16 : 0;
 
       score += ok.limits ? 10 : 0;
       score += needApp ? (ok.approach ? 10 : 0) : (ok.approach ? 5 : 0);
 
-      score = Math.max(0, Math.min(100, score));
+      score = Math.max(0, Math.min(100, Math.round(score)));
 
-      // readiness (strict)
+      // sync hidden values
+      if (els.action) els.action.value = actText;
+      if (els.when) els.when.value = whenText;
+
       const ready = ok.context && ok.when && ok.where && ok.action && ok.content && score >= 70;
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
 
-      // sync hidden action value
-      if (els.action) els.action.value = actions.join("\n");
-
-      return { score, ready, state, needApp, ok, requiresNumbering, actions };
+      return { score, ready, state, needApp, ok, actions, whenSel, requiresNumbering };
     }
 
     function renderChecks(q){
@@ -786,11 +840,10 @@
 
       const items = [];
       items.push(makeItem(q.ok.context ? "ok" : "bad", "Contexte"));
-      items.push(makeItem(q.ok.when    ? "ok" : "bad", "Quand appliquer"));
-      items.push(makeItem(q.ok.where   ? "ok" : "bad", "Où (élément + position)"));
-      items.push(makeItem(q.ok.action  ? "ok" : "bad", "Quoi — Action"));
+      items.push(makeItem(q.ok.when ? "ok" : "bad", "Quand appliquer"));
+      items.push(makeItem(q.ok.where ? "ok" : "bad", "Où (élément + position)"));
+      items.push(makeItem(q.ok.action ? "ok" : "bad", "Quoi — Action"));
       items.push(makeItem(q.ok.content ? "ok" : "bad", q.requiresNumbering ? "Quoi — Contenu (numéroté)" : "Quoi — Contenu"));
-
       items.push(makeItem(q.ok.limits ? "ok" : "warn", "Limites"));
       items.push(makeItem(q.needApp ? (q.ok.approach ? "ok" : "warn") : (q.ok.approach ? "ok" : "warn"),
         q.needApp ? "Approche" : "Approche (optionnel)"));
@@ -801,8 +854,8 @@
     function updateUI(){
       const q = computeQuality();
 
-      els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
-      els.scoreBar.style.width = `${q.score}%`;
+      if (els.scorePill) els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
+      if (els.scoreBar) els.scoreBar.style.width = `${q.score}%`;
 
       if (els.dotState) els.dotState.style.background = q.state === "ready" ? "var(--good)" : (q.state === "warn" ? "var(--warn)" : "var(--bad)");
       if (els.stateLabel) els.stateLabel.textContent = q.state === "ready" ? "Prompt prêt" : (q.state === "warn" ? "Presque prêt" : "Prompt incomplet");
@@ -810,7 +863,20 @@
 
       renderChecks(q);
 
-      // contenu activé uniquement si action sélectionnée
+      // When description enabled only if >= 1 moment selected
+      if (els.whenDesc){
+        if (q.whenSel.length === 0){
+          els.whenDesc.disabled = true;
+          if (!els.whenDesc.value.trim()) els.whenDesc.placeholder = "Sélectionne d’abord un moment.";
+        } else {
+          els.whenDesc.disabled = false;
+          if (els.whenDesc.placeholder.includes("Sélectionne d’abord")) {
+            els.whenDesc.placeholder = "Ex : Au chargement + après clic “voir tout” + dans l’overlay “voir le détail”.";
+          }
+        }
+      }
+
+      // Content enabled only if >= 1 action selected
       if (els.content){
         if (q.actions.length === 0){
           els.content.disabled = true;
@@ -818,9 +884,7 @@
         } else {
           els.content.disabled = false;
           if (q.actions.length > 1 && !els.content.value.trim()){
-            els.content.placeholder = `Numérote tes actions :
-1. ...
-2. ...`;
+            els.content.placeholder = "Numérote tes actions :\n1. ...\n2. ...";
           } else if (els.content.placeholder.includes("Sélectionne d’abord")) {
             els.content.placeholder = "Décris l’action : texte exact / format / formule.";
           }
@@ -830,7 +894,8 @@
       try{
         localStorage.setItem(SKEY, JSON.stringify({
           context: els.context?.value || "",
-          when: els.when?.value || "",
+          whenSel: q.whenSel || [],
+          whenDesc: els.whenDesc?.value || "",
           where: els.where?.value || "",
           actions: q.actions || [],
           content: els.content?.value || "",
@@ -845,12 +910,27 @@
 
     function buildPBXPrompt(){
       const blocks = [];
-      blocks.push("Front-end variation only (no back-end changes).");
+
+      // ✅ Intro demandée
+      blocks.push(
+`Tu es un expert front-end A/B testing (PBX).
+Ta mission : produire une variation UI robuste, réplicable, et fidèle au design existant.
+Ne fais aucune hypothèse non explicitée : si un point est ambigu, propose un fallback sûr (ne rien casser).`
+      );
+
       blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
-      blocks.push("\nQuand appliquer :\n" + (els.when?.value || "").trim());
+
+      const whenSel = getSelected("#whenChips .chip[data-when]");
+      if (whenSel.length > 1){
+        blocks.push("\nQuand appliquer :\n" + whenSel.map((w,i)=>`${i+1}. ${w}`).join("\n"));
+      } else {
+        blocks.push("\nQuand appliquer :\n" + (whenSel[0] || "").trim());
+      }
+      blocks.push("\nDescription (Quand) :\n" + (els.whenDesc?.value || "").trim());
+
       blocks.push("\nOù :\n" + (els.where?.value || "").trim());
 
-      const actions = getSelectedActions();
+      const actions = getSelected("#actionChips .chip[data-action]");
       if (actions.length > 1) {
         blocks.push("\nActions :\n" + actions.map((a,i)=>`${i+1}. ${a}`).join("\n"));
       } else {
@@ -862,7 +942,17 @@
       if((els.approach?.value || "").trim()) blocks.push("\nApproche :\n" + els.approach.value.trim());
       if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
 
-      blocks.push("\nAttendu :\nGénère un script robuste qui :\n1) détecte les éléments cibles\n2) applique la/les action(s) exactement comme décrit\n3) reste stable après interactions (open/close overlays, “voir tout”)\n4) n’altère pas la mise en page ni la charte.\n5) s'appuie sur la charte graphique de la page");
+      // ✅ Attendu demandé, en fin
+      blocks.push(
+`\nAttendu :
+Génère un script robuste qui :
+1) détecte les éléments cibles
+2) applique la/les action(s) exactement comme décrit
+3) reste stable après interactions (open/close overlays, “voir tout”)
+4) n’altère pas la mise en page ni la charte.
+5) s'appuie sur la charte graphique de la page`
+      );
+
       return blocks.join("\n").trim();
     }
 
@@ -902,12 +992,15 @@
       const ok = confirm("Réinitialiser ?");
       if(!ok) return;
 
-      ["context","when","where","content","limits","approach","verify"].forEach(k => {
+      ["context","where","content","limits","approach","verify"].forEach(k => {
         if(els[k]) els[k].value = "";
       });
+      if (els.whenDesc) els.whenDesc.value = "";
 
-      document.querySelectorAll("#actionChips .chip").forEach(c => c.classList.remove("active"));
+      // reset chips
+      document.querySelectorAll("#actionChips .chip, #whenChips .chip").forEach(c => c.classList.remove("active"));
       if (els.action) els.action.value = "";
+      if (els.when) els.when.value = "";
 
       if(els.result) els.result.value = "";
       els.btnCopy.disabled = true;
@@ -918,18 +1011,25 @@
     }
 
     // Inputs
-    ["context","when","where","content","limits","approach","verify"].forEach(id=>{
+    ["context","where","content","limits","approach","verify","whenDesc"].forEach(id=>{
       const el = $(id);
       on(el, "input", updateUI);
       on(el, "change", updateUI);
     });
 
-    // Action chips = multi-select toggle
+    // Chips toggle
     document.querySelectorAll("#actionChips .chip[data-action]").forEach(chip => {
       chip.addEventListener("click", () => {
         chip.classList.toggle("active");
         updateUI();
         if (els.content && !els.content.disabled) els.content.focus();
+      });
+    });
+    document.querySelectorAll("#whenChips .chip[data-when]").forEach(chip => {
+      chip.addEventListener("click", () => {
+        chip.classList.toggle("active");
+        updateUI();
+        if (els.whenDesc && !els.whenDesc.disabled) els.whenDesc.focus();
       });
     });
 
@@ -943,8 +1043,9 @@
       const raw = localStorage.getItem(SKEY);
       if(raw){
         const p = JSON.parse(raw);
+
         if(els.context && p.context != null) els.context.value = p.context;
-        if(els.when && p.when != null) els.when.value = p.when;
+        if(els.whenDesc && p.whenDesc != null) els.whenDesc.value = p.whenDesc;
         if(els.where && p.where != null) els.where.value = p.where;
         if(els.content && p.content != null) els.content.value = p.content;
         if(els.limits && p.limits != null) els.limits.value = p.limits;
@@ -952,10 +1053,18 @@
         if(els.verify && p.verify != null) els.verify.value = p.verify;
 
         const savedActions = Array.isArray(p.actions) ? p.actions : [];
+        const savedWhen = Array.isArray(p.whenSel) ? p.whenSel : [];
+
         if (savedActions.length){
           document.querySelectorAll("#actionChips .chip[data-action]").forEach(c=>{
             const a = (c.getAttribute("data-action") || "").trim();
             if (savedActions.includes(a)) c.classList.add("active");
+          });
+        }
+        if (savedWhen.length){
+          document.querySelectorAll("#whenChips .chip[data-when]").forEach(c=>{
+            const w = (c.getAttribute("data-when") || "").trim();
+            if (savedWhen.includes(w)) c.classList.add("active");
           });
         }
       }
