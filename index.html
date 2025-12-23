@@ -2,99 +2,53 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Générateur de prompt pour PBX</title>
+  <title>Générateur de prompt PBX (Best Practices)</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; padding: 0; background: #f3f5f7; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+    .container { max-width: 980px; width: 100%; background: #ffffff; margin: 24px; padding: 24px 28px 32px; border-radius: 18px; box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12); }
+    h1 { text-align: center; margin-top: 0; margin-bottom: 4px; font-size: 26px; }
+    h1 span { font-size: 18px; display: block; color: #64748b; font-weight: 400; margin-top: 4px; }
 
-    body {
-      margin: 0;
-      padding: 0;
-      background: #f3f5f7;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+    .top-hints {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0 18px;
     }
-
-    .container {
-      max-width: 900px;
-      width: 100%;
-      background: #ffffff;
-      margin: 24px;
-      padding: 24px 28px 32px;
-      border-radius: 18px;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+    .hint {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 12px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.35;
     }
+    .hint strong { color: #0f172a; font-weight: 650; }
+    .hint .emoji { margin-right: 6px; }
 
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 4px;
-      font-size: 26px;
-    }
-
-    h1 span {
-      font-size: 18px;
-      display: block;
-      color: #64748b;
-      font-weight: 400;
-      margin-top: 4px;
-    }
-
-    .section-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .section-title { font-weight: 650; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
     .section-title .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
-      font-size: 13px;
-      color: #ffffff;
-      flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 999px; font-size: 13px; color: #ffffff; flex-shrink: 0;
     }
+    .badge-1 { background: #22c55e; }    /* Action */
+    .badge-2 { background: #3b82f6; }    /* Cible + visuel */
+    .badge-3 { background: #6366f1; }    /* Comportement */
+    .badge-4 { background: #f97373; }    /* Contraintes */
+    .badge-5 { background: #94a3b8; }    /* Inputs */
 
-    .badge-1 { background: #f97373; }
-    .badge-2 { background: #fb923c; }
-    .badge-3 { background: #22c55e; }
-    .badge-4 { background: #14b8a6; }
-    .badge-5 { background: #3b82f6; }
-    .badge-6 { background: #6366f1; }
-    .badge-7 { background: #f97373; }
-    .badge-8 { background: #f97373; }
-    .badge-9 { background: #94a3b8; }
-    .badge-10 { background: #94a3b8; }
+    .field { margin-bottom: 18px; }
+    .description { margin: 2px 0 6px; font-size: 13px; color: #64748b; line-height: 1.4; }
+    .description strong { font-weight: 650; color: #0f172a; }
+    .helper-example { font-size: 12px; color: #94a3b8; margin-top: 2px; font-style: italic; }
 
-    .field {
-      margin-bottom: 18px;
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-    .description {
-      margin: 2px 0 6px;
-      font-size: 13px;
-      color: #64748b;
-      line-height: 1.4;
-    }
-
-    .description strong {
-      font-weight: 600;
-      color: #0f172a;
-    }
-
-    textarea {
+    textarea, select, input[type="text"] {
       width: 100%;
-      min-height: 70px;
-      resize: vertical;
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid #cbd5e1;
@@ -103,61 +57,63 @@
       transition: border-color 0.15s, box-shadow 0.15s;
       background: #f8fafc;
     }
-
-    textarea:focus {
+    textarea { min-height: 78px; resize: vertical; }
+    textarea:focus, select:focus, input[type="text"]:focus {
       border-color: #3b82f6;
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
       background: #ffffff;
     }
 
-    .helper-example {
-      font-size: 12px;
-      color: #94a3b8;
-      margin-top: 2px;
-      font-style: italic;
+    .inline {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin: 8px 0 0;
+      color: #475569; font-size: 13px;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid #e2e8f0; background: #ffffff; padding: 8px 10px;
+      border-radius: 999px;
+    }
+    .chip input { margin: 0; }
+
+    .callout {
+      border: 1px solid #e2e8f0;
+      background: #fff7ed;
+      border-radius: 14px;
+      padding: 12px 12px;
+      color: #7c2d12;
+      font-size: 13px;
+      line-height: 1.35;
+      margin: 12px 0 0;
+    }
+    .callout strong { color: #7c2d12; }
+
+    .warn {
+      display: none;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     .actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin: 18px 0;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 16px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 10px; margin: 18px 0; border-top: 1px solid #e2e8f0; padding-top: 16px;
     }
-
-    .actions-left {
-      font-size: 13px;
-      color: #64748b;
-    }
-
+    .actions-left { font-size: 13px; color: #64748b; }
     button {
-      border-radius: 999px;
-      border: none;
-      padding: 10px 18px;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 500;
-      white-space: nowrap;
+      border-radius: 999px; border: none; padding: 10px 18px; font-size: 14px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap;
     }
-
-    #generateBtn {
-      background: #2563eb;
-      color: #ffffff;
-    }
-
-    #copyBtn {
-      background: #e2e8f0;
-      color: #0f172a;
-    }
+    #generateBtn { background: #2563eb; color: #ffffff; }
+    #copyBtn { background: #e2e8f0; color: #0f172a; }
 
     #result {
-      min-height: 120px;
+      min-height: 150px;
       background: #020617;
       color: #e5e7eb;
       font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -168,194 +124,246 @@
       margin-top: 4px;
       white-space: pre-wrap;
     }
+    .result-label { font-weight: 650; margin-top: 10px; margin-bottom: 4px; }
+    .status { font-size: 12px; color: #16a34a; margin-left: 8px; display: none; }
 
-    .result-label {
-      font-weight: 600;
-      margin-top: 10px;
-      margin-bottom: 4px;
+    .toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 12px;
+      background: #f8fafc; margin-top: 10px;
+      font-size: 13px; color: #334155;
     }
+    .toggle small { color: #64748b; display: block; margin-top: 2px; }
+    .toggle input { transform: scale(1.05); }
 
-    .status {
-      font-size: 12px;
-      color: #16a34a;
-      margin-left: 8px;
-      display: none;
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        margin: 12px;
-        padding: 16px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
+    @media (max-width: 860px) {
+      .top-hints { grid-template-columns: 1fr; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .container { margin: 12px; padding: 16px; }
+      h1 { font-size: 22px; }
     }
   </style>
 </head>
+
 <body>
 <div class="container">
   <h1>
-    Générateur de prompt complet pour PBX
-    <span>Remplissez les blocs, puis générez un prompt clair pour l’IA.</span>
+    Générateur de prompt PBX — Best Practices
+    <span>Un prompt = 1 use case • explicite • itératif • exploitable</span>
   </h1>
 
+  <div class="top-hints">
+    <div class="hint"><span class="emoji">✅</span><strong>Step-by-step</strong><br/>Décris l’action, puis le rendu attendu, puis les contraintes.</div>
+    <div class="hint"><span class="emoji">🔁</span><strong>Itérer</strong><br/>Prévois une version V1 + améliorations (ou questions si infos manquantes).</div>
+    <div class="hint"><span class="emoji">💸</span><strong>Éviter les dépenses inutiles</strong><br/>Sois précis sur la cible, les détails et le format final.</div>
+  </div>
+
   <form id="promptForm" onsubmit="return false;">
-    <!-- 1. Contexte de la tâche -->
+
+    <!-- A) GARDE-FOU : 1 prompt = 1 use case -->
+    <div class="field">
+      <div class="section-title">
+        <div class="badge badge-5">0</div>
+        Use case unique
+      </div>
+      <div class="description">
+        Choisis <strong>un seul objectif</strong>. Si tu as plusieurs demandes, fais plusieurs prompts.
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="helper-example">Ex. : “Optimiser un écran checkout” / “Créer 3 variantes de hero”</div>
+          <input id="useCaseTitle" type="text" placeholder="Nom du use case (1 phrase)" />
+        </div>
+        <div>
+          <div class="helper-example">Ex. : CRO / UX writing / UI / AB test / Landing page…</div>
+          <select id="useCaseType">
+            <option value="">Type de use case (optionnel)</option>
+            <option value="CRO / AB test">CRO / AB test</option>
+            <option value="UX / UI">UX / UI</option>
+            <option value="Copywriting">Copywriting</option>
+            <option value="Audit / Diagnostic">Audit / Diagnostic</option>
+            <option value="Idéation / Variantes">Idéation / Variantes</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+      </div>
+      <div id="warnUseCase" class="warn"></div>
+    </div>
+
+    <!-- 1) ACTION : ce qu'on veut faire -->
     <div class="field">
       <div class="section-title">
         <div class="badge badge-1">1</div>
-        Contexte de la tâche
+        Action + objectif (explicite)
       </div>
       <div class="description">
-        Expliquez <strong>à quoi sert la demande</strong>, pour qui, et dans quel cadre.
+        Décris <strong>exactement l’action</strong> et le <strong>résultat attendu</strong> (et pas juste le contexte).
       </div>
-      <div class="helper-example">
-        Exemple : « Je prépare une newsletter pour des développeurs juniors dans une startup SaaS. »
+      <div class="grid-2">
+        <div>
+          <div class="helper-example">Ex. : “Générer 3 variantes de headline pour améliorer le CTR”</div>
+          <textarea id="actionTask" placeholder="Action à réaliser (1-3 phrases max)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “+10% CTR / réduire abandons / clarté du value prop”</div>
+          <textarea id="successCriteria" placeholder="KPI / critères de succès / définition d’une “bonne” réponse"></textarea>
+        </div>
       </div>
-      <textarea id="taskContext" placeholder="Décrivez le contexte général de la tâche..."></textarea>
+      <div class="grid-2" style="margin-top:12px;">
+        <div>
+          <div class="helper-example">Ex. : “Utilisateurs mobile, France, nouveaux visiteurs”</div>
+          <textarea id="audience" placeholder="Cible (qui ?) + contexte d’usage (où ? quand ?)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Site e-commerce, page produit, checkout, B2B SaaS…”</div>
+          <textarea id="scopeContext" placeholder="Périmètre (page, module, étape du funnel, device, pays…)"></textarea>
+        </div>
+      </div>
+      <div id="warnAction" class="warn"></div>
     </div>
 
-    <!-- 2. Contexte de ton -->
+    <!-- 2) CIBLE + DETAILS VISUELS -->
     <div class="field">
       <div class="section-title">
         <div class="badge badge-2">2</div>
-        Contexte de ton et style
+        Cible + détails (visuels / texte / structure)
       </div>
       <div class="description">
-        Précisez <strong>le ton</strong> et <strong>le style d’écriture</strong> souhaités.
+        Identifie <strong>l’élément exact à modifier</strong> et donne des détails précis : <strong>couleur / style / taille / contraintes UI</strong>.
       </div>
-      <div class="helper-example">
-        Exemple : « Ton professionnel mais accessible, tutoiement, phrases courtes, un peu d’humour. »
+
+      <div class="grid-2">
+        <div>
+          <div class="helper-example">Ex. : “Hero / CTA / bloc pricing / formulaire / panier…”</div>
+          <textarea id="targetElement" placeholder="Élément(s) ciblé(s) — sois précis (idéalement 1 élément principal)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Style épuré, ton rassurant, 12 mots max, pas de jargon”</div>
+          <textarea id="visualDetails" placeholder="Détails attendus (style, taille, longueur, tonalité, vocabulaire, UI)"></textarea>
+        </div>
       </div>
-      <textarea id="toneContext" placeholder="Décrivez le ton, le niveau de langage, la personne (je/tu/vous), etc."></textarea>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div>
+          <div class="helper-example">Ex. : “Couleurs de marque #… / police / spacing / composants”</div>
+          <textarea id="designSystem" placeholder="Design system / charte (si applicable)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Voici un exemple de variante qui marche : …”</div>
+          <textarea id="examples" placeholder="Exemples à suivre / à éviter (très concret)"></textarea>
+        </div>
+      </div>
+
+      <div id="warnTarget" class="warn"></div>
     </div>
 
-    <!-- 3. Données / documents -->
+    <!-- 3) COMPORTEMENT ATTENDU -->
     <div class="field">
       <div class="section-title">
         <div class="badge badge-3">3</div>
-        Données, documents et éléments de contexte
+        Comportement attendu (workflow + itération)
       </div>
       <div class="description">
-        Listez ici les <strong>données importantes</strong> : chiffres, liens, extraits, contraintes métiers...
+        Explique <strong>comment travailler</strong> : step-by-step, vérifications, nombre de variantes, niveau d’audace, etc.
       </div>
-      <div class="helper-example">
-        Exemple : « Le produit : outil de gestion de projet. Cible : PME. Lien fiche produit : … »
+
+      <div class="grid-3">
+        <div>
+          <div class="helper-example">Ex. : “3 variantes conservatrices + 2 audacieuses”</div>
+          <textarea id="variantsSpec" placeholder="Variantes : nombre + typologie (optionnel)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Commencer par lister hypothèses, puis proposer”</div>
+          <textarea id="workflow" placeholder="Étapes de travail (step-by-step)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Si info manquante → poser 3 questions max”</div>
+          <textarea id="clarificationPolicy" placeholder="Politique de clarification / itération"></textarea>
+        </div>
       </div>
-      <textarea id="backgroundData" placeholder="Collez ou décrivez ici les infos importantes à prendre en compte."></textarea>
+
+      <div class="inline" style="margin-top:10px;">
+        <span class="chip"><input type="checkbox" id="askIfMissing" checked /> <label for="askIfMissing">Si info critique manquante, poser des questions avant de produire</label></span>
+        <span class="chip"><input type="checkbox" id="selfCheck" checked /> <label for="selfCheck">Inclure une checklist qualité avant la réponse finale</label></span>
+      </div>
+
+      <div class="callout">
+        <strong>Anti-erreur :</strong> évite de mélanger plusieurs objectifs. Si tu veux “auditer + écrire + designer”, découpe en 2-3 prompts.
+      </div>
+
+      <div id="warnBehavior" class="warn"></div>
     </div>
 
-    <!-- 4. Description détaillée & règles -->
+    <!-- 4) CONTRAINTES -->
     <div class="field">
       <div class="section-title">
         <div class="badge badge-4">4</div>
-        Description détaillée de la tâche & règles
+        Contraintes (techniques + exclusions + à éviter)
       </div>
       <div class="description">
-        Décrivez <strong>exactement ce que l’IA doit faire</strong> et les règles à respecter / à éviter.
+        Liste les <strong>limitations</strong>, exigences (accessibilité, SEO…), et surtout <strong>ce qu’il ne faut pas faire</strong>.
       </div>
-      <div class="helper-example">
-        Exemple : « Écris un article de blog de 1200 mots, avec introduction, 3 parties, conclusion, sans jargon juridique. »
+
+      <div class="grid-2">
+        <div>
+          <div class="helper-example">Ex. : “12 mots max / pas de promesses légales / RGPD”</div>
+          <textarea id="constraints" placeholder="Contraintes fortes (hard rules)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Pas de jargon / pas de claims non prouvés / pas de discount”</div>
+          <textarea id="avoidList" placeholder="À éviter (ban list / pièges / interdits)"></textarea>
+        </div>
       </div>
-      <textarea id="detailedTask" placeholder="Décrivez la tâche étape par étape et toutes les règles à suivre."></textarea>
+
+      <div class="toggle">
+        <div>
+          <strong>Inclure des infos techniques/back-end ?</strong>
+          <small>À utiliser seulement si ça influence réellement la recommandation (sinon, ça dégrade la qualité).</small>
+        </div>
+        <input type="checkbox" id="showTech" />
+      </div>
+
+      <div id="techBlock" style="display:none; margin-top:12px;">
+        <div class="grid-2">
+          <div>
+            <div class="helper-example">Ex. : “Tracking GA4 existant / events disponibles / contraintes CMS”</div>
+            <textarea id="techInfo" placeholder="Infos techniques pertinentes (minimum nécessaire)"></textarea>
+          </div>
+          <div>
+            <div class="helper-example">Ex. : “On ne peut pas modifier le checkout / A/B test via …”</div>
+            <textarea id="techLimitations" placeholder="Limitations techniques impactantes"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div id="warnConstraints" class="warn"></div>
     </div>
 
-    <!-- 5. Exemples -->
+    <!-- INPUTS (optionnel, mais utile) -->
     <div class="field">
       <div class="section-title">
         <div class="badge badge-5">5</div>
-        Exemples à suivre (ou à ne pas suivre)
+        Inputs (données / contenu / contexte)
       </div>
       <div class="description">
-        Donnez un ou plusieurs <strong>exemples de bonne réponse</strong> (ou de mauvaise réponse à éviter).
+        Colle ici uniquement ce qui est <strong>utile</strong> : extrait de page, messages clés, infos produit, etc.
       </div>
-      <div class="helper-example">
-        Exemple : « Exemple de bon paragraphe : … / Exemple de style à éviter : … »
+      <div class="grid-2">
+        <div>
+          <div class="helper-example">Ex. : “Résumé produit / proposition de valeur / objections clients”</div>
+          <textarea id="backgroundData" placeholder="Données et contexte utiles (pas de bruit)"></textarea>
+        </div>
+        <div>
+          <div class="helper-example">Ex. : “Sortie en tableau / JSON / markdown + champs obligatoires”</div>
+          <textarea id="outputFormatting" placeholder="Format de sortie exact attendu"></textarea>
+        </div>
       </div>
-      <textarea id="examples" placeholder="Collez ici des exemples concrets ou des modèles à imiter / éviter."></textarea>
-    </div>
-
-    <!-- 6. Historique de conversation utile -->
-    <div class="field">
-      <div class="section-title">
-        <div class="badge badge-6">6</div>
-        Historique de conversation ou contexte précédent
-      </div>
-      <div class="description">
-        Rappelez les <strong>éléments déjà échangés</strong> ou décisions prises auparavant.
-      </div>
-      <div class="helper-example">
-        Exemple : « Lors des messages précédents, tu as déjà proposé un plan d’article validé ci-dessous : … »
-      </div>
-      <textarea id="conversationHistory" placeholder="Résumé des échanges précédents pertinents pour cette demande."></textarea>
-    </div>
-
-    <!-- 7. Demande immédiate -->
-    <div class="field">
-      <div class="section-title">
-        <div class="badge badge-7">7</div>
-        Demande immédiate (ce que tu veux maintenant)
-      </div>
-      <div class="description">
-        Écris ici la <strong>formulation simple et directe</strong> de ta demande actuelle.
-      </div>
-      <div class="helper-example">
-        Exemple : « Rédige maintenant l’introduction complète de l’article en 3 paragraphes. »
-      </div>
-      <textarea id="immediateRequest" placeholder="Formule ta demande principale de façon claire et directe."></textarea>
-    </div>
-
-    <!-- 8. Instructions de raisonnement -->
-    <div class="field">
-      <div class="section-title">
-        <div class="badge badge-8">8</div>
-        Instructions de raisonnement (penser étape par étape)
-      </div>
-      <div class="description">
-        Indique comment l’IA doit <strong>raisonner</strong> : étapes, vérifications, contraintes de qualité.
-      </div>
-      <div class="helper-example">
-        Exemple : « Commence par proposer un plan en puces, fais-le valider, puis rédige. Vérifie que chaque partie répond au besoin. »
-      </div>
-      <textarea id="thinkingInstructions" placeholder="Décris comment tu veux que l’IA s’y prenne pour réfléchir et travailler."></textarea>
-    </div>
-
-    <!-- 9. Format de sortie -->
-    <div class="field">
-      <div class="section-title">
-        <div class="badge badge-9">9</div>
-        Format de sortie souhaité
-      </div>
-      <div class="description">
-        Précise le <strong>format attendu</strong> : liste, tableau, markdown, JSON, longueur, etc.
-      </div>
-      <div class="helper-example">
-        Exemple : « Réponse en markdown, avec titres H2/H3, listes à puces, et un résumé final en 3 phrases. »
-      </div>
-      <textarea id="outputFormatting" placeholder="Indique le format exact de la réponse attendue."></textarea>
-    </div>
-
-    <!-- 10. Brouillon / réponse pré-remplie -->
-    <div class="field">
-      <div class="section-title">
-        <div class="badge badge-10">10</div>
-        Brouillon ou réponse pré-remplie (facultatif)
-      </div>
-      <div class="description">
-        Collez ici un <strong>brouillon</strong> ou des éléments à améliorer / réécrire par l’IA.
-      </div>
-      <div class="helper-example">
-        Exemple : « Voici mon premier jet de texte, merci de le réécrire en appliquant les règles ci-dessus : … »
-      </div>
-      <textarea id="prefilledResponse" placeholder="Collez votre brouillon ou les éléments à retravailler. Laissez vide si vous n’en avez pas."></textarea>
     </div>
 
     <!-- Actions -->
     <div class="actions">
       <div class="actions-left">
-        Remplissez ce qui est utile, puis cliquez sur <strong>Générer le prompt</strong>.
+        Remplis surtout <strong>1) Action</strong>, <strong>2) Cible</strong>, <strong>4) Contraintes</strong>. Puis génère.
       </div>
       <div>
         <button id="generateBtn" type="button">⚙️ Générer le prompt</button>
@@ -373,26 +381,162 @@
 <script>
   function buildPromptSection(title, content) {
     if (!content || !content.trim()) return "";
-    return title + ":\n" + content.trim() + "\n\n";
+    return "## " + title + "\n" + content.trim() + "\n\n";
   }
 
+  function showWarn(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = "block";
+  }
+  function hideWarn(id) {
+    const el = document.getElementById(id);
+    el.style.display = "none";
+    el.textContent = "";
+  }
+
+  function looksVague(text) {
+    if (!text) return true;
+    const t = text.trim().toLowerCase();
+    if (t.length < 18) return true;
+    const vagueMarkers = [
+      "améliorer", "optimiser", "faire mieux", "augmenter", "rendre plus", "peaufiner",
+      "un truc", "quelque chose", "comme tu veux", "peu importe", "à ta guise"
+    ];
+    return vagueMarkers.some(m => t.includes(m)) && t.length < 60;
+  }
+
+  function hasMultipleObjectives(text) {
+    if (!text) return false;
+    const t = text.toLowerCase();
+    // heuristique simple : trop de "et", "puis", "en même temps", "à la fois"
+    const hits = [" en même temps", " à la fois", " puis ", " et "].reduce((acc, k) => acc + (t.split(k).length - 1), 0);
+    return hits >= 4; // seuil volontairement bas pour alerter
+  }
+
+  document.getElementById("showTech").addEventListener("change", function () {
+    document.getElementById("techBlock").style.display = this.checked ? "block" : "none";
+  });
+
   document.getElementById("generateBtn").addEventListener("click", function () {
+    // reset warnings
+    ["warnUseCase","warnAction","warnTarget","warnBehavior","warnConstraints"].forEach(hideWarn);
+
+    const useCaseTitle = document.getElementById("useCaseTitle").value;
+    const useCaseType = document.getElementById("useCaseType").value;
+
+    const actionTask = document.getElementById("actionTask").value;
+    const successCriteria = document.getElementById("successCriteria").value;
+    const audience = document.getElementById("audience").value;
+    const scopeContext = document.getElementById("scopeContext").value;
+
+    const targetElement = document.getElementById("targetElement").value;
+    const visualDetails = document.getElementById("visualDetails").value;
+    const designSystem = document.getElementById("designSystem").value;
+    const examples = document.getElementById("examples").value;
+
+    const variantsSpec = document.getElementById("variantsSpec").value;
+    const workflow = document.getElementById("workflow").value;
+    const clarificationPolicy = document.getElementById("clarificationPolicy").value;
+
+    const constraints = document.getElementById("constraints").value;
+    const avoidList = document.getElementById("avoidList").value;
+
+    const includeTech = document.getElementById("showTech").checked;
+    const techInfo = includeTech ? document.getElementById("techInfo").value : "";
+    const techLimitations = includeTech ? document.getElementById("techLimitations").value : "";
+
+    const backgroundData = document.getElementById("backgroundData").value;
+    const outputFormatting = document.getElementById("outputFormatting").value;
+
+    const askIfMissing = document.getElementById("askIfMissing").checked;
+    const selfCheck = document.getElementById("selfCheck").checked;
+
+    // Guardrails
+    if (!useCaseTitle.trim()) {
+      showWarn("warnUseCase", "⚠️ Donne un nom de use case (1 phrase). Ça force un objectif unique.");
+    } else if (hasMultipleObjectives(useCaseTitle)) {
+      showWarn("warnUseCase", "⚠️ Ton use case ressemble à plusieurs objectifs. Essaie de le reformuler en UNE phrase / UNE intention.");
+    }
+
+    if (looksVague(actionTask)) {
+      showWarn("warnAction", "⚠️ Action trop vague. Décris l’action concrète + livrable (ex : “produire 5 variantes de CTA…”).");
+    } else if (hasMultipleObjectives(actionTask)) {
+      showWarn("warnAction", "⚠️ Tu sembles mélanger plusieurs objectifs. Découpe en plusieurs prompts si besoin.");
+    }
+
+    if (!targetElement.trim() || looksVague(targetElement)) {
+      showWarn("warnTarget", "⚠️ Cible floue. Indique l’élément exact à modifier (hero, CTA, pricing, formulaire…) + où il se trouve.");
+    }
+
+    if (!constraints.trim() && !avoidList.trim()) {
+      showWarn("warnConstraints", "⚠️ Ajoute au moins 1 contrainte ou 1 élément à éviter (sinon l’IA partira trop large).");
+    }
+
+    if (!workflow.trim() && !variantsSpec.trim()) {
+      showWarn("warnBehavior", "⚠️ Décris le comportement attendu : étapes de travail OU nombre/type de variantes.");
+    }
+
+    // Build prompt
     const promptParts = [];
 
-    promptParts.push(buildPromptSection("1) Contexte de la tâche", document.getElementById("taskContext").value));
-    promptParts.push(buildPromptSection("2) Contexte de ton et style", document.getElementById("toneContext").value));
-    promptParts.push(buildPromptSection("3) Données, documents et éléments de contexte", document.getElementById("backgroundData").value));
-    promptParts.push(buildPromptSection("4) Description détaillée de la tâche & règles", document.getElementById("detailedTask").value));
-    promptParts.push(buildPromptSection("5) Exemples à suivre (ou à éviter)", document.getElementById("examples").value));
-    promptParts.push(buildPromptSection("6) Historique de conversation ou contexte précédent", document.getElementById("conversationHistory").value));
-    promptParts.push(buildPromptSection("7) Demande immédiate", document.getElementById("immediateRequest").value));
-    promptParts.push(buildPromptSection("8) Instructions de raisonnement", document.getElementById("thinkingInstructions").value));
-    promptParts.push(buildPromptSection("9) Format de sortie souhaité", document.getElementById("outputFormatting").value));
-    promptParts.push(buildPromptSection("10) Brouillon ou réponse pré-remplie", document.getElementById("prefilledResponse").value));
+    const meta = [
+      useCaseType ? `Type: ${useCaseType}` : null,
+      askIfMissing ? "Politique: poser des questions si info critique manquante" : "Politique: produire directement avec hypothèses explicites",
+      selfCheck ? "Qualité: inclure une checklist rapide avant la réponse finale" : null,
+      includeTech ? "Tech: infos techniques incluses (minimum nécessaire)" : "Tech: éviter les considérations back-end non pertinentes"
+    ].filter(Boolean).join(" | ");
 
-    const finalPrompt =
-      "Tu es une IA à qui l’on fournit un brief structuré. Utilise toutes les sections suivantes pour produire la meilleure réponse possible.\n\n" +
-      promptParts.join("").trim();
+    const systemBlock =
+`Tu es une IA experte en prompt-based experimentation (PBX). 
+Objectif: produire une réponse directement exploitable, précise et alignée avec un unique use case.
+Règles globales:
+- Un prompt = un use case (si plusieurs objectifs → proposer de découper).
+- Ne pas deviner: si une info critique manque, ${askIfMissing ? "poser jusqu’à 3 questions maximum avant de produire" : "formuler des hypothèses explicites et continuer"}.
+- Ne pas dériver vers du back-end/technique sauf si explicitement requis.
+- Sorties concrètes, actionnables, et formatées comme demandé.
+`;
+
+    promptParts.push(systemBlock.trim() + "\n\n");
+
+    promptParts.push(buildPromptSection("Use case", `Titre: ${useCaseTitle || "(non précisé)"}\n${useCaseType ? "Type: " + useCaseType : ""}\n${meta ? "\n" + meta : ""}`));
+
+    promptParts.push(buildPromptSection("1) Action + objectif", actionTask));
+    promptParts.push(buildPromptSection("Critères de succès (KPI / qualité)", successCriteria));
+    promptParts.push(buildPromptSection("Cible & contexte d’usage", audience));
+    promptParts.push(buildPromptSection("Périmètre (scope)", scopeContext));
+
+    promptParts.push(buildPromptSection("2) Cible à modifier", targetElement));
+    promptParts.push(buildPromptSection("Détails attendus (visuel/texte/structure)", visualDetails));
+    promptParts.push(buildPromptSection("Design system / charte", designSystem));
+    promptParts.push(buildPromptSection("Exemples à suivre / à éviter", examples));
+
+    promptParts.push(buildPromptSection("3) Comportement attendu", [
+      variantsSpec ? ("Variantes:\n" + variantsSpec) : null,
+      workflow ? ("Step-by-step:\n" + workflow) : null,
+      clarificationPolicy ? ("Itération / clarification:\n" + clarificationPolicy) : null
+    ].filter(Boolean).join("\n\n")));
+
+    promptParts.push(buildPromptSection("4) Contraintes", constraints));
+    promptParts.push(buildPromptSection("À éviter", avoidList));
+
+    if (includeTech) {
+      promptParts.push(buildPromptSection("Infos techniques pertinentes (minimum nécessaire)", techInfo));
+      promptParts.push(buildPromptSection("Limitations techniques impactantes", techLimitations));
+    }
+
+    promptParts.push(buildPromptSection("Inputs / données utiles", backgroundData));
+    promptParts.push(buildPromptSection("Format de sortie", outputFormatting));
+
+    // Final instruction block (module-friendly)
+    const executionBlock =
+`Consigne d’exécution:
+1) Si des informations critiques manquent (cible, contraintes, format, succès), ${askIfMissing ? "pose jusqu’à 3 questions puis attends mes réponses." : "énonce tes hypothèses en 3 puces max, puis continue."}
+2) Produis une V1 directement exploitable.
+3) ${selfCheck ? "Termine par une checklist courte (5 points max) confirmant le respect des contraintes + format." : "Vérifie brièvement la conformité aux contraintes."}
+`;
+
+    const finalPrompt = (promptParts.join("") + "\n" + executionBlock).trim();
 
     document.getElementById("result").value = finalPrompt;
     document.getElementById("status").style.display = "none";
