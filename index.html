@@ -444,13 +444,15 @@
                   <div class="heroIcon">①</div>
                   <div>
                     <p class="heroTitle">Contexte</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> indiquer le contexte de la variante demandée (où on est, quelles vues/états, contenu dynamique).</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> l’URL <u>ou</u> la page concernée, <u>et</u> quand ça s’applique (chargement <u>ou</u> après clic <u>ou</u> overlay).
+                    </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
               <div class="label"><span>Contexte</span><span class="counter" id="c_context"></span></div>
-              <textarea id="context" placeholder="Ex : URL: https://… / listing. Affichage au chargement + après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
+              <textarea id="context" placeholder="Ex : URL: https://… / listing. S’applique au chargement + après clic “voir tout” + dans l’overlay détail."></textarea>
               <div class="hint"><strong>Astuce :</strong> si c’est dynamique, écris-le (overlay / lazy-load / voir tout).</div>
             </div>
 
@@ -461,12 +463,14 @@
                   <div class="heroIcon">②</div>
                   <div>
                     <p class="heroTitle">Où ?</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> cibler l’élément concerné et/ou la position précise de la modification (repères visuels).</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> l’élément concerné <u>et</u> sa position précise sur la page (repères visuels).
+                    </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <div class="label"><span>Où (cible + position)</span><span class="counter" id="c_where"></span></div>
+              <div class="label"><span>Où (élément + position)</span><span class="counter" id="c_where"></span></div>
               <textarea id="where" placeholder="Ex : Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image du téléphone, centré."></textarea>
             </div>
 
@@ -476,42 +480,55 @@
                 <div class="heroLeft">
                   <div class="heroIcon">③</div>
                   <div>
-                    <p class="heroTitle">Quoi ?</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> sélectionner l’action à mener, puis préciser le contenu (texte exact / format / formule).</p>
+                    <p class="heroTitle">Quoi ? — Action (1/2)</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> que voulez-vous faire ? (Ajouter <u>ou</u> Remplacer <u>ou</u> Supprimer <u>ou</u> Déplacer <u>…</u>)
+                    </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
 
-              <div class="row2">
-                <div>
-                  <div class="label"><span>Action (sélection)</span><span class="counter" id="c_action"></span></div>
+              <div class="label"><span>Actions (sélection)</span><span class="counter" id="c_action"></span></div>
 
-                  <!-- ✅ Action = selection obligatoire (single select) -->
-                  <input id="action" type="hidden" value="" />
-                  <div class="chips" id="actionChips" aria-label="Action">
-                    <div class="chip" data-action="Ajouter">Ajouter</div>
-                    <div class="chip" data-action="Remplacer">Remplacer</div>
-                    <div class="chip" data-action="Supprimer">Supprimer</div>
-                    <div class="chip" data-action="Déplacer">Déplacer</div>
-                    <div class="chip" data-action="Calculer">Calculer</div>
-                    <div class="chip" data-action="Afficher">Afficher</div>
-                    <div class="chip" data-action="Mettre en avant">Mettre en avant</div>
-                    <div class="chip" data-action="Restyler">Restyler</div>
-                  </div>
+              <!-- ✅ multi-actions: stockées dans un input hidden -->
+              <input id="action" type="hidden" value="" />
+              <div class="chips" id="actionChips" aria-label="Actions">
+                <div class="chip" data-action="Ajouter">Ajouter</div>
+                <div class="chip" data-action="Remplacer">Remplacer</div>
+                <div class="chip" data-action="Supprimer">Supprimer</div>
+                <div class="chip" data-action="Déplacer">Déplacer</div>
+                <div class="chip" data-action="Calculer">Calculer</div>
+                <div class="chip" data-action="Afficher">Afficher</div>
+                <div class="chip" data-action="Mettre en avant">Mettre en avant</div>
+                <div class="chip" data-action="Restyler">Restyler</div>
+              </div>
 
-                  <div class="hint">
-                    <strong>Règle :</strong> choisis une seule action. Tu détailles ensuite dans “Contenu”.
+              <div class="hint">
+                <strong>Plusieurs actions ?</strong> OK — sélectionne-les, puis <strong>numérote-les</strong> dans “Contenu” (1., 2., 3.).
+              </div>
+
+              <div style="margin-top:12px"></div>
+
+              <div class="heroHead" style="margin-bottom:6px">
+                <div class="heroLeft">
+                  <div class="heroIcon">③</div>
+                  <div>
+                    <p class="heroTitle">Quoi ? — Contenu (2/2)</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> décrivez l’action que vous souhaitez faire (texte exact <u>ou</u> format <u>ou</u> formule).
+                    </p>
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <div class="label"><span>Contenu (texte exact / format / formule)</span><span class="counter" id="c_content"></span></div>
-                  <textarea id="content" placeholder="Sélectionne d’abord une action." disabled></textarea>
-                  <div class="hint">
-                    <strong>Exemples :</strong> “À partir d’1€ …” • “9,99€/mois = prix + |remise|” (format final)
-                  </div>
-                </div>
+              <div class="label"><span>Contenu (texte exact / format / formule)</span><span class="counter" id="c_content"></span></div>
+              <textarea id="content" placeholder="Sélectionne d’abord une action." disabled></textarea>
+
+              <div class="hint">
+                <strong>Exemple multi-actions :</strong><br>
+                1. Supprimer le bloc “X”<br>
+                2. Ajouter le texte “abc” sous l’image, centré
               </div>
             </div>
 
@@ -522,13 +539,15 @@
                   <div class="heroIcon">④</div>
                   <div>
                     <p class="heroTitle">Limites</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> préciser ce qui ne doit pas bouger (charte, layout, typo, couleurs) + interdits.</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> ce qui ne doit pas bouger (layout <u>ou</u> typo <u>ou</u> couleurs) <u>et</u> les interdits.
+                    </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
               <div class="label"><span>Limites / contraintes</span><span class="counter" id="c_limits"></span></div>
-              <textarea id="limits" placeholder="Ex : Ne pas modifier le layout. Respecter fond greige + typographie. Ne rien casser visuellement."></textarea>
+              <textarea id="limits" placeholder="Ex : Ne pas modifier la grille/layout. Respecter fond greige + typographie."></textarea>
             </div>
 
             <!-- Approche -->
@@ -538,13 +557,15 @@
                   <div class="heroIcon">⑤</div>
                   <div>
                     <p class="heroTitle">Approche</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> expliquer comment la modification tient dans le temps (dynamique, overlays, pas de doublons).</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> comment ça tient si la page est dynamique (MutationObserver <u>ou</u> events) <u>et</u> éviter les doublons.
+                    </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
               <div class="label"><span>Approche technique</span><span class="counter" id="c_approach"></span></div>
-              <textarea id="approach" placeholder="Ex : Appliquer au chargement + MutationObserver. Idempotent (data-processed). Fonctionne dans overlay. Fallback safe."></textarea>
+              <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer sur ajouts DOM. Idempotent (data-processed). Fallback safe."></textarea>
             </div>
 
             <!-- Vérification -->
@@ -554,13 +575,15 @@
                   <div class="heroIcon">⑥</div>
                   <div>
                     <p class="heroTitle">Vérification attendue</p>
-                    <p class="heroDesc"><strong>Attendu :</strong> lister les checks visibles pour valider (persistance, overlay, style barré/gris…).</p>
+                    <p class="heroDesc">
+                      <strong>À indiquer :</strong> comment on vérifie visuellement (persistant <u>ou</u> overlay OK <u>ou</u> style barré/gris).
+                    </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Optionnel</span></div>
               </div>
               <div class="label"><span>Vérification</span><span class="counter" id="c_verify"></span></div>
-              <textarea id="verify" placeholder="Ex : Le texte persiste après interactions. Visible dans overlay. Si prix calculé : barré + gris partout."></textarea>
+              <textarea id="verify" placeholder="Ex : Le texte reste après interactions. Visible dans overlay. Si prix calculé : barré + gris partout."></textarea>
             </div>
 
           </div>
@@ -602,7 +625,7 @@
   </div>
 
 <script>
-  console.log("[DEBUG] PBX_FORM_SCRIPT_V5");
+  console.log("[DEBUG] PBX_FORM_SCRIPT_V6");
 
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
@@ -616,12 +639,12 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const SKEY = "pbx_prompt_form_v5";
+    const SKEY = "pbx_prompt_form_v6";
 
     const els = {
       context: $("context"),
       where: $("where"),
-      action: $("action"),          // hidden input
+      action: $("action"),          // hidden
       actionChips: $("actionChips"),
       content: $("content"),
       limits: $("limits"),
@@ -652,33 +675,38 @@
       c_verify: $("c_verify"),
     };
 
-    if (!els.btnGenerate || !els.btnCopy || !els.btnReset || !els.scorePill || !els.scoreBar) {
-      if (els.result) {
-        els.result.value =
-          "❌ PBX_FORM_SCRIPT_V5 : éléments manquants.\n" +
-          "Attendus: btnGenerate, btnCopy, btnReset, scorePill, scoreBar.";
-      }
-      return;
-    }
-
     const reHasUrl = RX("(https?:\\/\\/|www\\.)");
     const reHasDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
     const reWhereHints = RX("(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)");
     const reWhereSpecific = RX('(["“”\\\']|\\b(iPhone|forfait|€\\/mois|prix)\\b)');
     const reContentConcrete = RX('(["“”\\\']|\\b\\d+([,.]\\d+)?\\b|€|\\/mois|format|formule|calcul)');
+    const reNumbered = RX("^\\s*\\d+\\.", "m");
 
     const vagueMarkers = [
       "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
       "make it better","optimize","improve"
     ];
 
-    // Actions disponibles (doivent matcher les chips)
     const ACTIONS = [
       "Ajouter","Remplacer","Supprimer","Déplacer","Calculer","Afficher","Mettre en avant","Restyler"
     ];
 
     const countChars = (v) => (v || "").trim().length;
     const setCounter = (el, v) => { if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; };
+
+    function getSelectedActions(){
+      const selected = [];
+      document.querySelectorAll("#actionChips .chip.active[data-action]").forEach(c=>{
+        const a = (c.getAttribute("data-action") || "").trim();
+        if(a) selected.push(a);
+      });
+      return selected;
+    }
+
+    function needsApproachFromContext(){
+      const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
+      return testRX(reHasDyn, t);
+    }
 
     function looksVagueSection(text, kind){
       const t = (text || "").trim();
@@ -702,8 +730,10 @@
       }
 
       if(kind === "action"){
-        // Action = sélection (pas du texte libre)
-        return !ACTIONS.includes(t);
+        // action = sélection(s) => texte caché contient la liste jointe
+        const parts = t.split("\n").map(s=>s.trim()).filter(Boolean);
+        if(parts.length === 0) return true;
+        return parts.some(p => !ACTIONS.includes(p.replace(/^(\d+\.\s*)/, "")));
       }
 
       if(kind === "content"){
@@ -719,31 +749,31 @@
       return false;
     }
 
-    function needsApproachFromContext(){
-      const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
-      return testRX(reHasDyn, t);
-    }
-
     function computeQuality(){
       const ctx = (els.context?.value || "").trim();
       const whr = (els.where?.value || "").trim();
-      const act = (els.action?.value || "").trim();   // selected action
+      const actions = getSelectedActions();
+      const actText = actions.join("\n");
       const cnt = (els.content?.value || "").trim();
       const lim = (els.limits?.value || "").trim();
       const app = (els.approach?.value || "").trim();
 
       const needApp = needsApproachFromContext();
 
+      // règle multi-actions: numérotation obligatoire dans contenu
+      const requiresNumbering = actions.length > 1;
+      const hasNumbering = testRX(reNumbered, cnt);
+
       const ok = {
         context: !!ctx && !looksVagueSection(ctx,"context"),
         where:   !!whr && !looksVagueSection(whr,"where"),
-        action:  !!act && !looksVagueSection(act,"action"),
-        content: !!cnt && !looksVagueSection(cnt,"content"),
+        action:  actions.length >= 1,
+        content: !!cnt && !looksVagueSection(cnt,"content") && (!requiresNumbering || hasNumbering),
         limits:  !!lim && !looksVagueSection(lim,"limits"),
         approach: !!app && !looksVagueSection(app,"approach"),
       };
 
-      // Score progressif
+      // score progressif
       let score = 0;
       score += ok.context ? 20 : 0;
       score += ok.where   ? 20 : 0;
@@ -755,12 +785,15 @@
 
       score = Math.max(0, Math.min(100, score));
 
-      // PBX-ready strict : contexte idéalement avec URL (ou “URL:”)
+      // readiness plus strict sur contexte: URL recommandé
       const strictContextOk = testRX(reHasUrl, ctx) || testRX(RX("\\burl\\b"), ctx.toLowerCase());
       const ready = ok.context && ok.where && ok.action && ok.content && strictContextOk && score >= 70;
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
 
-      return { score, ready, state, needApp, ok };
+      // sync hidden action value
+      if (els.action) els.action.value = actText;
+
+      return { score, ready, state, needApp, ok, requiresNumbering, actions };
     }
 
     function renderChecks(q){
@@ -778,9 +811,9 @@
 
       const items = [];
       items.push(makeItem(q.ok.context ? "ok" : "bad", "Contexte"));
-      items.push(makeItem(q.ok.where   ? "ok" : "bad", "Où (cible/position)"));
-      items.push(makeItem(q.ok.action  ? "ok" : "bad", "Action"));
-      items.push(makeItem(q.ok.content ? "ok" : "bad", "Contenu / format"));
+      items.push(makeItem(q.ok.where   ? "ok" : "bad", "Où (élément + position)"));
+      items.push(makeItem(q.ok.action  ? "ok" : "bad", "Quoi — Action"));
+      items.push(makeItem(q.ok.content ? "ok" : "bad", q.requiresNumbering ? "Quoi — Contenu (numéroté)" : "Quoi — Contenu"));
       items.push(makeItem(q.ok.limits ? "ok" : "warn", "Limites"));
       items.push(makeItem(q.needApp ? (q.ok.approach ? "ok" : "warn") : (q.ok.approach ? "ok" : "warn"),
         q.needApp ? "Approche" : "Approche (optionnel)"));
@@ -791,7 +824,11 @@
     function updateUI(){
       setCounter(els.c_context, els.context?.value);
       setCounter(els.c_where, els.where?.value);
-      setCounter(els.c_action, els.action?.value);
+
+      // action counter = nb d’actions
+      const actions = getSelectedActions();
+      if (els.c_action) els.c_action.textContent = actions.length ? `${actions.length} action(s)` : "";
+
       setCounter(els.c_content, els.content?.value);
       setCounter(els.c_limits, els.limits?.value);
       setCounter(els.c_approach, els.approach?.value);
@@ -808,16 +845,20 @@
 
       renderChecks(q);
 
-      // Content enabled only if action selected
-      const hasAction = !!(els.action?.value || "").trim();
+      // content enabled only if >= 1 action selected
       if (els.content){
-        if (!hasAction) {
+        if (q.actions.length === 0){
           els.content.disabled = true;
           if (!els.content.value.trim()) els.content.placeholder = "Sélectionne d’abord une action.";
         } else {
           els.content.disabled = false;
-          if (els.content.placeholder.includes("Sélectionne d’abord")) {
-            els.content.placeholder = "Ex : “À partir d’1€ …” OU “9,99€/mois = prix + |remise|” (format final).";
+          if (q.actions.length > 1 && !els.content.value.trim()){
+            els.content.placeholder =
+`Numérote tes actions :
+1. ...
+2. ...`;
+          } else if (els.content.placeholder.includes("Sélectionne d’abord")) {
+            els.content.placeholder = "Décris l’action : texte exact / format / formule.";
           }
         }
       }
@@ -826,7 +867,7 @@
         localStorage.setItem(SKEY, JSON.stringify({
           context: els.context?.value || "",
           where: els.where?.value || "",
-          action: els.action?.value || "",
+          actions: q.actions || [],
           content: els.content?.value || "",
           limits: els.limits?.value || "",
           approach: els.approach?.value || "",
@@ -842,11 +883,19 @@
       blocks.push("Front-end variation only (no back-end changes).");
       blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
       blocks.push("\nOù :\n" + (els.where?.value || "").trim());
-      blocks.push("\nAction :\n" + (els.action?.value || "").trim());
+
+      const actions = getSelectedActions();
+      if (actions.length > 1) {
+        blocks.push("\nActions :\n" + actions.map((a,i)=>`${i+1}. ${a}`).join("\n"));
+      } else {
+        blocks.push("\nAction :\n" + (actions[0] || "").trim());
+      }
+
       blocks.push("\nContenu :\n" + (els.content?.value || "").trim());
       if((els.limits?.value || "").trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
       if((els.approach?.value || "").trim()) blocks.push("\nApproche :\n" + els.approach.value.trim());
       if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
+
       blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
       return blocks.join("\n").trim();
     }
@@ -891,9 +940,9 @@
         if(els[k]) els[k].value = "";
       });
 
-      // Reset action selection
-      if (els.action) els.action.value = "";
+      // reset actions
       document.querySelectorAll("#actionChips .chip").forEach(c => c.classList.remove("active"));
+      if (els.action) els.action.value = "";
 
       if(els.result) els.result.value = "";
       els.btnCopy.disabled = true;
@@ -903,58 +952,44 @@
       toast("Réinitialisé ✅");
     }
 
-    // Bind inputs (except action which is selection)
+    // Inputs
     ["context","where","content","limits","approach","verify"].forEach(id=>{
       const el = $(id);
       on(el, "input", updateUI);
       on(el, "change", updateUI);
     });
 
-    // Action chips (single select)
+    // Action chips = multi-select toggle
     document.querySelectorAll("#actionChips .chip[data-action]").forEach(chip => {
       chip.addEventListener("click", () => {
-        const a = chip.getAttribute("data-action") || "";
-        if(!a) return;
-
-        // single-select
-        document.querySelectorAll("#actionChips .chip").forEach(c => c.classList.remove("active"));
-        chip.classList.add("active");
-
-        if (els.action) els.action.value = a;
-
+        chip.classList.toggle("active");
         updateUI();
-
-        // UX: focus content after selection
-        if (els.content) {
-          els.content.disabled = false;
-          els.content.focus();
-        }
+        if (els.content && !els.content.disabled) els.content.focus();
       });
     });
 
-    // Bind CTAs
+    // CTAs
     on(els.btnGenerate, "click", generate);
     on(els.btnCopy, "click", copy);
     on(els.btnReset, "click", resetAll);
 
-    // init load
+    // restore
     try{
       const raw = localStorage.getItem(SKEY);
       if(raw){
         const p = JSON.parse(raw);
         if(els.context && p.context != null) els.context.value = p.context;
         if(els.where && p.where != null) els.where.value = p.where;
-        if(els.action && p.action != null) els.action.value = p.action;
         if(els.content && p.content != null) els.content.value = p.content;
         if(els.limits && p.limits != null) els.limits.value = p.limits;
         if(els.approach && p.approach != null) els.approach.value = p.approach;
         if(els.verify && p.verify != null) els.verify.value = p.verify;
 
-        // restore active chip
-        const savedA = (p.action || "").trim();
-        if (savedA) {
-          document.querySelectorAll("#actionChips .chip").forEach(c => {
-            if ((c.getAttribute("data-action") || "") === savedA) c.classList.add("active");
+        const savedActions = Array.isArray(p.actions) ? p.actions : [];
+        if (savedActions.length){
+          document.querySelectorAll("#actionChips .chip[data-action]").forEach(c=>{
+            const a = (c.getAttribute("data-action") || "").trim();
+            if (savedActions.includes(a)) c.classList.add("active");
           });
         }
       }
