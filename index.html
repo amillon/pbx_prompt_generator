@@ -419,9 +419,9 @@
       <div class="brand">
         <div class="logo">PBX</div>
         <div>
-          <h1>PBX Prompt Builder — Formulaire</h1>
+          <h1>PBX Prompt Generator</h1>
           <p class="sub">
-            Objectif : produire un prompt PBX <strong>réplicable</strong> et <strong>robuste</strong> (Contexte / Où / Quoi / Limites / Approche).
+            Objectif : produire un prompt PBX <strong>robuste</strong> prêt à l'utilisation.
           </p>
         </div>
       </div>
@@ -445,15 +445,14 @@
                   <div>
                     <p class="heroTitle">Contexte</p>
                     <p class="heroDesc">
-                      <strong>À indiquer :</strong> l’URL <u>ou</u> la page concernée, <u>et</u> quand ça s’applique (chargement <u>ou</u> après clic <u>ou</u> overlay).
+                      <strong>À indiquer :</strong> le contexte de votre variante pour donner une première vision de vos attentes à l'IA.
                     </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <div class="label"><span>Contexte</span><span class="counter" id="c_context"></span></div>
-              <textarea id="context" placeholder="Ex : URL: https://… / listing. S’applique au chargement + après clic “voir tout” + dans l’overlay détail."></textarea>
-              <div class="hint"><strong>Astuce :</strong> si c’est dynamique, écris-le (overlay / lazy-load / voir tout).</div>
+              <textarea id="context" placeholder="Ex : Je souhaite une variante qui me permet ..."></textarea>
+              <div class="hint"><strong>Astuce :</strong> restez assez macro, le détail viendra dans les sections suivantes.</div>
             </div>
 
             <!-- Où -->
@@ -464,13 +463,12 @@
                   <div>
                     <p class="heroTitle">Où ?</p>
                     <p class="heroDesc">
-                      <strong>À indiquer :</strong> l’élément concerné <u>et</u> sa position précise sur la page (repères visuels).
+                      <strong>À indiquer :</strong> l’élément concerné <u>et</u> sa position précise sur la page ou dans le code.
                     </p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <div class="label"><span>Où (élément + position)</span><span class="counter" id="c_where"></span></div>
               <textarea id="where" placeholder="Ex : Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image du téléphone, centré."></textarea>
             </div>
 
@@ -480,7 +478,7 @@
                 <div class="heroLeft">
                   <div class="heroIcon">③</div>
                   <div>
-                    <p class="heroTitle">Quoi ? — Action (1/2)</p>
+                    <p class="heroTitle">Quoi ? — Action</p>
                     <p class="heroDesc">
                       <strong>À indiquer :</strong> que voulez-vous faire ? (Ajouter <u>ou</u> Remplacer <u>ou</u> Supprimer <u>ou</u> Déplacer <u>…</u>)
                     </p>
@@ -488,10 +486,6 @@
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-
-              <div class="label"><span>Actions (sélection)</span><span class="counter" id="c_action"></span></div>
-
-              <!-- ✅ multi-actions: stockées dans un input hidden -->
               <input id="action" type="hidden" value="" />
               <div class="chips" id="actionChips" aria-label="Actions">
                 <div class="chip" data-action="Ajouter">Ajouter</div>
@@ -514,7 +508,7 @@
                 <div class="heroLeft">
                   <div class="heroIcon">③</div>
                   <div>
-                    <p class="heroTitle">Quoi ? — Contenu (2/2)</p>
+                    <p class="heroTitle">Quoi ? — Contenu </p>
                     <p class="heroDesc">
                       <strong>À indiquer :</strong> décrivez l’action que vous souhaitez faire (texte exact <u>ou</u> format <u>ou</u> formule).
                     </p>
@@ -522,7 +516,6 @@
                 </div>
               </div>
 
-              <div class="label"><span>Contenu (texte exact / format / formule)</span><span class="counter" id="c_content"></span></div>
               <textarea id="content" placeholder="Sélectionne d’abord une action." disabled></textarea>
 
               <div class="hint">
@@ -546,7 +539,6 @@
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
-              <div class="label"><span>Limites / contraintes</span><span class="counter" id="c_limits"></span></div>
               <textarea id="limits" placeholder="Ex : Ne pas modifier la grille/layout. Respecter fond greige + typographie."></textarea>
             </div>
 
@@ -582,7 +574,6 @@
                 </div>
                 <div class="tags"><span class="tag">Optionnel</span></div>
               </div>
-              <div class="label"><span>Vérification</span><span class="counter" id="c_verify"></span></div>
               <textarea id="verify" placeholder="Ex : Le texte reste après interactions. Visible dans overlay. Si prix calculé : barré + gris partout."></textarea>
             </div>
 
