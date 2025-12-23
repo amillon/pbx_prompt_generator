@@ -110,16 +110,6 @@
       width:9px; height:9px; border-radius:999px;
       background: var(--muted2);
     }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11.5px;
-      padding: 2px 6px;
-      border-radius: 8px;
-      background: rgba(2,6,23,0.06);
-      border: 1px solid rgba(15,23,42,0.10);
-      color: #0f172a;
-      white-space: nowrap;
-    }
 
     /* Layout */
     .grid{
@@ -203,10 +193,9 @@
       font-weight: 950;
       letter-spacing:-0.1px;
     }
-    .help{ font-size: 11.7px; color: var(--muted2); }
     .counter{ font-size: 11.7px; color: var(--muted2); white-space:nowrap; }
 
-    textarea, input[type="text"]{
+    textarea{
       width:100%;
       border-radius: 14px;
       border: 1px solid var(--line);
@@ -216,9 +205,10 @@
       outline:none;
       transition: border-color .15s, box-shadow .15s, background .15s;
       line-height: 1.35;
+      min-height: 120px;
+      resize: vertical;
     }
-    textarea{ min-height: 120px; resize: vertical; }
-    textarea:focus, input:focus{
+    textarea:focus{
       border-color: rgba(109,40,217,0.55);
       box-shadow: 0 0 0 3px rgba(109,40,217,0.18);
       background: #fff;
@@ -301,6 +291,18 @@
       transition: width .2s ease, background .2s ease;
     }
 
+    .explain{
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.86);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .explain strong{ color: var(--ink); }
+
     .checks{
       display:grid;
       gap:10px;
@@ -333,52 +335,13 @@
     .itT{ margin:0; font-size: 12.6px; font-weight: 950; letter-spacing:-0.1px; }
     .itD{ margin: 2px 0 0; font-size: 12px; color: var(--muted); line-height:1.35; }
 
-    .actions{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top: 12px;
-    }
-    .btn{
-      border: none;
-      border-radius: 16px;
-      padding: 11px 12px;
-      font-size: 13.7px;
-      font-weight: 950;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      transition: transform .06s ease, opacity .15s ease, box-shadow .15s ease;
-      user-select:none;
-    }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      background: linear-gradient(135deg, var(--primary), var(--teal));
-      color:#fff;
-      box-shadow: 0 14px 30px rgba(109,40,217,0.20);
-    }
-    .btn.ghost{
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--ink);
-    }
-    .btn.danger{
-      background: rgba(239,68,68,0.08);
-      border: 1px solid rgba(239,68,68,0.22);
-      color: #991B1B;
-    }
-    .btn[disabled]{ opacity:.45; cursor:not-allowed; box-shadow:none; }
-
-    .mini{
-      margin-top: 10px;
-      font-size: 12px;
-      line-height:1.35;
-      color: var(--muted);
+    .divider{
+      margin: 12px 0;
+      height: 1px;
+      background: var(--line);
     }
 
-    /* Result box */
+    /* Result */
     .resultHead{
       display:flex;
       justify-content:space-between;
@@ -416,25 +379,6 @@
       line-height: 1.45;
       white-space: pre-wrap;
     }
-    .toast{
-      display:none;
-      margin-top: 8px;
-      padding: 10px 10px;
-      border-radius: 14px;
-      border: 1px solid rgba(34,197,94,0.25);
-      background: rgba(34,197,94,0.08);
-      color: #14532D;
-      font-weight: 950;
-      font-size: 12.5px;
-      text-align:center;
-    }
-
-    /* Divider in sidebar */
-    .divider{
-      margin: 12px 0;
-      height: 1px;
-      background: var(--line);
-    }
   </style>
 </head>
 
@@ -447,14 +391,13 @@
           <h1>PBX Prompt Builder — Formulaire</h1>
           <p class="sub">
             Objectif : produire un prompt PBX <strong>réplicable</strong> et <strong>robuste</strong> (Contexte / Où / Quoi / Limites / Approche).
-            La génération est bloquée si une section critique est trop vague (anti-crédits).
+            Le score explique <strong>ce qui manque</strong> pour être “PBX-ready”.
           </p>
         </div>
       </div>
 
       <div class="metaPills">
         <div class="pill"><span class="dot" id="dotState"></span><span id="stateLabel">Prompt incomplet</span></div>
-        <div class="pill">Raccourci : <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span></div>
       </div>
     </div>
 
@@ -478,12 +421,12 @@
                   <span class="tag req">Obligatoire</span>
                 </div>
               </div>
-
               <div class="label">
                 <span>Contexte</span>
                 <span class="counter" id="c_context"></span>
               </div>
-              <textarea id="context" placeholder="Ex : URL: https://… / listing. Les tuiles sont présentes au chargement initial + ajoutées après clic sur “voir tout”. Une overlay détail peut s’ouvrir/fermer."></textarea>
+              <textarea id="context" placeholder="Ex : URL: https://… / listing. Tuiles présentes au chargement + ajoutées après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
+              <div class="hint"><strong>Astuce :</strong> mentionne “dynamique / overlay / voir tout” si c’est le cas.</div>
             </div>
 
             <!-- Où -->
@@ -500,15 +443,14 @@
                   <span class="tag req">Obligatoire</span>
                 </div>
               </div>
-
               <div class="label">
                 <span>Où (cible + position)</span>
                 <span class="counter" id="c_where"></span>
               </div>
-              <textarea id="where" placeholder="Ex : Cible : tuiles “iPhone 17”, “iPhone 17 Pro”, “iPhone 17 Pro Max”. Dans chaque tuile, insérer un texte sous l’image du téléphone, centré."></textarea>
+              <textarea id="where" placeholder="Ex : Cible : tuiles “iPhone 17”, “iPhone 17 Pro”, “iPhone 17 Pro Max”. Position : sous l’image du téléphone, centré."></textarea>
 
               <div class="chips" aria-label="Exemples rapides (Où)">
-                <div class="chip" data-target="where" data-add="Cible : toutes les tuiles forfaits visibles au chargement initial + celles ajoutées via “voir tout” + celles dans l’overlay “voir le détail”. Position : la ligne de texte située juste au-dessus du prix.">Tuiles + overlay</div>
+                <div class="chip" data-target="where" data-add="Cible : toutes les tuiles forfaits visibles au chargement + celles ajoutées via “voir tout” + celles dans l’overlay “voir le détail”. Position : la ligne de texte juste au-dessus du prix.">Tuiles + overlay</div>
                 <div class="chip" data-target="where" data-add="Dans chaque tuile, cibler la ligne de texte située juste au-dessus du prix affiché (bloc prix).">Texte au-dessus du prix</div>
                 <div class="chip" data-target="where" data-add="Sous l’image produit dans la tuile, aligné au centre, dans le même conteneur que le titre/sous-titre.">Sous image, centré</div>
               </div>
@@ -542,12 +484,12 @@
                     <span>Contenu (texte exact / format / formule)</span>
                     <span class="counter" id="c_content"></span>
                   </div>
-                  <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU format “9,99€/mois” calculé = prix affiché + |remise|."></textarea>
+                  <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU format “9,99€/mois” où 9,99 = prix + |remise|."></textarea>
                 </div>
               </div>
 
               <div class="hint">
-                <strong>Rappel :</strong> si calcul → préciser <em>valeurs à extraire</em> + <em>formule</em> + <em>format</em>. Si remplacement → préciser “uniquement X”.
+                <strong>Si calcul :</strong> valeurs à extraire + formule + format final. <strong>Si remplacement :</strong> “uniquement X, ne pas toucher à Y”.
               </div>
             </div>
 
@@ -562,15 +504,14 @@
                   </div>
                 </div>
                 <div class="tags">
-                  <span class="tag">Recommandé (fort)</span>
+                  <span class="tag">Recommandé</span>
                 </div>
               </div>
-
               <div class="label">
                 <span>Limites / contraintes</span>
                 <span class="counter" id="c_limits"></span>
               </div>
-              <textarea id="limits" placeholder="Ex : Respecter la charte graphique (fond greige), typographie, taille et position. Ne pas changer la grille / layout. Message lisible sans dénaturer le design."></textarea>
+              <textarea id="limits" placeholder="Ex : Respecter fond greige + typographie. Ne pas modifier la grille/layout. Le message doit rester lisible sans dénaturer."></textarea>
             </div>
 
             <!-- Approche -->
@@ -587,12 +528,11 @@
                   <span class="tag">Recommandé</span>
                 </div>
               </div>
-
               <div class="label">
                 <span>Approche technique</span>
                 <span class="counter" id="c_approach"></span>
               </div>
-              <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer lors des ajouts DOM (MutationObserver). Idempotent (data-processed). Fonctionner dans l’overlay après ouverture/fermeture. Fallback : ne rien faire si cible introuvable."></textarea>
+              <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer sur ajouts DOM (MutationObserver). Idempotent (data-processed). Fonctionner dans l’overlay. Fallback : ne rien faire si cible introuvable."></textarea>
 
               <div class="chips" aria-label="Exemples rapides (Approche)">
                 <div class="chip" data-target="approach" data-add="Appliquer au chargement initial + réappliquer sur ajouts DOM via MutationObserver. Idempotent : ne jamais dupliquer (data-processed).">MutationObserver + idempotent</div>
@@ -601,7 +541,7 @@
               </div>
             </div>
 
-            <!-- Verification -->
+            <!-- Vérification -->
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
@@ -615,12 +555,11 @@
                   <span class="tag">Optionnel</span>
                 </div>
               </div>
-
               <div class="label">
                 <span>Vérification</span>
                 <span class="counter" id="c_verify"></span>
               </div>
-              <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si prix calculé, il est barré et gris dans tous les états."></textarea>
+              <textarea id="verify" placeholder="Ex : Le texte reste présent après interactions. Dans l’overlay, il est visible. Si prix calculé : barré + gris partout."></textarea>
             </div>
 
           </div>
@@ -637,28 +576,23 @@
             </div>
             <div class="bar"><div id="scoreBar"></div></div>
 
+            <div class="explain" id="explainBox">
+              <strong>Comment le score est calculé</strong><br>
+              • <strong>Contexte / Où / Action / Contenu</strong> sont requis (sinon score ↓ fort).<br>
+              • <strong>Limites</strong> et <strong>Approche</strong> sont recommandés (score ↓ modéré).<br>
+              • Si le contexte mentionne <em>overlay/dynamique</em>, l’<strong>Approche</strong> devient quasi indispensable.
+            </div>
+
             <div class="checks" id="checks"></div>
-
-            <div class="actions">
-              <button class="btn ghost" id="btnValidate" type="button">🧪 Valider (3 questions max)</button>
-              <button class="btn primary" id="btnGenerate" type="button" disabled>⚙️ Générer le prompt</button>
-              <button class="btn ghost" id="btnCopy" type="button" disabled>📋 Copier</button>
-              <button class="btn danger" id="btnReset" type="button">🗑️ Réinitialiser</button>
-            </div>
-
-            <div class="mini">
-              La génération est bloquée si <strong>Contexte / Où / Quoi</strong> sont trop vagues.
-            </div>
 
             <div class="divider"></div>
 
-            <!-- RESULT MOVED TO BOTTOM OF SIDEBAR -->
+            <!-- Prompt prêt à coller en dernière position de la sidebar -->
             <div class="resultHead">
               <h3>Prompt PBX prêt à coller</h3>
               <span class="badge" id="genBadge">Incomplet</span>
             </div>
-            <textarea id="result" readonly placeholder="Clique “Valider” (questions) ou “Générer”."></textarea>
-            <div class="toast" id="toast">Copié ✅</div>
+            <textarea id="result" readonly></textarea>
 
           </div>
         </div>
@@ -669,26 +603,18 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
-  const SKEY = "pbx_prompt_form_v3";
+  const SKEY = "pbx_prompt_form_v4_no_cta";
 
   const els = {
     context: $("context"),
     where: $("where"),
-
     action: $("action"),
     content: $("content"),
-
     limits: $("limits"),
     approach: $("approach"),
     verify: $("verify"),
 
     result: $("result"),
-    toast: $("toast"),
-
-    btnValidate: $("btnValidate"),
-    btnGenerate: $("btnGenerate"),
-    btnCopy: $("btnCopy"),
-    btnReset: $("btnReset"),
 
     scorePill: $("scorePill"),
     scoreBar: $("scoreBar"),
@@ -715,7 +641,7 @@
   const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
 
   function countChars(v){ return (v || "").trim().length; }
-  function setCounter(el, v){ el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; }
+  function setCounter(el, v){ if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; }
 
   function looksVagueSection(text, kind){
     const t = (text || "").trim();
@@ -726,16 +652,16 @@
     if(kind === "context"){
       const hasUrl = /(https?:\/\/|www\.)/i.test(t);
       const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)/i.test(t);
-      if(t.length < 40) return true;
+      if(t.length < 35) return true;
       if(!hasUrl && !hasState) return true;
       if(hasVague && !hasUrl && !hasState) return true;
       return false;
     }
 
     if(kind === "where"){
-      const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal)/i.test(t);
-      const hasSpecific = /["“”']|\b(iPhone|forfait|prix|€/mois)\b/i.test(t);
-      if(t.length < 35) return true;
+      const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)/i.test(t);
+      const hasSpecific = /["“”']|\b(iPhone|forfait|€/mois|prix)\b/i.test(t);
+      if(t.length < 25) return true;
       if(!hasTargetHint && !hasSpecific) return true;
       if(hasVague && !hasTargetHint) return true;
       return false;
@@ -743,7 +669,7 @@
 
     if(kind === "action"){
       const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
-      if(t.length < 12) return true;
+      if(t.length < 10) return true;
       if(!hasVerb) return true;
       if(hasVague) return true;
       return false;
@@ -751,22 +677,14 @@
 
     if(kind === "content"){
       const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
-      if(t.length < 15) return true;
+      if(t.length < 12) return true;
       if(hasVague && !hasConcrete) return true;
-      // content can be short if it's a quoted sentence, so don't require long
       if(!hasConcrete) return true;
       return false;
     }
 
-    if(kind === "limits"){
-      if(t.length < 18) return true;
-      return false;
-    }
-
-    if(kind === "approach"){
-      if(t.length < 18) return true;
-      return false;
-    }
+    if(kind === "limits"){ return t.length < 18; }
+    if(kind === "approach"){ return t.length < 18; }
 
     return false;
   }
@@ -788,33 +706,73 @@
     const app = els.approach.value.trim();
 
     if(!ctx || looksVagueSection(ctx,"context")){
-      missing.push({t:"Contexte insuffisant", d:"Ajoute URL + états (initial / après clic / overlay) ou mention explicite du dynamisme.", lvl:"bad"});
+      missing.push({
+        key:"Contexte",
+        t:"Contexte insuffisant",
+        d:"Ajoute l’URL + au moins 1 état (initial / après clic / overlay / dynamique).",
+        example:"URL: https://… / listing. Appliquer au chargement + après clic “voir tout” + dans overlay."
+      });
     }
     if(!whr || looksVagueSection(whr,"where")){
-      missing.push({t:"Où ? trop flou", d:"Précise la cible (élément) et/ou la position exacte de la modification.", lvl:"bad"});
+      missing.push({
+        key:"Où",
+        t:"Où trop flou",
+        d:"Indique l’élément ciblé ET/OU la position exacte de la modification.",
+        example:"Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image, centré."
+      });
     }
     if(!act || looksVagueSection(act,"action")){
-      missing.push({t:"Action manquante", d:"Indique un verbe d’action (ajouter / remplacer / calculer / déplacer…).", lvl:"bad"});
+      missing.push({
+        key:"Action",
+        t:"Action manquante",
+        d:"Utilise un verbe clair (ajouter / remplacer / calculer / déplacer…).",
+        example:"Remplacer la ligne au-dessus du prix."
+      });
     }
     if(!cnt || looksVagueSection(cnt,"content")){
-      missing.push({t:"Contenu / format manquant", d:"Donne le texte exact OU le format/formule attendus (ex : “9,99€/mois”).", lvl:"bad"});
+      missing.push({
+        key:"Contenu",
+        t:"Contenu / format manquant",
+        d:"Donne le texte exact OU un format + formule (si calcul).",
+        example:"“À partir d’1€ …” OU “Afficher 9,99€/mois = prix + |remise|”."
+      });
     }
 
     if(!lim){
-      warnings.push({t:"Limites manquantes (reco)", d:"Ajoute ce qui ne doit pas bouger : charte, fond greige, typo, layout.", lvl:"warn"});
+      warnings.push({
+        key:"Limites",
+        t:"Limites absentes (reco)",
+        d:"Ajoute les garde-fous (charte/fond/typo/layout).",
+        example:"Ne pas modifier le layout. Respecter fond greige + typographie."
+      });
     } else if(looksVagueSection(lim,"limits")){
-      warnings.push({t:"Limites imprécises", d:"Sois concret : “ne pas changer layout”, “respecter fond greige”, “garder typo/tailles”.", lvl:"warn"});
+      warnings.push({
+        key:"Limites",
+        t:"Limites trop courtes",
+        d:"Sois concret sur ce qui ne doit pas bouger.",
+        example:"Ne pas changer la grille, tailles de typo, couleurs."
+      });
     }
 
     const needApp = needsApproachFromContext();
     if(needApp && !app){
-      warnings.push({t:"Approche manquante (reco)", d:"La page semble dynamique : demande ré-application (MutationObserver / apply idempotent / overlays).", lvl:"warn"});
+      warnings.push({
+        key:"Approche",
+        t:"Approche manquante (reco forte)",
+        d:"Comme c’est dynamique (overlay/ajouts), précise ré-application + idempotence.",
+        example:"MutationObserver + apply() idempotent (data-processed) + overlays."
+      });
     } else if(app && looksVagueSection(app,"approach")){
-      warnings.push({t:"Approche trop courte", d:"Décris : ré-application, idempotence (data-processed), overlay open/close, fallback sans erreur.", lvl:"warn"});
+      warnings.push({
+        key:"Approche",
+        t:"Approche trop courte",
+        d:"Décris : ré-application, idempotence, overlay open/close, fallback sans erreurs.",
+        example:"Réappliquer à chaque ajout DOM; ne jamais dupliquer; fallback silencieux."
+      });
     }
 
     let score = 100;
-    score -= missing.length * 30;
+    score -= missing.length * 28;
     score -= warnings.length * 12;
     score = Math.max(0, Math.min(100, score));
 
@@ -825,6 +783,7 @@
 
   function renderChecks(q){
     const items = [];
+
     const add = (state, title, desc) => {
       const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
       items.push(`
@@ -838,20 +797,21 @@
       `);
     };
 
+    // état par section
     const ctxOk = els.context.value.trim() && !looksVagueSection(els.context.value,"context");
-    add(ctxOk ? "ok" : "bad", "Contexte", ctxOk ? "OK — URL/états suffisamment décrits." : "Ajoute URL + états (initial / après clic / overlay).");
+    add(ctxOk ? "ok" : "bad", "Contexte", ctxOk ? "OK — URL/états décrits." : "Manque : URL + états (initial / après clic / overlay).");
 
     const whereOk = els.where.value.trim() && !looksVagueSection(els.where.value,"where");
-    add(whereOk ? "ok" : "bad", "Où (cible/position)", whereOk ? "OK — élément/position identifiables." : "Précise l’élément et/ou la position exacte de la modif.");
+    add(whereOk ? "ok" : "bad", "Où (cible/position)", whereOk ? "OK — élément/position identifiables." : "Manque : élément ciblé + position exacte.");
 
     const actOk = els.action.value.trim() && !looksVagueSection(els.action.value,"action");
-    add(actOk ? "ok" : "bad", "Action", actOk ? "OK — verbe d’action clair." : "Indique ajouter/remplacer/calculer/déplacer…");
+    add(actOk ? "ok" : "bad", "Action", actOk ? "OK — verbe d’action clair." : "Manque : verbe (ajouter/remplacer/calculer…).");
 
     const cntOk = els.content.value.trim() && !looksVagueSection(els.content.value,"content");
-    add(cntOk ? "ok" : "bad", "Contenu / format", cntOk ? "OK — texte exact ou format/formule." : "Donne la copie exacte ou le format attendu.");
+    add(cntOk ? "ok" : "bad", "Contenu / format", cntOk ? "OK — texte exact ou format/formule." : "Manque : texte exact OU format/formule.");
 
     const lim = els.limits.value.trim();
-    add(lim ? "ok" : "warn", "Limites", lim ? "OK — garde-fous présents." : "Recommandé : charte, fond, typo, layout, interdits.");
+    add(lim ? "ok" : "warn", "Limites", lim ? "OK — garde-fous présents." : "Recommandé : charte/fond/typo/layout.");
 
     const needApp = q.needApp;
     const app = els.approach.value.trim();
@@ -859,9 +819,65 @@
       !needApp ? "N/A — pas d’indice fort de dynamisme." : (app ? "OK — dynamique cadré." : "Recommandé : ré-application + idempotence + overlays."));
 
     const ver = els.verify.value.trim();
-    add(ver ? "ok" : "warn", "Vérification", ver ? "OK — critères de succès décrits." : "Optionnel : persistance après interactions, overlays, style barré/gris, etc.");
+    add(ver ? "ok" : "warn", "Vérification", ver ? "OK — critères décrits." : "Optionnel : persistance + overlay + style.");
+
+    // Ce qui manque (explicite + exemples)
+    const miss = [...q.missing, ...q.warnings];
+    if(miss.length){
+      const lines = miss.slice(0, 6).map(m => `
+        <div class="item ${q.missing.includes(m) ? "bad" : "warn"}">
+          <div class="ico">${q.missing.includes(m) ? "×" : "!"}</div>
+          <div>
+            <p class="itT">${m.key} — ${m.t}</p>
+            <p class="itD">${m.d}<br><span style="color: var(--muted2);">Ex : ${m.example}</span></p>
+          </div>
+        </div>
+      `).join("");
+      items.push(`<div style="margin-top:6px;"></div>${lines}`);
+    }
 
     els.checks.innerHTML = items.join("");
+  }
+
+  function buildPBXPrompt(q){
+    const blocks = [];
+    blocks.push("Front-end variation only (no back-end changes).");
+
+    blocks.push("\nContexte :\n" + els.context.value.trim());
+    blocks.push("\nOù :\n" + els.where.value.trim());
+    blocks.push("\nAction :\n" + els.action.value.trim());
+    blocks.push("\nContenu :\n" + els.content.value.trim());
+
+    if(els.limits.value.trim()){
+      blocks.push("\nLimites :\n" + els.limits.value.trim());
+    }
+
+    if(els.approach.value.trim()){
+      blocks.push("\nApproche :\n" + els.approach.value.trim());
+    } else if(q.needApp){
+      blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
+    }
+
+    if(els.verify.value.trim()){
+      blocks.push("\nVérification :\n" + els.verify.value.trim());
+    }
+
+    blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
+    return blocks.join("\n").trim();
+  }
+
+  function buildMissingPreview(q){
+    const lines = [];
+    lines.push("Complète les sections ci-dessous pour obtenir un prompt PBX exploitable :\n");
+    q.missing.forEach(m => {
+      lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}`);
+      lines.push(`  Ex : ${m.example}\n`);
+    });
+    q.warnings.forEach(w => {
+      lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}`);
+      lines.push(`  Ex : ${w.example}\n`);
+    });
+    return lines.join("\n").trim();
   }
 
   function updateUI(){
@@ -883,122 +899,23 @@
       els.dotState.style.background = "var(--good)";
       els.stateLabel.textContent = "Prompt prêt";
       els.genBadge.textContent = "PBX-ready";
+      els.result.value = buildPBXPrompt(q);
     } else if(q.state === "warn"){
       els.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
       els.dotState.style.background = "var(--warn)";
       els.stateLabel.textContent = "Presque prêt";
       els.genBadge.textContent = "Incomplet";
+      els.result.value = buildMissingPreview(q);
     } else {
       els.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
       els.dotState.style.background = "var(--bad)";
       els.stateLabel.textContent = "Prompt incomplet";
       els.genBadge.textContent = "Incomplet";
+      els.result.value = buildMissingPreview(q);
     }
 
     renderChecks(q);
-    els.btnGenerate.disabled = !q.ready;
-    els.btnCopy.disabled = !els.result.value.trim();
-
     save();
-    return q;
-  }
-
-  function buildQuestions(){
-    const qs = [];
-    const add = (q, ex) => {
-      if(qs.length >= 3) return;
-      qs.push(`- ${q}\n  - Exemple : ${ex}`);
-    };
-
-    if(!els.context.value.trim() || looksVagueSection(els.context.value,"context")){
-      add("Quel est le contexte exact (URL + états à couvrir : initial / après clic / overlay) ?",
-          "“URL: https://… Listing. Appliquer au chargement + après clic ‘voir tout’ + dans overlay ‘voir le détail’.”");
-    }
-    if(!els.where.value.trim() || looksVagueSection(els.where.value,"where")){
-      add("Où exactement (élément ciblé et/ou position de la modification) ?",
-          "“Dans les tuiles iPhone 17/17 Pro/17 Pro Max, ajouter le message sous l’image, centré.”");
-    }
-    if(!els.action.value.trim() || looksVagueSection(els.action.value,"action")){
-      add("Quelle action précise (ajouter / remplacer / calculer / déplacer) ?",
-          "“Remplacer la ligne au-dessus du prix” / “Calculer et afficher le prix total”");
-    }
-    if(qs.length < 3 && (!els.content.value.trim() || looksVagueSection(els.content.value,"content"))){
-      add("Quel contenu exact (texte) ou quel format/formule ?",
-          "“À partir d’1€ …” OU “Afficher ‘9,99€/mois’ où 9,99 = prix + |remise|.”");
-    }
-    if(qs.length < 3 && needsApproachFromContext() && !els.approach.value.trim()){
-      add("Quelle approche pour le contenu dynamique (ré-application / overlay) ?",
-          "“MutationObserver + apply() idempotent (data-processed). Relancer après ouverture/fermeture overlay.”");
-    }
-
-    if(qs.length === 0) qs.push("- Ton prompt est déjà PBX-ready ✅");
-
-    return `
-🧪 Validation (anti-crédits) — questions utiles (max 3)
-
-${qs.join("\n\n")}
-`.trim();
-  }
-
-  function buildPBXPrompt(){
-    const blocks = [];
-    blocks.push("Front-end variation only (no back-end changes).");
-
-    blocks.push("\nContexte :\n" + els.context.value.trim());
-    blocks.push("\nOù :\n" + els.where.value.trim());
-    blocks.push("\nAction :\n" + els.action.value.trim());
-    blocks.push("\nContenu :\n" + els.content.value.trim());
-
-    if(els.limits.value.trim()){
-      blocks.push("\nLimites :\n" + els.limits.value.trim());
-    }
-
-    if(els.approach.value.trim()){
-      blocks.push("\nApproche :\n" + els.approach.value.trim());
-    } else if(needsApproachFromContext()){
-      blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
-    }
-
-    if(els.verify.value.trim()){
-      blocks.push("\nVérification :\n" + els.verify.value.trim());
-    }
-
-    blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
-    return blocks.join("\n").trim();
-  }
-
-  function validate(){
-    els.result.value = buildQuestions();
-    els.btnCopy.disabled = !els.result.value.trim();
-    toast("Questions générées ✅");
-  }
-
-  function generate(){
-    const q = updateUI();
-    if(!q.ready) return;
-    els.result.value = buildPBXPrompt();
-    els.btnCopy.disabled = !els.result.value.trim();
-    toast("Prompt généré ✅");
-  }
-
-  async function copy(){
-    const v = els.result.value.trim();
-    if(!v) return;
-    try{
-      await navigator.clipboard.writeText(v);
-      toast("Copié ✅");
-    }catch(e){
-      els.result.select();
-      document.execCommand("copy");
-      toast("Copié ✅");
-    }
-    els.btnCopy.disabled = false;
-  }
-
-  function toast(msg){
-    els.toast.textContent = msg;
-    els.toast.style.display = "block";
-    setTimeout(()=> els.toast.style.display="none", 2000);
   }
 
   function save(){
@@ -1029,22 +946,7 @@ ${qs.join("\n\n")}
     }catch(e){}
   }
 
-  function resetAll(){
-    const ok = confirm("Réinitialiser ?");
-    if(!ok) return;
-    els.context.value = "";
-    els.where.value = "";
-    els.action.value = "";
-    els.content.value = "";
-    els.limits.value = "";
-    els.approach.value = "";
-    els.verify.value = "";
-    els.result.value = "";
-    try{ localStorage.removeItem(SKEY); }catch(e){}
-    updateUI();
-  }
-
-  // chips (multi-target)
+  // chips
   document.querySelectorAll(".chip").forEach(chip=>{
     chip.addEventListener("click", ()=>{
       const target = chip.getAttribute("data-target") || "content";
@@ -1052,8 +954,7 @@ ${qs.join("\n\n")}
       if(!add) return;
       const el = $(target);
       if(!el) return;
-      if(!el.value.trim()) el.value = add;
-      else el.value = (el.value.trim() + "\n\n" + add).trim();
+      el.value = el.value.trim() ? (el.value.trim() + "\n\n" + add).trim() : add;
       el.focus();
       updateUI();
     });
@@ -1063,24 +964,6 @@ ${qs.join("\n\n")}
   ["context","where","action","content","limits","approach","verify"].forEach(id=>{
     $(id).addEventListener("input", updateUI);
     $(id).addEventListener("change", updateUI);
-  });
-
-  // buttons
-  els.btnValidate.addEventListener("click", validate);
-  els.btnGenerate.addEventListener("click", generate);
-  els.btnCopy.addEventListener("click", copy);
-  els.btnReset.addEventListener("click", resetAll);
-
-  // shortcut Ctrl+Enter (validate if blocked, else generate)
-  document.addEventListener("keydown", (e)=>{
-    const isMac = navigator.platform.toUpperCase().includes("MAC");
-    const ctrl = isMac ? e.metaKey : e.ctrlKey;
-    if(ctrl && e.key === "Enter"){
-      e.preventDefault();
-      const q = updateUI();
-      if(q.ready) generate();
-      else validate();
-    }
   });
 
   // init
