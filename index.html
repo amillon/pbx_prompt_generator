@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PBX Prompt Builder — Formulaire (Contexte / Où / Quoi / Limites / Approche)</title>
+  <title>PBX Prompt Builder — Formulaire (Contexte / Quand / Où / Quoi / Limites / Approche)</title>
   <style>
     :root{
       --bg:#F6F7FB;
@@ -171,17 +171,6 @@
       font-weight: 900;
     }
 
-    .label{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin: 10px 0 6px;
-    }
-    .label span{ font-size: 12.7px; font-weight: 950; letter-spacing:-0.1px; }
-    .counter{ font-size: 11.7px; color: var(--muted2); white-space:nowrap; }
-
     textarea{
       width:100%;
       border-radius: 14px;
@@ -205,9 +194,6 @@
       cursor:not-allowed;
       background: rgba(248,250,252,0.55);
     }
-
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
 
     .hint{
       margin-top: 10px;
@@ -321,7 +307,7 @@
 
     .divider{ margin: 12px 0; height: 1px; background: var(--line); }
 
-    /* Sidebar actions (keep only these 3) */
+    /* Sidebar actions */
     .actions{
       display:flex;
       flex-direction:column;
@@ -420,9 +406,7 @@
         <div class="logo">PBX</div>
         <div>
           <h1>PBX Prompt Generator</h1>
-          <p class="sub">
-            Objectif : produire un prompt PBX <strong>robuste</strong> prêt à l'utilisation.
-          </p>
+          <p class="sub">Objectif : produire un prompt PBX <strong>robuste</strong> prêt à l'utilisation.</p>
         </div>
       </div>
 
@@ -444,27 +428,39 @@
                   <div class="heroIcon">①</div>
                   <div>
                     <p class="heroTitle">Contexte</p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> le contexte de votre variante pour donner une première vision de vos attentes à l'IA.
-                    </p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> le contexte de votre variante (ex : “je veux modifier les tuiles iPhone”).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
-              <textarea id="context" placeholder="Ex : Je souhaite une variante qui me permet ..."></textarea>
-              <div class="hint"><strong>Astuce :</strong> restez assez macro, le détail viendra dans les sections suivantes.</div>
+              <textarea id="context" placeholder="Ex : Je souhaite une variante qui me permet de mettre en avant le prix / ajouter un message promo / clarifier une information."></textarea>
+              <div class="hint"><strong>Astuce :</strong> restez macro, le détail viendra dans les sections suivantes.</div>
+            </div>
+
+            <!-- Quand appliquer -->
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">②</div>
+                  <div>
+                    <p class="heroTitle">Quand appliquer la variation ?</p>
+                    <p class="heroDesc"><strong>À renseigner :</strong> URL + type de page + quand ça s’applique (chargement / après clic / overlay).</p>
+                  </div>
+                </div>
+                <div class="tags"><span class="tag req">Obligatoire</span></div>
+              </div>
+              <textarea id="when" placeholder="Ex : URL: https://… (listing). Appliquer au chargement + après clic “voir tout” + dans l’overlay “voir le détail”."></textarea>
+              <div class="hint"><strong>Astuce :</strong> si c’est dynamique, écris-le (overlay / lazy-load / voir tout).</div>
             </div>
 
             <!-- Où -->
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">②</div>
+                  <div class="heroIcon">③</div>
                   <div>
                     <p class="heroTitle">Où ?</p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> l’élément concerné <u>et</u> sa position précise sur la page ou dans le code.
-                    </p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> l’élément concerné et sa position précise sur la page (repères visuels).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
@@ -472,20 +468,19 @@
               <textarea id="where" placeholder="Ex : Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image du téléphone, centré."></textarea>
             </div>
 
-            <!-- Quoi -->
+            <!-- Quoi — Action -->
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">③</div>
+                  <div class="heroIcon">④</div>
                   <div>
                     <p class="heroTitle">Quoi ? — Action</p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> que voulez-vous faire ? (Ajouter <u>ou</u> Remplacer <u>ou</u> Supprimer <u>ou</u> Déplacer <u>…</u>)
-                    </p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> que voulez-vous faire ? (Ajouter / Remplacer / Supprimer / Déplacer / …)</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
+
               <input id="action" type="hidden" value="" />
               <div class="chips" id="actionChips" aria-label="Actions">
                 <div class="chip" data-action="Ajouter">Ajouter</div>
@@ -504,14 +499,13 @@
 
               <div style="margin-top:12px"></div>
 
+              <!-- Quoi — Contenu -->
               <div class="heroHead" style="margin-bottom:6px">
                 <div class="heroLeft">
-                  <div class="heroIcon">③</div>
+                  <div class="heroIcon">⑤</div>
                   <div>
-                    <p class="heroTitle">Quoi ? — Contenu </p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> décrivez l’action que vous souhaitez faire (texte exact <u>ou</u> format <u>ou</u> formule).
-                    </p>
+                    <p class="heroTitle">Quoi ? — Contenu</p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> décrivez l’action (texte exact ou format ou formule).</p>
                   </div>
                 </div>
               </div>
@@ -529,12 +523,10 @@
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">④</div>
+                  <div class="heroIcon">⑥</div>
                   <div>
                     <p class="heroTitle">Limites</p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> ce qui ne doit pas bouger (layout <u>ou</u> typo <u>ou</u> couleurs) <u>et</u> les interdits.
-                    </p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> ce qui ne doit pas bouger (layout ou typo ou couleurs) et les interdits.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
@@ -546,17 +538,14 @@
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">⑤</div>
+                  <div class="heroIcon">⑦</div>
                   <div>
                     <p class="heroTitle">Approche</p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> comment ça tient si la page est dynamique (MutationObserver <u>ou</u> events) <u>et</u> éviter les doublons.
-                    </p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> comment ça tient si la page est dynamique (MutationObserver ou events) et éviter les doublons.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
-              <div class="label"><span>Approche technique</span><span class="counter" id="c_approach"></span></div>
               <textarea id="approach" placeholder="Ex : Appliquer au chargement + réappliquer sur ajouts DOM. Idempotent (data-processed). Fallback safe."></textarea>
             </div>
 
@@ -564,12 +553,10 @@
             <div class="hero">
               <div class="heroHead">
                 <div class="heroLeft">
-                  <div class="heroIcon">⑥</div>
+                  <div class="heroIcon">⑧</div>
                   <div>
                     <p class="heroTitle">Vérification attendue</p>
-                    <p class="heroDesc">
-                      <strong>À indiquer :</strong> comment on vérifie visuellement (persistant <u>ou</u> overlay OK <u>ou</u> style barré/gris).
-                    </p>
+                    <p class="heroDesc"><strong>À indiquer :</strong> comment on vérifie visuellement (persistant / overlay OK / style barré/gris…).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Optionnel</span></div>
@@ -616,7 +603,7 @@
   </div>
 
 <script>
-  console.log("[DEBUG] PBX_FORM_SCRIPT_V6");
+  console.log("[DEBUG] PBX_FORM_SCRIPT_V7");
 
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
@@ -630,10 +617,11 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const SKEY = "pbx_prompt_form_v6";
+    const SKEY = "pbx_prompt_form_v7";
 
     const els = {
       context: $("context"),
+      when: $("when"),
       where: $("where"),
       action: $("action"),          // hidden
       actionChips: $("actionChips"),
@@ -656,18 +644,11 @@
       dotState: $("dotState"),
       stateLabel: $("stateLabel"),
       genBadge: $("genBadge"),
-
-      c_context: $("c_context"),
-      c_where: $("c_where"),
-      c_action: $("c_action"),
-      c_content: $("c_content"),
-      c_limits: $("c_limits"),
-      c_approach: $("c_approach"),
-      c_verify: $("c_verify"),
     };
 
     const reHasUrl = RX("(https?:\\/\\/|www\\.)");
     const reHasDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
+    const reWhenHasTrigger = RX("(chargement|initial|après clic|apres clic|after click|overlay|modal|voir tout|voir le détail|lazy|dynamique|ajax|scroll)", "i");
     const reWhereHints = RX("(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)");
     const reWhereSpecific = RX('(["“”\\\']|\\b(iPhone|forfait|€\\/mois|prix)\\b)');
     const reContentConcrete = RX('(["“”\\\']|\\b\\d+([,.]\\d+)?\\b|€|\\/mois|format|formule|calcul)');
@@ -682,9 +663,6 @@
       "Ajouter","Remplacer","Supprimer","Déplacer","Calculer","Afficher","Mettre en avant","Restyler"
     ];
 
-    const countChars = (v) => (v || "").trim().length;
-    const setCounter = (el, v) => { if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; };
-
     function getSelectedActions(){
       const selected = [];
       document.querySelectorAll("#actionChips .chip.active[data-action]").forEach(c=>{
@@ -694,8 +672,8 @@
       return selected;
     }
 
-    function needsApproachFromContext(){
-      const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
+    function needsApproachFromText(){
+      const t = `${els.when?.value || ""} ${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
       return testRX(reHasDyn, t);
     }
 
@@ -711,6 +689,15 @@
         return false;
       }
 
+      if(kind === "when"){
+        const hasUrl = testRX(reHasUrl, t);
+        const hasTrigger = testRX(reWhenHasTrigger, t);
+        if(t.length < 18) return true;
+        if(!hasUrl && !hasTrigger) return true;
+        if(hasVague && !hasUrl) return true;
+        return false;
+      }
+
       if(kind === "where"){
         const hasHint = testRX(reWhereHints, t);
         const hasSpecific = testRX(reWhereSpecific, t);
@@ -718,13 +705,6 @@
         if(!hasHint && !hasSpecific) return true;
         if(hasVague && !hasHint) return true;
         return false;
-      }
-
-      if(kind === "action"){
-        // action = sélection(s) => texte caché contient la liste jointe
-        const parts = t.split("\n").map(s=>s.trim()).filter(Boolean);
-        if(parts.length === 0) return true;
-        return parts.some(p => !ACTIONS.includes(p.replace(/^(\d+\.\s*)/, "")));
       }
 
       if(kind === "content"){
@@ -742,21 +722,22 @@
 
     function computeQuality(){
       const ctx = (els.context?.value || "").trim();
+      const whn = (els.when?.value || "").trim();
       const whr = (els.where?.value || "").trim();
       const actions = getSelectedActions();
-      const actText = actions.join("\n");
       const cnt = (els.content?.value || "").trim();
       const lim = (els.limits?.value || "").trim();
       const app = (els.approach?.value || "").trim();
 
-      const needApp = needsApproachFromContext();
+      const needApp = needsApproachFromText();
 
-      // règle multi-actions: numérotation obligatoire dans contenu
+      // multi-actions => contenu numéroté
       const requiresNumbering = actions.length > 1;
       const hasNumbering = testRX(reNumbered, cnt);
 
       const ok = {
         context: !!ctx && !looksVagueSection(ctx,"context"),
+        when:    !!whn && !looksVagueSection(whn,"when"),
         where:   !!whr && !looksVagueSection(whr,"where"),
         action:  actions.length >= 1,
         content: !!cnt && !looksVagueSection(cnt,"content") && (!requiresNumbering || hasNumbering),
@@ -765,24 +746,27 @@
       };
 
       // score progressif
+      // 5 obligatoires = 80 (16 chacun)
+      // limites = +10
+      // approche = +10 si dynamique, sinon +5
       let score = 0;
-      score += ok.context ? 20 : 0;
-      score += ok.where   ? 20 : 0;
-      score += ok.action  ? 20 : 0;
-      score += ok.content ? 20 : 0;
+      score += ok.context ? 16 : 0;
+      score += ok.when    ? 16 : 0;
+      score += ok.where   ? 16 : 0;
+      score += ok.action  ? 16 : 0;
+      score += ok.content ? 16 : 0;
+
       score += ok.limits ? 10 : 0;
-      if (needApp) score += ok.approach ? 10 : 0;
-      else score += ok.approach ? 5 : 0;
+      score += needApp ? (ok.approach ? 10 : 0) : (ok.approach ? 5 : 0);
 
       score = Math.max(0, Math.min(100, score));
 
-      // readiness plus strict sur contexte: URL recommandé
-      const strictContextOk = testRX(reHasUrl, ctx) || testRX(RX("\\burl\\b"), ctx.toLowerCase());
-      const ready = ok.context && ok.where && ok.action && ok.content && strictContextOk && score >= 70;
+      // readiness (strict)
+      const ready = ok.context && ok.when && ok.where && ok.action && ok.content && score >= 70;
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
 
       // sync hidden action value
-      if (els.action) els.action.value = actText;
+      if (els.action) els.action.value = actions.join("\n");
 
       return { score, ready, state, needApp, ok, requiresNumbering, actions };
     }
@@ -802,9 +786,11 @@
 
       const items = [];
       items.push(makeItem(q.ok.context ? "ok" : "bad", "Contexte"));
+      items.push(makeItem(q.ok.when    ? "ok" : "bad", "Quand appliquer"));
       items.push(makeItem(q.ok.where   ? "ok" : "bad", "Où (élément + position)"));
       items.push(makeItem(q.ok.action  ? "ok" : "bad", "Quoi — Action"));
       items.push(makeItem(q.ok.content ? "ok" : "bad", q.requiresNumbering ? "Quoi — Contenu (numéroté)" : "Quoi — Contenu"));
+
       items.push(makeItem(q.ok.limits ? "ok" : "warn", "Limites"));
       items.push(makeItem(q.needApp ? (q.ok.approach ? "ok" : "warn") : (q.ok.approach ? "ok" : "warn"),
         q.needApp ? "Approche" : "Approche (optionnel)"));
@@ -813,18 +799,6 @@
     }
 
     function updateUI(){
-      setCounter(els.c_context, els.context?.value);
-      setCounter(els.c_where, els.where?.value);
-
-      // action counter = nb d’actions
-      const actions = getSelectedActions();
-      if (els.c_action) els.c_action.textContent = actions.length ? `${actions.length} action(s)` : "";
-
-      setCounter(els.c_content, els.content?.value);
-      setCounter(els.c_limits, els.limits?.value);
-      setCounter(els.c_approach, els.approach?.value);
-      setCounter(els.c_verify, els.verify?.value);
-
       const q = computeQuality();
 
       els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
@@ -836,7 +810,7 @@
 
       renderChecks(q);
 
-      // content enabled only if >= 1 action selected
+      // contenu activé uniquement si action sélectionnée
       if (els.content){
         if (q.actions.length === 0){
           els.content.disabled = true;
@@ -844,8 +818,7 @@
         } else {
           els.content.disabled = false;
           if (q.actions.length > 1 && !els.content.value.trim()){
-            els.content.placeholder =
-`Numérote tes actions :
+            els.content.placeholder = `Numérote tes actions :
 1. ...
 2. ...`;
           } else if (els.content.placeholder.includes("Sélectionne d’abord")) {
@@ -857,6 +830,7 @@
       try{
         localStorage.setItem(SKEY, JSON.stringify({
           context: els.context?.value || "",
+          when: els.when?.value || "",
           where: els.where?.value || "",
           actions: q.actions || [],
           content: els.content?.value || "",
@@ -873,6 +847,7 @@
       const blocks = [];
       blocks.push("Front-end variation only (no back-end changes).");
       blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
+      blocks.push("\nQuand appliquer :\n" + (els.when?.value || "").trim());
       blocks.push("\nOù :\n" + (els.where?.value || "").trim());
 
       const actions = getSelectedActions();
@@ -887,7 +862,7 @@
       if((els.approach?.value || "").trim()) blocks.push("\nApproche :\n" + els.approach.value.trim());
       if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
 
-      blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
+      blocks.push("\nAttendu :\nGénère un script robuste qui :\n1) détecte les éléments cibles\n2) applique la/les action(s) exactement comme décrit\n3) reste stable après interactions (open/close overlays, “voir tout”)\n4) n’altère pas la mise en page ni la charte.\n5) s'appuie sur la charte graphique de la page");
       return blocks.join("\n").trim();
     }
 
@@ -927,11 +902,10 @@
       const ok = confirm("Réinitialiser ?");
       if(!ok) return;
 
-      ["context","where","content","limits","approach","verify"].forEach(k => {
+      ["context","when","where","content","limits","approach","verify"].forEach(k => {
         if(els[k]) els[k].value = "";
       });
 
-      // reset actions
       document.querySelectorAll("#actionChips .chip").forEach(c => c.classList.remove("active"));
       if (els.action) els.action.value = "";
 
@@ -944,7 +918,7 @@
     }
 
     // Inputs
-    ["context","where","content","limits","approach","verify"].forEach(id=>{
+    ["context","when","where","content","limits","approach","verify"].forEach(id=>{
       const el = $(id);
       on(el, "input", updateUI);
       on(el, "change", updateUI);
@@ -970,6 +944,7 @@
       if(raw){
         const p = JSON.parse(raw);
         if(els.context && p.context != null) els.context.value = p.context;
+        if(els.when && p.when != null) els.when.value = p.when;
         if(els.where && p.where != null) els.where.value = p.where;
         if(els.content && p.content != null) els.content.value = p.content;
         if(els.limits && p.limits != null) els.limits.value = p.limits;
