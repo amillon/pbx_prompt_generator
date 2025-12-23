@@ -578,16 +578,33 @@
   </div>
 
 <script>
-  // SAFE helpers
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
+
+  // Safe RegExp builder to avoid "Invalid regular expression flags" killing the whole script
+  function RX(pattern, flags = "i") {
+    try {
+      return new RegExp(pattern, flags);
+    } catch (e) {
+      console.error("[DEBUG] RX invalid:", { pattern, flags, error: e });
+      return null; // fallback
+    }
+  }
+  function testRX(re, value) {
+    if (!re) return false;
+    try {
+      return re.test(value);
+    } catch (e) {
+      console.error("[DEBUG] RX test failed:", { re, value, error: e });
+      return false;
+    }
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     console.log("[DEBUG] DOMContentLoaded fired");
 
-    const SKEY = "pbx_prompt_form_debug_v1";
+    const SKEY = "pbx_prompt_form_debug_v2";
 
-    // Grab elements (can be null if markup differs)
     const els = {
       context: $("context"),
       where: $("where"),
@@ -621,46 +638,28 @@
       c_verify: $("c_verify"),
     };
 
-    // DEBUG: dump element presence
-    console.log("[DEBUG] Element presence:", {
-      context: !!els.context,
-      where: !!els.where,
-      action: !!els.action,
-      content: !!els.content,
-      limits: !!els.limits,
-      approach: !!els.approach,
-      verify: !!els.verify,
-      result: !!els.result,
-      toast: !!els.toast,
-      btnGenerate: !!els.btnGenerate,
-      btnCopy: !!els.btnCopy,
-      btnReset: !!els.btnReset,
-      scorePill: !!els.scorePill,
-      scoreBar: !!els.scoreBar,
-      checks: !!els.checks,
-      dotState: !!els.dotState,
-      stateLabel: !!els.stateLabel,
-      genBadge: !!els.genBadge
-    });
+    console.log("[DEBUG] Element presence:", Object.fromEntries(
+      Object.entries(els).map(([k,v]) => [k, !!v])
+    ));
 
-    // DEBUG: print actual button nodes (helps if duplicated IDs / shadow DOM etc.)
-    console.log("[DEBUG] Buttons nodes:", {
-      btnGenerate: els.btnGenerate,
-      btnCopy: els.btnCopy,
-      btnReset: els.btnReset
-    });
-
-    // If core buttons missing, show error + stop
+    // hard fail visibility (but no crash)
     if (!els.btnGenerate || !els.btnCopy || !els.btnReset) {
-      console.error("[DEBUG] Missing CTA buttons. Check IDs: btnGenerate, btnCopy, btnReset");
+      console.error("[DEBUG] Missing CTA buttons. Expected IDs:", ["btnGenerate","btnCopy","btnReset"]);
       if (els.result) {
         els.result.value =
-          "❌ [DEBUG] Erreur markup : bouton introuvable.\n" +
+          "❌ [DEBUG] Boutons introuvables.\n" +
           "IDs attendus : btnGenerate / btnCopy / btnReset.\n" +
-          "Ouvre la console pour voir quels éléments sont présents.";
+          "Regarde la console pour le détail.";
       }
       return;
     }
+
+    // Regex compiled once (safe)
+    const reHasUrl = RX("(https?:\\/\\/|www\\.)");
+    const reHasState = RX("(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)");
+    const reWhereHints = RX("(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)");
+    const reWhereSpecific = RX('(["“”\\\']|\\b(iPhone|forfait|€\\/mois|prix)\\b)');
+    const reContentConcrete = RX('(["“”\\\']|\\b\\d+([,.]\\d+)?\\b|€|\\/mois|format|formule|calcul)');
 
     const vagueMarkers = [
       "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
@@ -670,10 +669,7 @@
     const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
 
     const countChars = (v) => (v || "").trim().length;
-    const setCounter = (el, v) => {
-      if(!el) return;
-      el.textContent = countChars(v) ? `${countChars(v)} car.` : "";
-    };
+    const setCounter = (el, v) => { if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; };
 
     function looksVagueSection(text, kind){
       const t = (text || "").trim();
@@ -682,21 +678,23 @@
       const hasVague = vagueMarkers.some(m => low.includes(m));
 
       if(kind === "context"){
-        const hasUrl = /(https?:\/\/|www\.)/i.test(t);
-        const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)/i.test(t);
+        const hasUrl = testRX(reHasUrl, t);
+        const hasState = testRX(reHasState, t);
         if(t.length < 30) return true;
         if(!hasUrl && !hasState) return true;
         if(hasVague && !hasUrl && !hasState) return true;
         return false;
       }
+
       if(kind === "where"){
-        const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)/i.test(t);
-        const hasSpecific = /["“”']|\b(iPhone|forfait|€/mois|prix)\b/i.test(t);
+        const hasHint = testRX(reWhereHints, t);
+        const hasSpecific = testRX(reWhereSpecific, t);
         if(t.length < 20) return true;
-        if(!hasTargetHint && !hasSpecific) return true;
-        if(hasVague && !hasTargetHint) return true;
+        if(!hasHint && !hasSpecific) return true;
+        if(hasVague && !hasHint) return true;
         return false;
       }
+
       if(kind === "action"){
         const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
         if(t.length < 10) return true;
@@ -704,13 +702,15 @@
         if(hasVague) return true;
         return false;
       }
+
       if(kind === "content"){
-        const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
+        const hasConcrete = testRX(reContentConcrete, t);
         if(t.length < 12) return true;
         if(hasVague && !hasConcrete) return true;
         if(!hasConcrete) return true;
         return false;
       }
+
       if(kind === "limits"){ return t.length < 18; }
       if(kind === "approach"){ return t.length < 18; }
       return false;
@@ -718,7 +718,8 @@
 
     function needsApproachFromContext(){
       const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
-      const res = /(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)/i.test(t);
+      const reDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
+      const res = testRX(reDyn, t);
       console.log("[DEBUG] needsApproachFromContext?", res, "input=", t);
       return res;
     }
@@ -771,13 +772,12 @@
 
       const ready = (missing.length === 0 && score >= 70);
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
-
       console.log("[DEBUG] computeQuality result:", {score, ready, state, missingCount: missing.length, warningsCount: warnings.length});
       return {score, ready, state, missing, warnings, needApp};
     }
 
     function buildPBXPrompt(q){
-      console.log("[DEBUG] buildPBXPrompt called. ready=", q.ready);
+      console.log("[DEBUG] buildPBXPrompt called");
       const blocks = [];
       blocks.push("Front-end variation only (no back-end changes).");
       blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
@@ -785,11 +785,8 @@
       blocks.push("\nAction :\n" + (els.action?.value || "").trim());
       blocks.push("\nContenu :\n" + (els.content?.value || "").trim());
       if((els.limits?.value || "").trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
-      if((els.approach?.value || "").trim()){
-        blocks.push("\nApproche :\n" + els.approach.value.trim());
-      } else if(q.needApp){
-        blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
-      }
+      if((els.approach?.value || "").trim()) blocks.push("\nApproche :\n" + els.approach.value.trim());
+      else if(q.needApp) blocks.push("\nApproche :\nMutationObserver + idempotence (data-processed) + overlays + fallback safe.");
       if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
       blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
       return blocks.join("\n").trim();
@@ -797,10 +794,9 @@
 
     function buildMissingPreview(q){
       console.log("[DEBUG] buildMissingPreview called");
-      const lines = [];
-      lines.push("Ce qui manque pour un prompt PBX exploitable :\n");
-      q.missing.forEach(m => { lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}\n  Ex : ${m.example}\n`); });
-      q.warnings.forEach(w => { lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}\n  Ex : ${w.example}\n`); });
+      const lines = ["Ce qui manque pour un prompt PBX exploitable :\n"];
+      q.missing.forEach(m => lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}\n  Ex : ${m.example}\n`));
+      q.warnings.forEach(w => lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}\n  Ex : ${w.example}\n`));
       return lines.join("\n").trim();
     }
 
@@ -810,56 +806,6 @@
       els.toast.textContent = msg;
       els.toast.style.display = "block";
       setTimeout(()=> els.toast.style.display="none", 1600);
-    }
-
-    function renderChecks(q){
-      console.log("[DEBUG] renderChecks called");
-      if(!els.checks) return;
-      const items = [];
-      const row = (state, title, desc, example) => {
-        const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
-        const ex = example ? `<br><span style="color: var(--muted2);">Ex : ${example}</span>` : "";
-        items.push(`
-          <div class="item ${state}">
-            <div class="ico">${icon}</div>
-            <div>
-              <p class="itT">${title}</p>
-              <p class="itD">${desc}${ex}</p>
-            </div>
-          </div>
-        `);
-      };
-
-      const ctx = (els.context?.value || "").trim();
-      const whr = (els.where?.value || "").trim();
-      const act = (els.action?.value || "").trim();
-      const cnt = (els.content?.value || "").trim();
-
-      row(!ctx || looksVagueSection(ctx,"context") ? "bad" : "ok", "Contexte",
-          !ctx || looksVagueSection(ctx,"context") ? "Manque URL + état(s) (initial / après clic / overlay)." : "OK — exploitable.",
-          "URL: https://… + overlay/voir tout si présent.");
-
-      row(!whr || looksVagueSection(whr,"where") ? "bad" : "ok", "Où (cible/position)",
-          !whr || looksVagueSection(whr,"where") ? "Manque élément ciblé + position exacte." : "OK — clair.",
-          "Dans la tuile X, sous l’image, centré.");
-
-      row(!act || looksVagueSection(act,"action") ? "bad" : "ok", "Action",
-          !act || looksVagueSection(act,"action") ? "Manque un verbe clair." : "OK — action claire.",
-          "Ajouter / Remplacer / Calculer / Déplacer…");
-
-      row(!cnt || looksVagueSection(cnt,"content") ? "bad" : "ok", "Contenu / format",
-          !cnt || looksVagueSection(cnt,"content") ? "Manque texte exact OU format/formule." : "OK — concret.",
-          "“À partir d’1€ …” OU “9,99€/mois = prix + |remise|”");
-
-      if(q.missing.length || q.warnings.length){
-        items.push(`<div style="margin-top:6px;"></div>`);
-        [...q.missing, ...q.warnings].slice(0, 8).forEach(m => {
-          const isBad = q.missing.includes(m);
-          row(isBad ? "bad" : "warn", `${m.key} — à compléter`, m.d, m.example);
-        });
-      }
-
-      els.checks.innerHTML = items.join("");
     }
 
     function updateUI(){
@@ -881,9 +827,6 @@
       if (els.stateLabel) els.stateLabel.textContent = q.state === "ready" ? "Prompt prêt" : (q.state === "warn" ? "Presque prêt" : "Prompt incomplet");
       if (els.genBadge) els.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
 
-      renderChecks(q);
-
-      // Save
       try{
         localStorage.setItem(SKEY, JSON.stringify({
           context: els.context?.value || "",
@@ -928,15 +871,9 @@
         console.error("[DEBUG] result textarea not found (#result)");
         return;
       }
-      if(q.ready){
-        els.result.value = buildPBXPrompt(q);
-        toast("Prompt généré ✅");
-      } else {
-        els.result.value = buildMissingPreview(q);
-        toast("À compléter ⚠️");
-      }
+      els.result.value = q.ready ? buildPBXPrompt(q) : buildMissingPreview(q);
       els.btnCopy.disabled = !els.result.value.trim();
-      console.log("[DEBUG] generate done. copyDisabled=", els.btnCopy.disabled);
+      toast(q.ready ? "Prompt généré ✅" : "À compléter ⚠️");
     }
 
     async function copy(){
@@ -980,7 +917,7 @@
       toast("Réinitialisé ✅");
     }
 
-    // Bind inputs safely
+    // Bind inputs
     ["context","where","action","content","limits","approach","verify"].forEach(id=>{
       const el = $(id);
       if(!el) console.warn("[DEBUG] missing input element #"+id);
@@ -988,35 +925,25 @@
       on(el, "change", updateUI);
     });
 
-    // Bind the 3 CTAs
+    // Bind CTAs
     console.log("[DEBUG] binding CTA events...");
     on(els.btnGenerate, "click", generate);
     on(els.btnCopy, "click", copy);
     on(els.btnReset, "click", resetAll);
-    console.log("[DEBUG] CTA events bound");
+    console.log("[DEBUG] CTA events bound ✅");
 
-    // Init
-    load();
-    updateUI();
-
-    // Extra: global click probe to see if clicks are swallowed by overlay
-    document.addEventListener("click", (e) => {
-      const t = e.target;
-      if(!(t instanceof Element)) return;
-      const id = t.id || "(no id)";
-      const cls = t.className || "(no class)";
-      if (id === "btnGenerate" || id === "btnCopy" || id === "btnReset") {
-        console.log("[DEBUG] document click saw CTA target:", { id, cls, tag: t.tagName });
-      }
-    }, true);
-
-    // Extra: detect runtime errors that kill interactivity
+    // Catch runtime errors
     window.addEventListener("error", (e) => {
       console.error("[DEBUG] window.error", e.message, e.filename, e.lineno, e.colno, e.error);
     });
     window.addEventListener("unhandledrejection", (e) => {
       console.error("[DEBUG] unhandledrejection", e.reason);
     });
+
+    // init
+    load();
+    updateUI();
+    console.log("[DEBUG] init done ✅");
   });
 </script>
 </body>
