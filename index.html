@@ -200,6 +200,11 @@
       box-shadow: 0 0 0 3px rgba(109,40,217,0.18);
       background: #fff;
     }
+    textarea[disabled]{
+      opacity:.75;
+      cursor:not-allowed;
+      background: rgba(248,250,252,0.55);
+    }
 
     .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
@@ -234,10 +239,15 @@
       cursor:pointer;
       user-select:none;
       box-shadow: 0 8px 18px rgba(15,23,42,0.04);
-      transition: transform .06s ease, border-color .15s ease;
+      transition: transform .06s ease, border-color .15s ease, background .15s ease;
     }
     .chip:active{ transform: translateY(1px); }
     .chip:hover{ border-color: rgba(109,40,217,0.35); }
+    .chip.active{
+      border-color: rgba(109,40,217,0.55);
+      background: rgba(109,40,217,0.08);
+      box-shadow: 0 10px 22px rgba(109,40,217,0.10);
+    }
 
     /* Sidebar */
     .side{ position: sticky; top: 14px; }
@@ -434,14 +444,14 @@
                   <div class="heroIcon">①</div>
                   <div>
                     <p class="heroTitle">Contexte</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> URL + type de page + quand ça s’applique (chargement / après clic / overlay).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> indiquer le contexte de la variante demandée (où on est, quelles vues/états, contenu dynamique).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
               </div>
               <div class="label"><span>Contexte</span><span class="counter" id="c_context"></span></div>
-              <textarea id="context" placeholder="Ex : URL: https://… / listing. Tuiles au chargement + ajoutées après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
-              <div class="hint"><strong>Astuce :</strong> mentionne “dynamique / overlay / voir tout” si c’est le cas.</div>
+              <textarea id="context" placeholder="Ex : URL: https://… / listing. Affichage au chargement + après clic “voir tout”. Overlay détail s’ouvre/ferme."></textarea>
+              <div class="hint"><strong>Astuce :</strong> si c’est dynamique, écris-le (overlay / lazy-load / voir tout).</div>
             </div>
 
             <!-- Où -->
@@ -451,7 +461,7 @@
                   <div class="heroIcon">②</div>
                   <div>
                     <p class="heroTitle">Où ?</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> la cible + repères (tuile X, bloc Y) et la position exacte (sous l’image, au-dessus du prix…).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> cibler l’élément concerné et/ou la position précise de la modification (repères visuels).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
@@ -467,7 +477,7 @@
                   <div class="heroIcon">③</div>
                   <div>
                     <p class="heroTitle">Quoi ?</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> 1 verbe d’action + le contenu exact (texte / format / formule).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> sélectionner l’action à mener, puis préciser le contenu (texte exact / format / formule).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag req">Obligatoire</span></div>
@@ -475,29 +485,33 @@
 
               <div class="row2">
                 <div>
-                  <div class="label"><span>Action</span><span class="counter" id="c_action"></span></div>
-                  <textarea id="action" placeholder="Ex : Ajouter / Remplacer / Calculer / Déplacer… (1 verbe minimum)."></textarea>
+                  <div class="label"><span>Action (sélection)</span><span class="counter" id="c_action"></span></div>
 
-                  <div class="chips" aria-label="Verbes d’action">
-                    <div class="chip" data-target="action" data-add="Ajouter">Ajouter</div>
-                    <div class="chip" data-target="action" data-add="Remplacer">Remplacer</div>
-                    <div class="chip" data-target="action" data-add="Supprimer">Supprimer</div>
-                    <div class="chip" data-target="action" data-add="Déplacer">Déplacer</div>
-                    <div class="chip" data-target="action" data-add="Calculer">Calculer</div>
-                    <div class="chip" data-target="action" data-add="Afficher">Afficher</div>
-                    <div class="chip" data-target="action" data-add="Mettre en avant">Mettre en avant</div>
-                    <div class="chip" data-target="action" data-add="Restyler">Restyler</div>
+                  <!-- ✅ Action = selection obligatoire (single select) -->
+                  <input id="action" type="hidden" value="" />
+                  <div class="chips" id="actionChips" aria-label="Action">
+                    <div class="chip" data-action="Ajouter">Ajouter</div>
+                    <div class="chip" data-action="Remplacer">Remplacer</div>
+                    <div class="chip" data-action="Supprimer">Supprimer</div>
+                    <div class="chip" data-action="Déplacer">Déplacer</div>
+                    <div class="chip" data-action="Calculer">Calculer</div>
+                    <div class="chip" data-action="Afficher">Afficher</div>
+                    <div class="chip" data-action="Mettre en avant">Mettre en avant</div>
+                    <div class="chip" data-action="Restyler">Restyler</div>
+                  </div>
+
+                  <div class="hint">
+                    <strong>Règle :</strong> choisis une seule action. Tu détailles ensuite dans “Contenu”.
                   </div>
                 </div>
 
                 <div>
                   <div class="label"><span>Contenu (texte exact / format / formule)</span><span class="counter" id="c_content"></span></div>
-                  <textarea id="content" placeholder="Ex : “À partir d’1€ …” OU “9,99€/mois = prix + |remise|” (format final)."></textarea>
+                  <textarea id="content" placeholder="Sélectionne d’abord une action." disabled></textarea>
+                  <div class="hint">
+                    <strong>Exemples :</strong> “À partir d’1€ …” • “9,99€/mois = prix + |remise|” (format final)
+                  </div>
                 </div>
-              </div>
-
-              <div class="hint">
-                <strong>Si calcul :</strong> valeurs à extraire + formule + format final. <strong>Si remplacement :</strong> “uniquement X, ne pas toucher à Y”.
               </div>
             </div>
 
@@ -508,13 +522,13 @@
                   <div class="heroIcon">④</div>
                   <div>
                     <p class="heroTitle">Limites</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> ce qui ne doit pas bouger (layout, charte, typo, couleurs) + règles “ne pas”.</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> préciser ce qui ne doit pas bouger (charte, layout, typo, couleurs) + interdits.</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
               <div class="label"><span>Limites / contraintes</span><span class="counter" id="c_limits"></span></div>
-              <textarea id="limits" placeholder="Ex : Ne pas modifier le layout. Respecter fond greige + typographie. Ne pas casser la grille."></textarea>
+              <textarea id="limits" placeholder="Ex : Ne pas modifier le layout. Respecter fond greige + typographie. Ne rien casser visuellement."></textarea>
             </div>
 
             <!-- Approche -->
@@ -524,13 +538,13 @@
                   <div class="heroIcon">⑤</div>
                   <div>
                     <p class="heroTitle">Approche</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> si c’est dynamique : ré-appliquer (overlay/voir tout), éviter doublons, fallback safe.</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> expliquer comment la modification tient dans le temps (dynamique, overlays, pas de doublons).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Recommandé</span></div>
               </div>
               <div class="label"><span>Approche technique</span><span class="counter" id="c_approach"></span></div>
-              <textarea id="approach" placeholder="Ex : MutationObserver + apply() idempotent (data-processed). Fonctionne dans overlay. Fallback : ne rien faire si cible introuvable."></textarea>
+              <textarea id="approach" placeholder="Ex : Appliquer au chargement + MutationObserver. Idempotent (data-processed). Fonctionne dans overlay. Fallback safe."></textarea>
             </div>
 
             <!-- Vérification -->
@@ -540,7 +554,7 @@
                   <div class="heroIcon">⑥</div>
                   <div>
                     <p class="heroTitle">Vérification attendue</p>
-                    <p class="heroDesc"><strong>À renseigner :</strong> comment vérifier en 10s (visible partout, persiste après clic, overlay OK…).</p>
+                    <p class="heroDesc"><strong>Attendu :</strong> lister les checks visibles pour valider (persistance, overlay, style barré/gris…).</p>
                   </div>
                 </div>
                 <div class="tags"><span class="tag">Optionnel</span></div>
@@ -588,7 +602,7 @@
   </div>
 
 <script>
-  console.log("[DEBUG] PBX_FORM_SCRIPT_V4");
+  console.log("[DEBUG] PBX_FORM_SCRIPT_V5");
 
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
@@ -602,12 +616,13 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const SKEY = "pbx_prompt_form_v4";
+    const SKEY = "pbx_prompt_form_v5";
 
     const els = {
       context: $("context"),
       where: $("where"),
-      action: $("action"),
+      action: $("action"),          // hidden input
+      actionChips: $("actionChips"),
       content: $("content"),
       limits: $("limits"),
       approach: $("approach"),
@@ -640,7 +655,7 @@
     if (!els.btnGenerate || !els.btnCopy || !els.btnReset || !els.scorePill || !els.scoreBar) {
       if (els.result) {
         els.result.value =
-          "❌ PBX_FORM_SCRIPT_V4 : éléments manquants.\n" +
+          "❌ PBX_FORM_SCRIPT_V5 : éléments manquants.\n" +
           "Attendus: btnGenerate, btnCopy, btnReset, scorePill, scoreBar.";
       }
       return;
@@ -657,11 +672,9 @@
       "make it better","optimize","improve"
     ];
 
-    // ✅ Action words (FR) — pour valider Action + chips
-    const ACTION_WORDS = [
-      "ajouter","remplacer","supprimer","déplacer","réécrire","modifier","mettre à jour",
-      "insérer","calculer","afficher","masquer","renommer","restyler","mettre en avant",
-      "repositionner","réordonner","surligner"
+    // Actions disponibles (doivent matcher les chips)
+    const ACTIONS = [
+      "Ajouter","Remplacer","Supprimer","Déplacer","Calculer","Afficher","Mettre en avant","Restyler"
     ];
 
     const countChars = (v) => (v || "").trim().length;
@@ -674,7 +687,6 @@
       const hasVague = vagueMarkers.some(m => low.includes(m));
 
       if(kind === "context"){
-        // Progressif: on accepte du texte descriptif. (PBX-ready sera plus strict)
         if(t.length < 15) return true;
         if(hasVague && t.length < 25) return true;
         return false;
@@ -690,9 +702,8 @@
       }
 
       if(kind === "action"){
-        if(t.length < 4) return true;
-        const hasVerb = ACTION_WORDS.some(w => low.includes(w));
-        return !hasVerb;
+        // Action = sélection (pas du texte libre)
+        return !ACTIONS.includes(t);
       }
 
       if(kind === "content"){
@@ -713,11 +724,10 @@
       return testRX(reHasDyn, t);
     }
 
-    // ✅ SCORE PROGRESSIF (comme tu l’as demandé)
     function computeQuality(){
       const ctx = (els.context?.value || "").trim();
       const whr = (els.where?.value || "").trim();
-      const act = (els.action?.value || "").trim();
+      const act = (els.action?.value || "").trim();   // selected action
       const cnt = (els.content?.value || "").trim();
       const lim = (els.limits?.value || "").trim();
       const app = (els.approach?.value || "").trim();
@@ -733,6 +743,7 @@
         approach: !!app && !looksVagueSection(app,"approach"),
       };
 
+      // Score progressif
       let score = 0;
       score += ok.context ? 20 : 0;
       score += ok.where   ? 20 : 0;
@@ -744,11 +755,9 @@
 
       score = Math.max(0, Math.min(100, score));
 
-      // ✅ PBX-ready (plus strict) : Contexte doit inclure URL OU (URL implicite via www) + idéalement dynamique mentionnée si besoin
+      // PBX-ready strict : contexte idéalement avec URL (ou “URL:”)
       const strictContextOk = testRX(reHasUrl, ctx) || testRX(RX("\\burl\\b"), ctx.toLowerCase());
-      const strictActionOk = ACTION_WORDS.some(w => act.toLowerCase().includes(w));
-
-      const ready = ok.context && ok.where && ok.action && ok.content && strictContextOk && strictActionOk && score >= 70;
+      const ready = ok.context && ok.where && ok.action && ok.content && strictContextOk && score >= 70;
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
 
       return { score, ready, state, needApp, ok };
@@ -798,6 +807,20 @@
       if (els.genBadge) els.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
 
       renderChecks(q);
+
+      // Content enabled only if action selected
+      const hasAction = !!(els.action?.value || "").trim();
+      if (els.content){
+        if (!hasAction) {
+          els.content.disabled = true;
+          if (!els.content.value.trim()) els.content.placeholder = "Sélectionne d’abord une action.";
+        } else {
+          els.content.disabled = false;
+          if (els.content.placeholder.includes("Sélectionne d’abord")) {
+            els.content.placeholder = "Ex : “À partir d’1€ …” OU “9,99€/mois = prix + |remise|” (format final).";
+          }
+        }
+      }
 
       try{
         localStorage.setItem(SKEY, JSON.stringify({
@@ -864,9 +887,14 @@
       const ok = confirm("Réinitialiser ?");
       if(!ok) return;
 
-      ["context","where","action","content","limits","approach","verify"].forEach(k => {
+      ["context","where","content","limits","approach","verify"].forEach(k => {
         if(els[k]) els[k].value = "";
       });
+
+      // Reset action selection
+      if (els.action) els.action.value = "";
+      document.querySelectorAll("#actionChips .chip").forEach(c => c.classList.remove("active"));
+
       if(els.result) els.result.value = "";
       els.btnCopy.disabled = true;
 
@@ -875,24 +903,32 @@
       toast("Réinitialisé ✅");
     }
 
-    // Bind inputs
-    ["context","where","action","content","limits","approach","verify"].forEach(id=>{
+    // Bind inputs (except action which is selection)
+    ["context","where","content","limits","approach","verify"].forEach(id=>{
       const el = $(id);
       on(el, "input", updateUI);
       on(el, "change", updateUI);
     });
 
-    // Chips
-    document.querySelectorAll(".chip[data-target]").forEach(chip => {
+    // Action chips (single select)
+    document.querySelectorAll("#actionChips .chip[data-action]").forEach(chip => {
       chip.addEventListener("click", () => {
-        const target = chip.getAttribute("data-target");
-        const add = chip.getAttribute("data-add") || "";
-        const el = document.getElementById(target);
-        if(!el || !add) return;
-        const v = (el.value || "").trim();
-        el.value = v ? `${v} ${add}` : add;
-        el.focus();
+        const a = chip.getAttribute("data-action") || "";
+        if(!a) return;
+
+        // single-select
+        document.querySelectorAll("#actionChips .chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+
+        if (els.action) els.action.value = a;
+
         updateUI();
+
+        // UX: focus content after selection
+        if (els.content) {
+          els.content.disabled = false;
+          els.content.focus();
+        }
       });
     });
 
@@ -901,7 +937,7 @@
     on(els.btnCopy, "click", copy);
     on(els.btnReset, "click", resetAll);
 
-    // init load + first render
+    // init load
     try{
       const raw = localStorage.getItem(SKEY);
       if(raw){
@@ -913,6 +949,14 @@
         if(els.limits && p.limits != null) els.limits.value = p.limits;
         if(els.approach && p.approach != null) els.approach.value = p.approach;
         if(els.verify && p.verify != null) els.verify.value = p.verify;
+
+        // restore active chip
+        const savedA = (p.action || "").trim();
+        if (savedA) {
+          document.querySelectorAll("#actionChips .chip").forEach(c => {
+            if ((c.getAttribute("data-action") || "") === savedA) c.classList.add("active");
+          });
+        }
       }
     }catch(e){}
 
