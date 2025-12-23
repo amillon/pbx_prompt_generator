@@ -578,411 +578,384 @@
   </div>
 
 <script>
+  // SAFE helpers
   const $ = (id) => document.getElementById(id);
-  const SKEY = "pbx_prompt_form_v5_keep3buttons_remove_question_buttons";
+  const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
 
-  const els = {
-    context: $("context"),
-    where: $("where"),
-    action: $("action"),
-    content: $("content"),
-    limits: $("limits"),
-    approach: $("approach"),
-    verify: $("verify"),
+  document.addEventListener("DOMContentLoaded", () => {
+    const SKEY = "pbx_prompt_form_v5_keep3buttons_remove_question_buttons";
 
-    result: $("result"),
-    toast: $("toast"),
+    // Grab elements (can be null if markup differs)
+    const els = {
+      context: $("context"),
+      where: $("where"),
+      action: $("action"),
+      content: $("content"),
+      limits: $("limits"),
+      approach: $("approach"),
+      verify: $("verify"),
 
-    btnGenerate: $("btnGenerate"),
-    btnCopy: $("btnCopy"),
-    btnReset: $("btnReset"),
+      result: $("result"),
+      toast: $("toast"),
 
-    scorePill: $("scorePill"),
-    scoreBar: $("scoreBar"),
-    checks: $("checks"),
+      btnGenerate: $("btnGenerate"),
+      btnCopy: $("btnCopy"),
+      btnReset: $("btnReset"),
 
-    dotState: $("dotState"),
-    stateLabel: $("stateLabel"),
-    genBadge: $("genBadge"),
+      scorePill: $("scorePill"),
+      scoreBar: $("scoreBar"),
+      checks: $("checks"),
 
-    c_context: $("c_context"),
-    c_where: $("c_where"),
-    c_action: $("c_action"),
-    c_content: $("c_content"),
-    c_limits: $("c_limits"),
-    c_approach: $("c_approach"),
-    c_verify: $("c_verify"),
-  };
+      dotState: $("dotState"),
+      stateLabel: $("stateLabel"),
+      genBadge: $("genBadge"),
 
-  const vagueMarkers = [
-    "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
-    "make it better","optimize","improve"
-  ];
-  const actionVerbsFR = ["ajouter","remplacer","modifier","déplacer","supprimer","réécrire","insérer","mettre à jour","transformer","calculer","afficher"];
-  const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
-
-  function countChars(v){ return (v || "").trim().length; }
-  function setCounter(el, v){ if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; }
-
-  function looksVagueSection(text, kind){
-    const t = (text || "").trim();
-    if(!t) return true;
-    const low = t.toLowerCase();
-    const hasVague = vagueMarkers.some(m => low.includes(m));
-
-    if(kind === "context"){
-      const hasUrl = /(https?:\/\/|www\.)/i.test(t);
-      const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)/i.test(t);
-      if(t.length < 30) return true;
-      if(!hasUrl && !hasState) return true;
-      if(hasVague && !hasUrl && !hasState) return true;
-      return false;
-    }
-
-    if(kind === "where"){
-      const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)/i.test(t);
-      const hasSpecific = /["“”']|\b(iPhone|forfait|€/mois|prix)\b/i.test(t);
-      if(t.length < 20) return true;
-      if(!hasTargetHint && !hasSpecific) return true;
-      if(hasVague && !hasTargetHint) return true;
-      return false;
-    }
-
-    if(kind === "action"){
-      const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
-      if(t.length < 10) return true;
-      if(!hasVerb) return true;
-      if(hasVague) return true;
-      return false;
-    }
-
-    if(kind === "content"){
-      const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
-      if(t.length < 12) return true;
-      if(hasVague && !hasConcrete) return true;
-      if(!hasConcrete) return true;
-      return false;
-    }
-
-    if(kind === "limits"){ return t.length < 18; }
-    if(kind === "approach"){ return t.length < 18; }
-
-    return false;
-  }
-
-  function needsApproachFromContext(){
-    const t = `${els.context.value} ${els.where.value}`.toLowerCase();
-    return /(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)/i.test(t);
-  }
-
-  function computeQuality(){
-    const missing = [];
-    const warnings = [];
-
-    const ctx = els.context.value.trim();
-    const whr = els.where.value.trim();
-    const act = els.action.value.trim();
-    const cnt = els.content.value.trim();
-    const lim = els.limits.value.trim();
-    const app = els.approach.value.trim();
-
-    if(!ctx || looksVagueSection(ctx,"context")){
-      missing.push({
-        key:"Contexte",
-        t:"Contexte insuffisant",
-        d:"Ajoute l’URL + au moins 1 état (initial / après clic / overlay / dynamique).",
-        example:"URL: https://… / listing. Appliquer au chargement + après clic “voir tout” + overlay détail."
-      });
-    }
-    if(!whr || looksVagueSection(whr,"where")){
-      missing.push({
-        key:"Où",
-        t:"Où trop flou",
-        d:"Indique l’élément ciblé ET/OU la position exacte de la modification.",
-        example:"Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image, centré."
-      });
-    }
-    if(!act || looksVagueSection(act,"action")){
-      missing.push({
-        key:"Action",
-        t:"Action manquante",
-        d:"Utilise un verbe clair (ajouter / remplacer / calculer / déplacer…).",
-        example:"Remplacer la ligne au-dessus du prix."
-      });
-    }
-    if(!cnt || looksVagueSection(cnt,"content")){
-      missing.push({
-        key:"Contenu",
-        t:"Contenu / format manquant",
-        d:"Donne le texte exact OU un format + formule (si calcul).",
-        example:"“À partir d’1€ …” OU “Afficher 9,99€/mois = prix + |remise|”."
-      });
-    }
-
-    if(!lim){
-      warnings.push({
-        key:"Limites",
-        t:"Limites absentes (reco)",
-        d:"Ajoute les garde-fous (charte/fond/typo/layout).",
-        example:"Ne pas modifier le layout. Respecter fond greige + typographie."
-      });
-    } else if(looksVagueSection(lim,"limits")){
-      warnings.push({
-        key:"Limites",
-        t:"Limites trop courtes",
-        d:"Sois concret sur ce qui ne doit pas bouger.",
-        example:"Ne pas changer la grille, tailles de typo, couleurs."
-      });
-    }
-
-    const needApp = needsApproachFromContext();
-    if(needApp && !app){
-      warnings.push({
-        key:"Approche",
-        t:"Approche manquante (reco forte)",
-        d:"Comme c’est dynamique (overlay/ajouts), précise ré-application + idempotence.",
-        example:"MutationObserver + apply() idempotent (data-processed) + overlays."
-      });
-    } else if(app && looksVagueSection(app,"approach")){
-      warnings.push({
-        key:"Approche",
-        t:"Approche trop courte",
-        d:"Décris : ré-application, idempotence, overlay open/close, fallback sans erreurs.",
-        example:"Réappliquer à chaque ajout DOM; ne jamais dupliquer; fallback silencieux."
-      });
-    }
-
-    let score = 100;
-    score -= missing.length * 28;
-    score -= warnings.length * 12;
-    score = Math.max(0, Math.min(100, score));
-
-    const ready = (missing.length === 0 && score >= 70);
-    const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
-    return {score, ready, state, missing, warnings, needApp};
-  }
-
-  function renderChecks(q){
-    const items = [];
-
-    const add = (state, title, desc) => {
-      const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
-      items.push(`
-        <div class="item ${state}">
-          <div class="ico">${icon}</div>
-          <div>
-            <p class="itT">${title}</p>
-            <p class="itD">${desc}</p>
-          </div>
-        </div>
-      `);
+      c_context: $("c_context"),
+      c_where: $("c_where"),
+      c_action: $("c_action"),
+      c_content: $("c_content"),
+      c_limits: $("c_limits"),
+      c_approach: $("c_approach"),
+      c_verify: $("c_verify"),
     };
 
-    const ctxOk = els.context.value.trim() && !looksVagueSection(els.context.value,"context");
-    add(ctxOk ? "ok" : "bad", "Contexte", ctxOk ? "OK — URL/états décrits." : "Manque : URL + états (initial / après clic / overlay).");
+    // If core buttons missing, show a visible error in the result box
+    if (!els.btnGenerate || !els.btnCopy || !els.btnReset) {
+      if (els.result) {
+        els.result.value =
+          "❌ Erreur markup : btnGenerate / btnCopy / btnReset introuvable.\n" +
+          "Vérifie les IDs dans le HTML (btnGenerate, btnCopy, btnReset).";
+      }
+      return;
+    }
 
-    const whereOk = els.where.value.trim() && !looksVagueSection(els.where.value,"where");
-    add(whereOk ? "ok" : "bad", "Où (cible/position)", whereOk ? "OK — élément/position identifiables." : "Manque : élément ciblé + position exacte.");
+    const vagueMarkers = [
+      "améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe",
+      "make it better","optimize","improve"
+    ];
+    const actionVerbsFR = ["ajouter","remplacer","modifier","déplacer","supprimer","réécrire","insérer","mettre à jour","transformer","calculer","afficher"];
+    const actionVerbsEN = ["add","replace","change","move","remove","rewrite","insert","update","transform","calculate","display"];
 
-    const actOk = els.action.value.trim() && !looksVagueSection(els.action.value,"action");
-    add(actOk ? "ok" : "bad", "Action", actOk ? "OK — verbe d’action clair." : "Manque : verbe (ajouter/remplacer/calculer…).");
+    const countChars = (v) => (v || "").trim().length;
+    const setCounter = (el, v) => { if(el) el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; };
 
-    const cntOk = els.content.value.trim() && !looksVagueSection(els.content.value,"content");
-    add(cntOk ? "ok" : "bad", "Contenu / format", cntOk ? "OK — texte exact ou format/formule." : "Manque : texte exact OU format/formule.");
+    function looksVagueSection(text, kind){
+      const t = (text || "").trim();
+      if(!t) return true;
+      const low = t.toLowerCase();
+      const hasVague = vagueMarkers.some(m => low.includes(m));
 
-    add(els.limits.value.trim() ? "ok" : "warn", "Limites", els.limits.value.trim() ? "OK — garde-fous présents." : "Recommandé : charte/fond/typo/layout.");
-    add(!q.needApp ? "ok" : (els.approach.value.trim() ? "ok" : "warn"), "Approche (robustesse)",
-      !q.needApp ? "N/A — pas d’indice fort de dynamisme." : (els.approach.value.trim() ? "OK — dynamique cadré." : "Recommandé : ré-application + idempotence + overlays."));
+      if(kind === "context"){
+        const hasUrl = /(https?:\/\/|www\.)/i.test(t);
+        const hasState = /(chargement|initial|overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|scroll|ajax)/i.test(t);
+        if(t.length < 30) return true;
+        if(!hasUrl && !hasState) return true;
+        if(hasVague && !hasUrl && !hasState) return true;
+        return false;
+      }
 
-    add(els.verify.value.trim() ? "ok" : "warn", "Vérification", els.verify.value.trim() ? "OK — critères décrits." : "Optionnel : persistance + overlay + style.");
+      if(kind === "where"){
+        const hasTargetHint = /(tuile|carte|bloc|section|bouton|cta|prix|image|h1|titre|ligne|au-dessus|en dessous|sous|centré|droite|gauche|overlay|modal|listing)/i.test(t);
+        const hasSpecific = /["“”']|\b(iPhone|forfait|€/mois|prix)\b/i.test(t);
+        if(t.length < 20) return true;
+        if(!hasTargetHint && !hasSpecific) return true;
+        if(hasVague && !hasTargetHint) return true;
+        return false;
+      }
 
-    const miss = [...q.missing, ...q.warnings];
-    if(miss.length){
-      items.push(`<div style="margin-top:6px;"></div>`);
-      miss.slice(0, 8).forEach(m => {
-        const isBad = q.missing.includes(m);
+      if(kind === "action"){
+        const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
+        if(t.length < 10) return true;
+        if(!hasVerb) return true;
+        if(hasVague) return true;
+        return false;
+      }
+
+      if(kind === "content"){
+        const hasConcrete = /["“”']|\b\d+([,.]\d+)?\b|€|\/mois|format|formule|calcul/i.test(t);
+        if(t.length < 12) return true;
+        if(hasVague && !hasConcrete) return true;
+        if(!hasConcrete) return true;
+        return false;
+      }
+
+      if(kind === "limits"){ return t.length < 18; }
+      if(kind === "approach"){ return t.length < 18; }
+
+      return false;
+    }
+
+    function needsApproachFromContext(){
+      const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
+      return /(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)/i.test(t);
+    }
+
+    function computeQuality(){
+      const missing = [];
+      const warnings = [];
+
+      const ctx = (els.context?.value || "").trim();
+      const whr = (els.where?.value || "").trim();
+      const act = (els.action?.value || "").trim();
+      const cnt = (els.content?.value || "").trim();
+      const lim = (els.limits?.value || "").trim();
+      const app = (els.approach?.value || "").trim();
+
+      if(!ctx || looksVagueSection(ctx,"context")){
+        missing.push({
+          key:"Contexte",
+          d:"Ajoute l’URL + au moins 1 état (initial / après clic / overlay / dynamique).",
+          example:"URL: https://… / listing. Appliquer au chargement + après clic “voir tout” + overlay détail."
+        });
+      }
+      if(!whr || looksVagueSection(whr,"where")){
+        missing.push({
+          key:"Où",
+          d:"Indique l’élément ciblé ET/OU la position exacte de la modification.",
+          example:"Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image, centré."
+        });
+      }
+      if(!act || looksVagueSection(act,"action")){
+        missing.push({
+          key:"Action",
+          d:"Utilise un verbe clair (ajouter / remplacer / calculer / déplacer…).",
+          example:"Remplacer la ligne au-dessus du prix."
+        });
+      }
+      if(!cnt || looksVagueSection(cnt,"content")){
+        missing.push({
+          key:"Contenu",
+          d:"Donne le texte exact OU un format + formule (si calcul).",
+          example:"“À partir d’1€ …” OU “Afficher 9,99€/mois = prix + |remise|”."
+        });
+      }
+
+      if(!lim){
+        warnings.push({
+          key:"Limites",
+          d:"Ajoute les garde-fous (charte/fond/typo/layout).",
+          example:"Ne pas modifier le layout. Respecter fond greige + typographie."
+        });
+      }
+
+      const needApp = needsApproachFromContext();
+      if(needApp && !app){
+        warnings.push({
+          key:"Approche",
+          d:"Comme c’est dynamique (overlay/ajouts), précise ré-application + idempotence.",
+          example:"MutationObserver + apply() idempotent (data-processed) + overlays."
+        });
+      }
+
+      let score = 100;
+      score -= missing.length * 28;
+      score -= warnings.length * 12;
+      score = Math.max(0, Math.min(100, score));
+
+      const ready = (missing.length === 0 && score >= 70);
+      const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
+      return {score, ready, state, missing, warnings, needApp};
+    }
+
+    function buildPBXPrompt(q){
+      const blocks = [];
+      blocks.push("Front-end variation only (no back-end changes).");
+      blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
+      blocks.push("\nOù :\n" + (els.where?.value || "").trim());
+      blocks.push("\nAction :\n" + (els.action?.value || "").trim());
+      blocks.push("\nContenu :\n" + (els.content?.value || "").trim());
+
+      if((els.limits?.value || "").trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
+
+      if((els.approach?.value || "").trim()){
+        blocks.push("\nApproche :\n" + els.approach.value.trim());
+      } else if(q.needApp){
+        blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
+      }
+      if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
+
+      blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
+      return blocks.join("\n").trim();
+    }
+
+    function buildMissingPreview(q){
+      const lines = [];
+      lines.push("Ce qui manque pour un prompt PBX exploitable :\n");
+      q.missing.forEach(m => {
+        lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}`);
+        lines.push(`  Ex : ${m.example}\n`);
+      });
+      q.warnings.forEach(w => {
+        lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}`);
+        lines.push(`  Ex : ${w.example}\n`);
+      });
+      return lines.join("\n").trim();
+    }
+
+    function toast(msg){
+      if(!els.toast) return;
+      els.toast.textContent = msg;
+      els.toast.style.display = "block";
+      setTimeout(()=> els.toast.style.display="none", 1600);
+    }
+
+    function renderChecks(q){
+      if(!els.checks) return;
+      const items = [];
+
+      const row = (state, title, desc, example) => {
+        const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
+        const ex = example ? `<br><span style="color: var(--muted2);">Ex : ${example}</span>` : "";
         items.push(`
-          <div class="item ${isBad ? "bad" : "warn"}">
-            <div class="ico">${isBad ? "×" : "!"}</div>
+          <div class="item ${state}">
+            <div class="ico">${icon}</div>
             <div>
-              <p class="itT">${m.key} — ${m.t}</p>
-              <p class="itD">${m.d}<br><span style="color: var(--muted2);">Ex : ${m.example}</span></p>
+              <p class="itT">${title}</p>
+              <p class="itD">${desc}${ex}</p>
             </div>
           </div>
         `);
+      };
+
+      const ctx = (els.context?.value || "").trim();
+      const whr = (els.where?.value || "").trim();
+      const act = (els.action?.value || "").trim();
+      const cnt = (els.content?.value || "").trim();
+
+      row(!ctx || looksVagueSection(ctx,"context") ? "bad" : "ok", "Contexte",
+          !ctx || looksVagueSection(ctx,"context") ? "Manque URL + état(s) (initial / après clic / overlay)." : "OK — exploitable.",
+          "URL: https://… / listing. + overlay/voir tout si présent.");
+
+      row(!whr || looksVagueSection(whr,"where") ? "bad" : "ok", "Où (cible/position)",
+          !whr || looksVagueSection(whr,"where") ? "Manque élément ciblé + position exacte." : "OK — clair.",
+          "Dans la tuile X, sous l’image, centré.");
+
+      row(!act || looksVagueSection(act,"action") ? "bad" : "ok", "Action",
+          !act || looksVagueSection(act,"action") ? "Manque un verbe clair." : "OK — action claire.",
+          "Remplacer / Ajouter / Calculer / Déplacer…");
+
+      row(!cnt || looksVagueSection(cnt,"content") ? "bad" : "ok", "Contenu / format",
+          !cnt || looksVagueSection(cnt,"content") ? "Manque texte exact OU format/formule." : "OK — concret.",
+          "“À partir d’1€ …” OU “9,99€/mois = prix + |remise|”");
+
+      // add missing/warnings list
+      if(q.missing.length || q.warnings.length){
+        items.push(`<div style="margin-top:6px;"></div>`);
+        [...q.missing, ...q.warnings].slice(0, 8).forEach(m => {
+          const isBad = q.missing.includes(m);
+          row(isBad ? "bad" : "warn", `${m.key} — à compléter`, m.d, m.example);
+        });
+      }
+
+      els.checks.innerHTML = items.join("");
+    }
+
+    function updateUI(){
+      setCounter(els.c_context, els.context?.value);
+      setCounter(els.c_where, els.where?.value);
+      setCounter(els.c_action, els.action?.value);
+      setCounter(els.c_content, els.content?.value);
+      setCounter(els.c_limits, els.limits?.value);
+      setCounter(els.c_approach, els.approach?.value);
+      setCounter(els.c_verify, els.verify?.value);
+
+      const q = computeQuality();
+
+      if (els.scorePill) els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
+      if (els.scoreBar) els.scoreBar.style.width = `${q.score}%`;
+
+      if (els.dotState) els.dotState.style.background = q.state === "ready" ? "var(--good)" : (q.state === "warn" ? "var(--warn)" : "var(--bad)");
+      if (els.stateLabel) els.stateLabel.textContent = q.state === "ready" ? "Prompt prêt" : (q.state === "warn" ? "Presque prêt" : "Prompt incomplet");
+      if (els.genBadge) els.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
+
+      renderChecks(q);
+
+      // Persist
+      try{
+        localStorage.setItem(SKEY, JSON.stringify({
+          context: els.context?.value || "",
+          where: els.where?.value || "",
+          action: els.action?.value || "",
+          content: els.content?.value || "",
+          limits: els.limits?.value || "",
+          approach: els.approach?.value || "",
+          verify: els.verify?.value || ""
+        }));
+      }catch(e){}
+
+      return q;
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(SKEY);
+        if(!raw) return;
+        const p = JSON.parse(raw);
+        if(els.context && p.context != null) els.context.value = p.context;
+        if(els.where && p.where != null) els.where.value = p.where;
+        if(els.action && p.action != null) els.action.value = p.action;
+        if(els.content && p.content != null) els.content.value = p.content;
+        if(els.limits && p.limits != null) els.limits.value = p.limits;
+        if(els.approach && p.approach != null) els.approach.value = p.approach;
+        if(els.verify && p.verify != null) els.verify.value = p.verify;
+      }catch(e){}
+    }
+
+    function generate(){
+      const q = updateUI();
+      if(!els.result) return;
+      if(q.ready){
+        els.result.value = buildPBXPrompt(q);
+        toast("Prompt généré ✅");
+      } else {
+        els.result.value = buildMissingPreview(q);
+        toast("À compléter ⚠️");
+      }
+      els.btnCopy.disabled = !els.result.value.trim();
+    }
+
+    async function copy(){
+      const v = (els.result?.value || "").trim();
+      if(!v) return;
+      try{
+        await navigator.clipboard.writeText(v);
+        toast("Copié ✅");
+      }catch(e){
+        // fallback
+        els.result?.select?.();
+        document.execCommand("copy");
+        toast("Copié ✅");
+      }
+    }
+
+    function resetAll(){
+      if(!confirm("Réinitialiser ?")) return;
+      ["context","where","action","content","limits","approach","verify"].forEach(k => {
+        if(els[k]) els[k].value = "";
       });
+      if(els.result) els.result.value = "";
+      els.btnCopy.disabled = true;
+      try{ localStorage.removeItem(SKEY); }catch(e){}
+      updateUI();
+      toast("Réinitialisé ✅");
     }
 
-    els.checks.innerHTML = items.join("");
-  }
-
-  function buildPBXPrompt(q){
-    const blocks = [];
-    blocks.push("Front-end variation only (no back-end changes).");
-
-    blocks.push("\nContexte :\n" + els.context.value.trim());
-    blocks.push("\nOù :\n" + els.where.value.trim());
-    blocks.push("\nAction :\n" + els.action.value.trim());
-    blocks.push("\nContenu :\n" + els.content.value.trim());
-
-    if(els.limits.value.trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
-
-    if(els.approach.value.trim()){
-      blocks.push("\nApproche :\n" + els.approach.value.trim());
-    } else if(q.needApp){
-      blocks.push("\nApproche :\nAppliquer au chargement + réappliquer lors d’ajouts DOM (MutationObserver). Idempotent (pas de doublons). Fonctionner dans overlays si présents. Fallback : ne rien faire si cible introuvable.");
-    }
-
-    if(els.verify.value.trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
-
-    blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
-    return blocks.join("\n").trim();
-  }
-
-  function buildMissingPreview(q){
-    const lines = [];
-    lines.push("Ce qui manque pour un prompt PBX exploitable :\n");
-    q.missing.forEach(m => {
-      lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}`);
-      lines.push(`  Ex : ${m.example}\n`);
+    // Bind inputs safely
+    ["context","where","action","content","limits","approach","verify"].forEach(id=>{
+      const el = $(id);
+      on(el, "input", updateUI);
+      on(el, "change", updateUI);
     });
-    q.warnings.forEach(w => {
-      lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}`);
-      lines.push(`  Ex : ${w.example}\n`);
-    });
-    return lines.join("\n").trim();
-  }
 
-  function toast(msg){
-    els.toast.textContent = msg;
-    els.toast.style.display = "block";
-    setTimeout(()=> els.toast.style.display="none", 1800);
-  }
+    // Bind the 3 CTAs
+    on(els.btnGenerate, "click", generate);
+    on(els.btnCopy, "click", copy);
+    on(els.btnReset, "click", resetAll);
 
-  function updateUI(){
-    setCounter(els.c_context, els.context.value);
-    setCounter(els.c_where, els.where.value);
-    setCounter(els.c_action, els.action.value);
-    setCounter(els.c_content, els.content.value);
-    setCounter(els.c_limits, els.limits.value);
-    setCounter(els.c_approach, els.approach.value);
-    setCounter(els.c_verify, els.verify.value);
-
-    const q = computeQuality();
-
-    els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
-    els.scoreBar.style.width = `${q.score}%`;
-
-    if(q.state === "ready"){
-      els.scoreBar.style.background = "linear-gradient(90deg, #22C55E, #14B8A6)";
-      els.dotState.style.background = "var(--good)";
-      els.stateLabel.textContent = "Prompt prêt";
-      els.genBadge.textContent = "PBX-ready";
-    } else if(q.state === "warn"){
-      els.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
-      els.dotState.style.background = "var(--warn)";
-      els.stateLabel.textContent = "Presque prêt";
-      els.genBadge.textContent = "Incomplet";
-    } else {
-      els.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
-      els.dotState.style.background = "var(--bad)";
-      els.stateLabel.textContent = "Prompt incomplet";
-      els.genBadge.textContent = "Incomplet";
-    }
-
-    // On garde le bouton "Générer" utilisable, mais on peut le désactiver si tu veux.
-    // Ici: activé tout le temps, il génère soit le prompt final, soit la liste de manques.
-    els.btnGenerate.disabled = false;
-
-    renderChecks(q);
-    save();
-    return q;
-  }
-
-  function save(){
-    const payload = {
-      context: els.context.value,
-      where: els.where.value,
-      action: els.action.value,
-      content: els.content.value,
-      limits: els.limits.value,
-      approach: els.approach.value,
-      verify: els.verify.value
-    };
-    try{ localStorage.setItem(SKEY, JSON.stringify(payload)); }catch(e){}
-  }
-
-  function load(){
-    try{
-      const raw = localStorage.getItem(SKEY);
-      if(!raw) return;
-      const p = JSON.parse(raw);
-      if(p.context != null) els.context.value = p.context;
-      if(p.where != null) els.where.value = p.where;
-      if(p.action != null) els.action.value = p.action;
-      if(p.content != null) els.content.value = p.content;
-      if(p.limits != null) els.limits.value = p.limits;
-      if(p.approach != null) els.approach.value = p.approach;
-      if(p.verify != null) els.verify.value = p.verify;
-    }catch(e){}
-  }
-
-  function generate(){
-    const q = computeQuality();
-    if(q.ready){
-      els.result.value = buildPBXPrompt(q);
-      toast("Prompt généré ✅");
-    } else {
-      els.result.value = buildMissingPreview(q);
-      toast("À compléter ⚠️");
-    }
-    els.btnCopy.disabled = !els.result.value.trim();
-  }
-
-  async function copy(){
-    const v = els.result.value.trim();
-    if(!v) return;
-    try{
-      await navigator.clipboard.writeText(v);
-      toast("Copié ✅");
-    }catch(e){
-      els.result.select();
-      document.execCommand("copy");
-      toast("Copié ✅");
-    }
-  }
-
-  function resetAll(){
-    const ok = confirm("Réinitialiser ?");
-    if(!ok) return;
-    els.context.value = "";
-    els.where.value = "";
-    els.action.value = "";
-    els.content.value = "";
-    els.limits.value = "";
-    els.approach.value = "";
-    els.verify.value = "";
-    els.result.value = "";
-    els.btnCopy.disabled = true;
-    try{ localStorage.removeItem(SKEY); }catch(e){}
+    // Init
+    load();
     updateUI();
-    toast("Réinitialisé ✅");
-  }
-
-  // watchers
-  ["context","where","action","content","limits","approach","verify"].forEach(id=>{
-    $(id).addEventListener("input", updateUI);
-    $(id).addEventListener("change", updateUI);
   });
-
-  // buttons (keep these 3 only)
-  els.btnGenerate.addEventListener("click", generate);
-  els.btnCopy.addEventListener("click", copy);
-  els.btnReset.addEventListener("click", resetAll);
-
-  // init
-  load();
-  updateUI();
 </script>
 </body>
 </html>
