@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PBX Prompt Builder — Brief Qualité (anti-crédits grillés)</title>
+  <title>PBX Prompt Builder — Prompt utile (anti-crédits)</title>
   <style>
     :root{
       --bg:#F6F7FB;
@@ -58,7 +58,7 @@
       gap:12px;
       align-items:flex-start;
       min-width: 280px;
-      flex: 1 1 680px;
+      flex: 1 1 740px;
     }
     .logo{
       width:44px; height:44px;
@@ -69,7 +69,7 @@
       align-items:center;
       justify-content:center;
       color:#fff;
-      font-weight:900;
+      font-weight:950;
       letter-spacing:-0.3px;
       flex-shrink:0;
     }
@@ -84,7 +84,7 @@
       color: var(--muted);
       font-size: 13px;
       line-height:1.35;
-      max-width: 840px;
+      max-width: 960px;
     }
 
     .metaPills{
@@ -143,46 +143,15 @@
     }
     .card .inner{ padding: 16px; }
 
-    /* Step cards */
-    .steps{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    @media (max-width: 820px){ .steps{ grid-template-columns: 1fr 1fr; } }
-    .step{
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.82);
-      padding: 12px;
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .step .n{
-      width:26px; height:26px;
-      border-radius:999px;
-      background: rgba(109,40,217,0.12);
-      color: var(--primary);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight: 950;
-      flex-shrink:0;
-    }
-    .step .t{ margin:0; font-size: 12.6px; font-weight: 900; letter-spacing:-0.1px; }
-    .step .d{ margin:3px 0 0; font-size: 12px; color: var(--muted); line-height:1.35; }
-
-    /* Sections */
-    .section{
+    /* Main prompt block */
+    .hero{
       border: 1px solid var(--line);
       border-radius: 18px;
       background: rgba(255,255,255,0.78);
       padding: 14px;
       margin-bottom: 12px;
     }
-    .shead{
+    .heroHead{
       display:flex;
       justify-content:space-between;
       gap:12px;
@@ -190,9 +159,9 @@
       flex-wrap:wrap;
       margin-bottom: 10px;
     }
-    .sleft{ display:flex; gap:10px; align-items:flex-start; }
-    .sicon{
-      width:34px; height:34px;
+    .heroLeft{ display:flex; gap:10px; align-items:flex-start; }
+    .heroIcon{
+      width:36px; height:36px;
       border-radius: 14px;
       background: linear-gradient(135deg, rgba(109,40,217,0.12), rgba(20,184,166,0.12));
       border: 1px solid rgba(109,40,217,0.18);
@@ -203,9 +172,10 @@
       font-weight: 950;
       flex-shrink:0;
     }
-    .stitle{ margin:0; font-size: 14px; font-weight: 950; letter-spacing:-0.15px; }
-    .sdesc{ margin:3px 0 0; font-size: 12.5px; color: var(--muted); line-height:1.35; }
-    .stags{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .heroTitle{ margin:0; font-size: 14px; font-weight: 950; letter-spacing:-0.15px; }
+    .heroDesc{ margin:3px 0 0; font-size: 12.5px; color: var(--muted); line-height:1.35; }
+
+    .tags{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .tag{
       font-size: 12px;
       padding: 6px 10px;
@@ -222,54 +192,64 @@
       font-weight: 900;
     }
 
-    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .row3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    @media (max-width: 860px){ .row2, .row3{ grid-template-columns: 1fr; } }
-
-    .field{ margin-top: 10px; }
     .label{
       display:flex;
       justify-content:space-between;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap:10px;
       align-items:center;
       flex-wrap:wrap;
+      margin: 10px 0 6px;
     }
     .label span{
       font-size: 12.7px;
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing:-0.1px;
     }
-    .help{
-      font-size: 11.7px;
-      color: var(--muted2);
-    }
-    .counter{
-      font-size: 11.7px;
-      color: var(--muted2);
-      white-space:nowrap;
-    }
+    .help{ font-size: 11.7px; color: var(--muted2); }
+    .counter{ font-size: 11.7px; color: var(--muted2); white-space:nowrap; }
 
-    textarea, input[type="text"], select{
+    textarea, input[type="text"]{
       width:100%;
       border-radius: 14px;
       border: 1px solid var(--line);
       background: rgba(248,250,252,0.85);
-      padding: 10px 11px;
-      font-size: 13.6px;
+      padding: 11px 12px;
+      font-size: 13.8px;
       outline:none;
       transition: border-color .15s, box-shadow .15s, background .15s;
       line-height: 1.35;
     }
-    textarea{ min-height: 88px; resize: vertical; }
-    textarea:focus, input:focus, select:focus{
+    textarea{ min-height: 140px; resize: vertical; }
+    textarea:focus, input:focus{
       border-color: rgba(109,40,217,0.55);
       box-shadow: 0 0 0 3px rgba(109,40,217,0.18);
       background: #fff;
     }
 
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .chip{
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 12.5px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor:pointer;
+      user-select:none;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.04);
+      transition: transform .06s ease, border-color .15s ease;
+    }
+    .chip:active{ transform: translateY(1px); }
+    .chip:hover{ border-color: rgba(109,40,217,0.35); }
+
     .hint{
-      margin-top: 6px;
+      margin-top: 10px;
       padding: 10px 11px;
       border-radius: 14px;
       border: 1px dashed rgba(100,116,139,0.24);
@@ -279,6 +259,32 @@
       line-height: 1.35;
     }
     .hint strong{ color: var(--ink); }
+
+    /* Advanced */
+    details.adv{
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.78);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+    details.adv summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 6px 4px;
+      font-weight: 950;
+      letter-spacing:-0.1px;
+      font-size: 13px;
+    }
+    details.adv summary::-webkit-details-marker{ display:none; }
+    .advSub{ margin: 4px 4px 10px; color: var(--muted); font-size: 12.2px; line-height:1.35; }
+
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 860px){ .row2{ grid-template-columns: 1fr; } }
 
     /* Sidebar */
     .side{ position: sticky; top: 14px; }
@@ -423,7 +429,7 @@
     }
     #result{
       width:100%;
-      min-height: 240px;
+      min-height: 220px;
       border-radius: 16px;
       border: none;
       outline:none;
@@ -456,17 +462,16 @@
       <div class="brand">
         <div class="logo">PBX</div>
         <div>
-          <h1>Prompt Builder — Variation PBX (anti-crédits grillés)</h1>
+          <h1>PBX Prompt Builder — minimal & utile</h1>
           <p class="sub">
-            PBX sert à <strong>générer une variation</strong> sur une page existante. Ce formulaire bloque la génération tant qu’il manque des infos
-            critiques (<strong>where / target / what / constraints / output</strong>). Pas de backend.
+            Objectif : écrire <strong>un prompt de variation</strong> actionnable. On bloque la génération tant que le prompt est trop vague (pour éviter de consommer des crédits pour rien).
           </p>
         </div>
       </div>
 
       <div class="metaPills">
-        <div class="pill"><span class="dot" id="dotState"></span><span id="stateLabel">Brief incomplet</span></div>
-        <div class="pill">Raccourcis : <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span></div>
+        <div class="pill"><span class="dot" id="dotState"></span><span id="stateLabel">Prompt incomplet</span></div>
+        <div class="pill">Raccourci : <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span></div>
       </div>
     </div>
 
@@ -476,302 +481,96 @@
         <div class="card">
           <div class="inner">
 
-            <div class="steps">
-              <div class="step"><div class="n">1</div><div><p class="t">Where</p><p class="d">Page + scope + cible stable.</p></div></div>
-              <div class="step"><div class="n">2</div><div><p class="t">What</p><p class="d">Changement concret (1 variation).</p></div></div>
-              <div class="step"><div class="n">3</div><div><p class="t">How</p><p class="d">Contraintes + responsive + interdits.</p></div></div>
-              <div class="step"><div class="n">4</div><div><p class="t">Output</p><p class="d">Résultat QA-friendly, vérifiable.</p></div></div>
-            </div>
-
-            <!-- 0) Intent -->
-            <div class="section">
-              <div class="shead">
-                <div class="sleft">
-                  <div class="sicon">◎</div>
+            <div class="hero">
+              <div class="heroHead">
+                <div class="heroLeft">
+                  <div class="heroIcon">✦</div>
                   <div>
-                    <p class="stitle">0) Un prompt = une variation (use case unique)</p>
-                    <p class="sdesc">Si tu mélanges plusieurs objectifs, PBX produit des changements incohérents.</p>
+                    <p class="heroTitle">Le prompt (c’est tout ce dont PBX a besoin)</p>
+                    <p class="heroDesc">
+                      Décris <strong>le changement UI</strong> à appliquer sur la page (front-end). Évite “optimiser / améliorer” sans préciser quoi.
+                    </p>
                   </div>
                 </div>
-                <div class="stags">
+                <div class="tags">
                   <span class="tag req">Obligatoire</span>
+                  <span class="tag">1 prompt = 1 crédit</span>
                 </div>
               </div>
 
-              <div class="row2">
-                <div class="field">
-                  <div class="label">
-                    <span>Objectif / KPI principal (recommandé)</span>
-                    <span class="counter" id="c_goal"></span>
-                  </div>
-                  <textarea id="goal" placeholder="Ex : augmenter le clic vers /pricing (CTR du CTA) / réduire l'abandon panier / augmenter soumissions formulaire."></textarea>
-                  <div class="hint"><strong>Pourquoi :</strong> ça guide la variation (angle, promesse, clarté, confiance).</div>
-                </div>
+              <div class="label">
+                <span>What do you want to build or fix ?</span>
+                <span class="counter" id="c_prompt"></span>
+              </div>
+              <textarea id="prompt" placeholder="Ex : Remplace le libellé du bouton CTA “Demander une démo” par “Voir les tarifs” (2–4 mots, sans emoji), sans changer la mise en page."></textarea>
 
-                <div class="field">
-                  <div class="label">
-                    <span>Use case (1 phrase)</span>
-                    <span class="counter" id="c_usecase"></span>
-                  </div>
-                  <input id="useCase" type="text" placeholder="Ex : Modifier le libellé du CTA du bloc pricing pour augmenter le clic." />
-                  <div class="hint"><strong>Anti-erreur :</strong> évite “optimiser la page”, “améliorer l’UX”.</div>
-                </div>
+              <div class="chips" aria-label="Exemples rapides">
+                <div class="chip" data-add="Replace the main CTA text with a clearer, shorter label. Keep layout unchanged.">CTA plus clair</div>
+                <div class="chip" data-add="Rewrite the hero headline to be more specific and benefit-led. Keep the same length.">Headline plus spécifique</div>
+                <div class="chip" data-add="Add a small trust badge next to the main CTA (e.g., 'No credit card'). Keep it subtle and aligned with existing style.">Badge de confiance</div>
+                <div class="chip" data-add="Move the primary CTA above the fold within the hero section. Keep styling consistent.">CTA au-dessus du fold</div>
+                <div class="chip" data-add="Reduce visual clutter in the pricing card area by simplifying spacing and hierarchy. Do not change content.">Hiérarchie pricing</div>
+              </div>
+
+              <div class="hint">
+                <strong>Checklist mental (1 phrase suffit) :</strong>
+                <br>• <strong>Verbe</strong> (Replace / Add / Remove / Move / Rewrite) + <strong>élément</strong> (CTA, H1, badge, input…)
+                <br>• <strong>Détails</strong> (texte exact, longueur, style) si nécessaire
+                <br>• <strong>Limite</strong> (ne pas changer le layout / ne pas toucher à X)
               </div>
             </div>
 
-            <!-- 1) Where -->
-            <div class="section">
-              <div class="shead">
-                <div class="sleft">
-                  <div class="sicon">➊</div>
-                  <div>
-                    <p class="stitle">1) Where — page + cible (stable) + scope</p>
-                    <p class="sdesc">PBX doit savoir précisément où agir. Idéalement : identifiant stable (aria-label, data-testid, texte exact).</p>
-                  </div>
-                </div>
-                <div class="stags">
-                  <span class="tag req">Obligatoire</span>
-                  <span class="tag">Stable ID (reco)</span>
-                </div>
+            <details class="adv" id="adv">
+              <summary>
+                Options avancées (si nécessaire)
+                <span class="help">réduit les itérations</span>
+              </summary>
+              <div class="advSub">
+                Ajoute seulement ce qui aide PBX à ne pas “deviner”. Sinon laisse vide.
               </div>
 
               <div class="row2">
-                <div class="field">
+                <div>
                   <div class="label">
-                    <span>URL / route</span>
-                    <span class="counter" id="c_page"></span>
-                  </div>
-                  <input id="page" type="text" placeholder="Ex : https://site.com/ ou /pricing ou /checkout/step-2" />
-                  <div class="hint">Si tu n’as pas l’URL, indique page + emplacement (“Home > section pricing teaser”).</div>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Élément ciblé (1 principal)</span>
-                    <span class="counter" id="c_target"></span>
-                  </div>
-                  <textarea id="target" placeholder="Ex : Bouton CTA du bloc pricing (texte du bouton uniquement) / H1 hero / microcopy erreur email."></textarea>
-                </div>
-              </div>
-
-              <div class="row2">
-                <div class="field">
-                  <div class="label">
-                    <span>Identifiant stable (recommandé)</span>
-                    <span class="help">anti-variation fragile</span>
-                  </div>
-                  <textarea id="identifier" placeholder="Ex : data-testid='pricing-cta' / aria-label='See pricing' / texte exact : “Voir les offres” (ou CSS en dernier recours)."></textarea>
-                  <div class="hint"><strong>Conseil :</strong> texte exact ou aria/data-testid > CSS fragile.</div>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Scope autorisé (ce qui peut changer)</span>
-                    <span class="counter" id="c_scope"></span>
-                  </div>
-                  <textarea id="scope" placeholder="Ex : Ne modifier que le CTA et éventuellement le sous-texte du bloc. Ne pas toucher au layout global."></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- 2) What -->
-            <div class="section">
-              <div class="shead">
-                <div class="sleft">
-                  <div class="sicon">➋</div>
-                  <div>
-                    <p class="stitle">2) What — changement concret à générer</p>
-                    <p class="sdesc">Décris une variation précise. Pas “améliorer” sans détail : PBX doit exécuter.</p>
-                  </div>
-                </div>
-                <div class="stags">
-                  <span class="tag req">Obligatoire</span>
-                  <span class="tag">1 variation</span>
-                </div>
-              </div>
-
-              <div class="row3">
-                <div class="field">
-                  <div class="label">
-                    <span>Type de variation</span>
-                    <span class="help">déclenche contraintes</span>
-                  </div>
-                  <select id="variationType">
-                    <option value="copy">Copy / microcopy (texte)</option>
-                    <option value="layout">Layout / hiérarchie (front-end)</option>
-                    <option value="visual">Visuel / style (front-end)</option>
-                    <option value="component">Nouveau composant (front-end)</option>
-                  </select>
-                  <div class="hint"><strong>Le plus safe :</strong> copy-only (moins de risques responsive).</div>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Changement exact (livrable)</span>
-                    <span class="counter" id="c_action"></span>
-                  </div>
-                  <textarea id="action" placeholder="Ex : Remplacer le libellé du CTA par une formulation bénéfice, plus explicite, pour augmenter le clic."></textarea>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Hypothèse (reco)</span>
-                    <span class="help">why it works</span>
-                  </div>
-                  <textarea id="hypothesis" placeholder="Ex : CTA plus explicite => meilleure compréhension de l’étape suivante => + clic."></textarea>
-                </div>
-              </div>
-
-              <div class="row2">
-                <div class="field">
-                  <div class="label">
-                    <span>Audience / contexte</span>
-                    <span class="counter" id="c_audience"></span>
-                  </div>
-                  <textarea id="audience" placeholder="Ex : prospects B2B, nouveaux visiteurs, mobile majoritaire, pas experts du produit."></textarea>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Contenu utile (value prop, preuves, objections)</span>
-                    <span class="counter" id="c_data"></span>
-                  </div>
-                  <textarea id="data" placeholder="Ex : preuve = 2 000 clients; avantage = setup 10 min; objection = prix; ton = premium simple."></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3) How -->
-            <div class="section">
-              <div class="shead">
-                <div class="sleft">
-                  <div class="sicon">➌</div>
-                  <div>
-                    <p class="stitle">3) How — contraintes, interdits, responsive</p>
-                    <p class="sdesc">Les garde-fous qui évitent les sorties inutilisables (et donc les crédits consommés).</p>
-                  </div>
-                </div>
-                <div class="stags">
-                  <span class="tag req">Obligatoire</span>
-                  <span class="tag">No backend</span>
-                </div>
-              </div>
-
-              <div class="row2">
-                <div class="field">
-                  <div class="label">
-                    <span>Contraintes (hard rules)</span>
+                    <span>Contraintes / interdits</span>
                     <span class="counter" id="c_constraints"></span>
                   </div>
-                  <textarea id="constraints" placeholder="Ex : FR. 2–4 mots. Pas d’emoji. Pas de promesse (‘garanti’). Ton rassurant."></textarea>
+                  <textarea id="constraints" placeholder="Ex : FR. 2–4 mots. Pas d’emoji. Pas de claims non prouvables. Ne pas modifier le layout."></textarea>
                 </div>
-
-                <div class="field">
+                <div>
                   <div class="label">
-                    <span>À éviter (ban list)</span>
-                    <span class="counter" id="c_avoid"></span>
+                    <span>Responsive (si tu changes layout)</span>
+                    <span class="counter" id="c_responsive"></span>
                   </div>
-                  <textarea id="avoid" placeholder="Ex : éviter “Achetez”, “Urgent”, “Promo”, jargon, anglicismes, claims non prouvables."></textarea>
+                  <textarea id="responsive" placeholder="Ex : doit rester clean sur mobile, pas de scroll horizontal, garder la grille existante."></textarea>
                 </div>
               </div>
 
               <div class="row2">
-                <div class="field">
+                <div>
                   <div class="label">
-                    <span>Responsive / devices</span>
-                    <span class="help" id="respHelp">obligatoire si layout/visuel/composant</span>
-                  </div>
-                  <textarea id="responsive" placeholder="Ex : doit fonctionner desktop + mobile; ne pas casser la grille; conserver spacing/tailles; mobile prioritaire."></textarea>
-                  <div class="hint"><strong>Important :</strong> si tu touches au layout/visuel/composant, précise ce qui ne doit pas bouger.</div>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Style / charte (reco)</span>
-                    <span class="help">cohérence marque</span>
-                  </div>
-                  <textarea id="style" placeholder="Ex : style sobre, pas agressif, vocabulaire simple, tutoiement, cohérent marque."></textarea>
-                </div>
-              </div>
-
-              <div class="field" style="margin-top:12px;">
-                <div class="label">
-                  <span>Contraintes techniques (optionnel, front-end uniquement)</span>
-                  <span class="help">éviter bruit back-end</span>
-                </div>
-                <textarea id="tech" placeholder="Ex : On peut changer uniquement le texte; pas de nouvelle API; pas de logique serveur; pas de refonte globale."></textarea>
-                <div class="hint"><strong>Rappel :</strong> PBX = variation front-end. Ne demande pas de backend.</div>
-              </div>
-            </div>
-
-            <!-- 4) Output -->
-            <div class="section">
-              <div class="shead">
-                <div class="sleft">
-                  <div class="sicon">➍</div>
-                  <div>
-                    <p class="stitle">4) Output — résultat QA-friendly</p>
-                    <p class="sdesc">Format clair = vérification rapide en Simulation Mode.</p>
-                  </div>
-                </div>
-                <div class="stags">
-                  <span class="tag req">Obligatoire</span>
-                  <span class="tag">QA</span>
-                </div>
-              </div>
-
-              <div class="row2">
-                <div class="field">
-                  <div class="label">
-                    <span>Format attendu</span>
+                    <span>Format de sortie (rarement utile)</span>
                     <span class="counter" id="c_format"></span>
                   </div>
-                  <textarea id="format" placeholder="Ex : 1) Résumé (1–2 phrases) 2) Changements exacts (liste) 3) Checklist QA (5 points max)."></textarea>
+                  <textarea id="format" placeholder="Ex : Donne 1 résultat final + checklist QA (5 points max)."></textarea>
                 </div>
-
-                <div class="field">
+                <div>
                   <div class="label">
-                    <span>Politique si info manquante</span>
-                    <span class="help">anti-devinette</span>
+                    <span>Si info manquante</span>
+                    <span class="help">anti-crédits</span>
                   </div>
-                  <select id="missingPolicy">
-                    <option value="ask" selected>Poser jusqu’à 3 questions puis attendre</option>
-                    <option value="assume">Faire jusqu’à 3 hypothèses explicites puis produire</option>
-                  </select>
-                  <div class="hint"><strong>Recommandé :</strong> questions d’abord (économie de crédits).</div>
+                  <input id="missing" type="text" value="If something important is missing, ask up to 3 questions and WAIT." />
                 </div>
               </div>
+            </details>
 
-              <div class="row2">
-                <div class="field">
-                  <div class="label">
-                    <span>Mode</span>
-                    <span class="help">reco</span>
-                  </div>
-                  <select id="mode">
-                    <option value="strict" selected>Strict (minimal, scopé)</option>
-                    <option value="creative">Créatif (plus audacieux, toujours scopé)</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <div class="label">
-                    <span>Exemples (optionnel)</span>
-                    <span class="help">stabilise</span>
-                  </div>
-                  <textarea id="examples" placeholder="Bon : “Voir les prix” / À éviter : “Achetez maintenant !!!”"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- Result -->
             <div class="card">
               <div class="inner">
                 <div class="resultHead">
-                  <h3>Prompt à coller dans PBX</h3>
+                  <h3>Prompt PBX prêt à coller</h3>
                   <span class="badge" id="genBadge">Incomplet</span>
                 </div>
-                <textarea id="result" readonly placeholder="Clique “Valider (questions)” ou “Générer (PBX-ready)”."></textarea>
+                <textarea id="result" readonly placeholder="Clique “Valider” (questions) ou “Générer”."></textarea>
                 <div class="toast" id="toast">Copié ✅</div>
               </div>
             </div>
@@ -793,15 +592,14 @@
             <div class="checks" id="checks"></div>
 
             <div class="actions">
-              <button class="btn ghost" id="btnValidate" type="button">🧪 Valider le brief (questions)</button>
-              <button class="btn primary" id="btnGenerate" type="button" disabled>⚙️ Générer le prompt (PBX-ready)</button>
+              <button class="btn ghost" id="btnValidate" type="button">🧪 Valider (3 questions max)</button>
+              <button class="btn primary" id="btnGenerate" type="button" disabled>⚙️ Générer le prompt</button>
               <button class="btn ghost" id="btnCopy" type="button" disabled>📋 Copier</button>
               <button class="btn danger" id="btnReset" type="button">🗑️ Réinitialiser</button>
             </div>
 
             <div class="mini">
-              <strong>Valider</strong> produit des questions ciblées (max 3) si des infos manquent.<br>
-              <strong>Générer</strong> est bloqué tant que le brief n’est pas “PBX-ready”.
+              Le score bloque la génération si le prompt est trop vague (pour éviter de brûler des crédits).
             </div>
           </div>
         </div>
@@ -813,30 +611,15 @@
 <script>
   const $ = (id) => document.getElementById(id);
 
-  const fields = {
-    goal: $("goal"),
-    useCase: $("useCase"),
-    page: $("page"),
-    target: $("target"),
-    identifier: $("identifier"),
-    scope: $("scope"),
+  const SKEY = "pbx_minimal_prompt_v1";
 
-    variationType: $("variationType"),
-    action: $("action"),
-    hypothesis: $("hypothesis"),
-    audience: $("audience"),
-    data: $("data"),
-
+  const els = {
+    prompt: $("prompt"),
     constraints: $("constraints"),
-    avoid: $("avoid"),
     responsive: $("responsive"),
-    style: $("style"),
-    tech: $("tech"),
-
     format: $("format"),
-    examples: $("examples"),
-    missingPolicy: $("missingPolicy"),
-    mode: $("mode"),
+    missing: $("missing"),
+    adv: $("adv"),
 
     result: $("result"),
     toast: $("toast"),
@@ -854,123 +637,83 @@
     stateLabel: $("stateLabel"),
     genBadge: $("genBadge"),
 
-    respHelp: $("respHelp"),
-
-    // counters
-    c_goal: $("c_goal"),
-    c_usecase: $("c_usecase"),
-    c_page: $("c_page"),
-    c_target: $("c_target"),
-    c_scope: $("c_scope"),
-    c_action: $("c_action"),
-    c_audience: $("c_audience"),
-    c_data: $("c_data"),
+    c_prompt: $("c_prompt"),
     c_constraints: $("c_constraints"),
-    c_avoid: $("c_avoid"),
-    c_format: $("c_format")
+    c_responsive: $("c_responsive"),
+    c_format: $("c_format"),
   };
 
-  const KEY = "pbx_brief_quality_v3";
+  const vagueMarkers = ["améliorer","optimiser","faire mieux","rendre plus","peaufiner","comme tu veux","à ta guise","peu importe","make it better","optimize"];
+  const actionVerbs = ["replace","rewrite","change","add","remove","move","reorder","insert","update","shorten","simplify","highlight","increase","decrease","swap","rename","restyle"];
+  const uiKeywords = ["cta","button","headline","h1","title","banner","modal","form","field","input","label","pricing","card","badge","tooltip","navbar","header","footer","hero","copy","text","microcopy"];
 
-  function nonEmpty(v, min=10){ return (v || "").trim().length >= min; }
+  function countChars(v){ return (v || "").trim().length; }
+  function setCounter(el, v){ el.textContent = countChars(v) ? `${countChars(v)} car.` : ""; }
 
-  const vagueMarkers = ["améliorer","optimiser","faire mieux","rendre plus","augmenter","peaufiner","comme tu veux","à ta guise","peu importe"];
   function looksVague(text){
     if(!text) return true;
     const t = text.trim().toLowerCase();
-    if(t.length < 28) return true;
-    const hasV = vagueMarkers.some(m => t.includes(m));
-    const hasConcrete = /(\d+)|(?:cta)|(?:headline)|(?:tableau)|(?:checklist)|(?:mots)|(?:caract)|(?:mobile)|(?:desktop)|(?:scope)|(?:aria)|(?:data-testid)/i.test(text);
-    return hasV && !hasConcrete;
-  }
-  function multiObjective(text){
-    if(!text) return false;
-    const t = (" " + text.toLowerCase() + " ");
-    const hits = [" et ", " puis ", " en même temps ", " à la fois ", " + "]
-      .reduce((acc, k) => acc + (t.split(k).length - 1), 0);
-    return hits >= 4;
-  }
-  function requiresResponsive(){
-    const t = fields.variationType.value;
-    return (t === "layout" || t === "visual" || t === "component");
+    if(t.length < 40) return true;
+
+    const hasVague = vagueMarkers.some(m => t.includes(m));
+    const hasVerb = actionVerbs.some(v => t.includes(v));
+    const hasUI = uiKeywords.some(k => t.includes(k));
+    const hasConcrete = /["“”']|(\d+)|(?:px)|(?:mobile)|(?:desktop)|(?:without changing)|(?:keep layout)|(?:ne pas)/i.test(text);
+
+    // vague if it triggers vague markers OR lacks core structure
+    if(hasVague && !hasConcrete) return true;
+    if(!hasVerb) return true;
+    if(!hasUI && !hasConcrete) return true;
+    return false;
   }
 
-  function setCounter(el, value){
-    const len = (value || "").trim().length;
-    el.textContent = len ? `${len} car.` : "";
+  function needsResponsive(text){
+    if(!text) return false;
+    const t = text.toLowerCase();
+    return /(layout|grid|spacing|margin|padding|move|reorder|header|navbar|hero|card)/i.test(t);
   }
 
   function computeQuality(){
     const missing = [];
     const warnings = [];
 
-    // Use case
-    if(!nonEmpty(fields.useCase.value, 18)){
-      missing.push({k:"useCase", t:"Use case unique", d:"Réécris en 1 phrase / 1 objectif.", f:"Ex : “Changer le CTA du pricing teaser pour augmenter le clic.”"});
-    } else if(multiObjective(fields.useCase.value)){
-      warnings.push({k:"useCase", t:"Use case potentiellement multiple", d:"On détecte plusieurs objectifs.", f:"Découpe en 2 prompts (1 variation = 1 objectif)."});
+    const p = els.prompt.value.trim();
+    const c = els.constraints.value.trim();
+    const r = els.responsive.value.trim();
+
+    if(!p || p.length < 40){
+      missing.push({t:"Prompt non exploitable", d:"Trop court. Ajoute verbe + élément + détail.", lvl:"bad"});
+    } else if(looksVague(p)){
+      missing.push({t:"Prompt trop vague", d:"Évite “optimiser/améliorer”. Dis quoi changer exactement.", lvl:"bad"});
+    } else {
+      // ok
     }
 
-    // Where
-    const hasLocation = nonEmpty(fields.page.value, 6) || nonEmpty(fields.scope.value, 24);
-    if(!hasLocation){
-      missing.push({k:"where", t:"Where (page/emplacement)", d:"Indique l’URL/route ou l’emplacement précis.", f:"Ex : “/ — section pricing teaser avant FAQ.”"});
-    }
-    if(!nonEmpty(fields.target.value, 16)){
-      missing.push({k:"target", t:"Cible précise", d:"Indique l’élément exact (1 principal).", f:"Ex : “libellé du CTA du bloc pricing”."});
-    }
-    if(!nonEmpty(fields.identifier.value, 8)){
-      warnings.push({k:"identifier", t:"Identifiant stable (reco)", d:"Stabilise l’application de la variation.", f:"aria-label / data-testid / texte exact."});
-    }
-    if(!nonEmpty(fields.scope.value, 18)){
-      warnings.push({k:"scope", t:"Scope (reco)", d:"Évite que PBX déborde sur d’autres zones.", f:"Ex : “ne modifier que le CTA + sous-texte”."});
+    // Reco: constraints
+    if(!c){
+      warnings.push({t:"Contraintes (reco)", d:"Ajoute 1–2 règles : langue, longueur, interdits.", lvl:"warn"});
     }
 
-    // What
-    if(!nonEmpty(fields.action.value, 28) || looksVague(fields.action.value)){
-      missing.push({k:"what", t:"What (changement exact)", d:"Décris le changement concret à produire.", f:"Ex : “Remplacer le CTA par 2–4 mots, bénéfice, plus explicite.”"});
+    // Responsive needed when layout-ish
+    if(needsResponsive(p) && !r){
+      warnings.push({t:"Responsive (reco)", d:"Si tu touches au layout, précise mobile/desktop.", lvl:"warn"});
     }
 
-    // How
-    const hasRules = nonEmpty(fields.constraints.value, 12) || nonEmpty(fields.avoid.value, 8);
-    if(!hasRules){
-      missing.push({k:"constraints", t:"Contraintes", d:"Ajoute au moins 1 hard rule + 1 interdit.", f:"Ex : FR, 2–4 mots, pas d’emoji; éviter ‘acheter’."});
-    }
-
-    if(requiresResponsive() && !nonEmpty(fields.responsive.value, 14)){
-      missing.push({k:"responsive", t:"Responsive", d:"Obligatoire pour layout/visuel/composant.", f:"Ex : desktop+mobile, ne pas casser la grille, conserver spacing."});
-    }
-
-    // Output
-    if(!nonEmpty(fields.format.value, 22)){
-      missing.push({k:"format", t:"Format exploitable", d:"Impose un format QA-friendly.", f:"Résumé + changements exacts + checklist QA (5 points)."});
-    }
-
-    // KPI is a warning (reco)
-    if(!nonEmpty(fields.goal.value, 14)){
-      warnings.push({k:"goal", t:"KPI / succès (reco)", d:"Ajoute un KPI pour aligner l’angle.", f:"CTR CTA / conversion / abandon / clarté / confiance."});
-    }
-
-    // Backend smell
-    if(/backend|serveur|api|permission|database|bdd|auth|paiement|pricing engine|business rule/i.test(
-      (fields.tech.value||"") + " " + (fields.action.value||"")
-    )){
-      warnings.push({k:"backend", t:"Risque backend", d:"PBX ne gère pas la logique serveur.", f:"Reste sur UI/copy/layout front-end scopé."});
-    }
-
-    // score
+    // Score
     let score = 100;
-    score -= missing.length * 18;
-    score -= warnings.length * 6;
+    score -= missing.length * 45;
+    score -= warnings.length * 12;
     score = Math.max(0, Math.min(100, score));
 
-    const ready = (missing.length === 0 && score >= 74);
-    const state = ready ? "ready" : (score >= 58 ? "warn" : "bad");
+    const ready = (missing.length === 0 && score >= 70);
+    const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
+
     return {score, ready, state, missing, warnings};
   }
 
   function renderChecks(q){
     const items = [];
+
     const add = (state, title, desc) => {
       const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
       items.push(`
@@ -984,437 +727,239 @@
       `);
     };
 
-    const okUseCase = nonEmpty(fields.useCase.value, 18) && !multiObjective(fields.useCase.value);
-    add(okUseCase ? "ok" : (nonEmpty(fields.useCase.value, 18) ? "warn" : "bad"),
-        "Use case unique",
-        okUseCase ? "OK — 1 variation = 1 objectif." : "Réécris en 1 phrase / 1 objectif.");
+    const p = els.prompt.value.trim();
+    const okPrompt = p.length >= 40 && !looksVague(p);
+    add(okPrompt ? "ok" : "bad", "Prompt actionnable", okPrompt ? "OK — PBX peut exécuter." : "Ajoute verbe + élément + détail. Pas “optimiser” seul.");
 
-    const hasLocation = nonEmpty(fields.page.value, 6) || nonEmpty(fields.scope.value, 24);
-    add(hasLocation ? "ok" : "bad",
-        "Where (page/emplacement)",
-        hasLocation ? "OK — la page/emplacement est défini." : "Ajoute URL/route ou emplacement précis.");
+    add(els.constraints.value.trim() ? "ok" : "warn", "Contraintes (reco)", els.constraints.value.trim() ? "OK — garde-fous présents." : "Ajoute langue/longueur/interdits pour stabiliser.");
 
-    const okTarget = nonEmpty(fields.target.value, 16);
-    add(okTarget ? "ok" : "bad",
-        "Target précis",
-        okTarget ? "OK — élément principal défini." : "Indique l’élément exact (CTA label / H1 / microcopy).");
-
-    const okIdentifier = nonEmpty(fields.identifier.value, 8);
-    add(okIdentifier ? "ok" : "warn",
-        "Identifiant stable (reco)",
-        okIdentifier ? "OK — plus robuste." : "Ajoute aria-label / data-testid / texte exact.");
-
-    const okWhat = nonEmpty(fields.action.value, 28) && !looksVague(fields.action.value);
-    add(okWhat ? "ok" : "bad",
-        "What (changement concret)",
-        okWhat ? "OK — action exploitable." : "Décris le changement concret (pas “optimiser”).");
-
-    const okRules = nonEmpty(fields.constraints.value, 12) || nonEmpty(fields.avoid.value, 8);
-    add(okRules ? "ok" : "bad",
-        "Contraintes / interdits",
-        okRules ? "OK — garde-fous présents." : "Ajoute hard rules + ban list.");
-
-    const okResp = !requiresResponsive() || nonEmpty(fields.responsive.value, 14);
-    add(okResp ? "ok" : "bad",
+    const respNeeded = needsResponsive(p);
+    add(!respNeeded ? "ok" : (els.responsive.value.trim() ? "ok" : "warn"),
         "Responsive",
-        okResp ? (requiresResponsive() ? "OK — contraintes mobile/desktop." : "N/A (copy)." ) : "Obligatoire si layout/visuel/composant.");
+        !respNeeded ? "N/A — pas de changement layout évident." : (els.responsive.value.trim() ? "OK — mobile/desktop cadré." : "Si tu changes le layout, précise mobile/desktop."));
 
-    const okFormat = nonEmpty(fields.format.value, 22);
-    add(okFormat ? "ok" : "bad",
-        "Output QA-friendly",
-        okFormat ? "OK — vérifiable en simulation." : "Impose résumé + changements + checklist QA.");
+    add(els.format.value.trim() ? "ok" : "warn", "Format (optionnel)", els.format.value.trim() ? "OK — sortie cadrée." : "Souvent inutile, mais tu peux demander un output + checklist QA.");
 
-    add(nonEmpty(fields.goal.value, 14) ? "ok" : "warn",
-        "KPI / succès (reco)",
-        nonEmpty(fields.goal.value, 14) ? "OK — variation alignée." : "Ajoute un KPI (CTR, conversion, abandon…).");
-
-    fields.checks.innerHTML = items.join("");
-  }
-
-  function updateResponsiveHint(){
-    fields.respHelp.textContent = requiresResponsive()
-      ? "obligatoire (car layout/visuel/composant)"
-      : "recommandé (copy-only)";
-  }
-
-  function toast(msg){
-    fields.toast.textContent = msg;
-    fields.toast.style.display = "block";
-    setTimeout(()=> fields.toast.style.display="none", 2000);
-  }
-
-  function save(){
-    const payload = {};
-    Object.keys(fields).forEach(k=>{
-      const el = fields[k];
-      if(!el) return;
-      if(el.tagName === "TEXTAREA" || el.tagName === "INPUT" || el.tagName === "SELECT"){
-        payload[k] = el.value;
-      }
-    });
-    try{ localStorage.setItem(KEY, JSON.stringify(payload)); }catch(e){}
-  }
-  function load(){
-    try{
-      const raw = localStorage.getItem(KEY);
-      if(!raw) return;
-      const payload = JSON.parse(raw);
-      Object.keys(payload).forEach(k=>{
-        if(fields[k] && (fields[k].tagName==="TEXTAREA" || fields[k].tagName==="INPUT" || fields[k].tagName==="SELECT")){
-          fields[k].value = payload[k];
-        }
-      });
-    }catch(e){}
-  }
-  function clearStore(){ try{ localStorage.removeItem(KEY);}catch(e){} }
-
-  function buildValidation(q){
-    const need = new Set(q.missing.map(m=>m.k));
-    const questions = [];
-    const ask = (qtext, why, example) => {
-      if(questions.length >= 3) return;
-      questions.push(`- ${qtext}\n  - Pourquoi : ${why}\n  - Exemple : ${example}`);
-    };
-
-    // Priority PBX
-    if(need.has("useCase")){
-      ask("Quel est l’objectif UNIQUE de cette variation (1 phrase) ?",
-          "PBX suit mieux une intention unique.",
-          "“Changer le CTA du bloc pricing pour augmenter le clic vers /pricing.”");
-    }
-    if(need.has("where")){
-      ask("Sur quelle page (URL/route) et où se trouve l’élément ?",
-          "PBX doit savoir où appliquer le changement.",
-          "“/ — section pricing teaser juste avant la FAQ.”");
-    }
-    if(need.has("target")){
-      ask("Quel est l’élément exact à modifier (1 principal) ?",
-          "Une cible floue fait dériver la variation.",
-          "“Texte du bouton CTA du bloc pricing (libellé uniquement).”");
-    }
-    if(need.has("what")){
-      ask("Quel changement concret veux-tu (what) ?",
-          "Un livrable concret évite les réponses génériques.",
-          "“Remplacer le CTA par 2–4 mots, bénéfice, plus explicite.”");
-    }
-    if(need.has("constraints")){
-      ask("Quelles contraintes / interdits non négociables ?",
-          "Les garde-fous évitent une variation inutilisable.",
-          "“FR, 2–4 mots, pas d’emoji; éviter ‘acheter’.”");
-    }
-    if(need.has("responsive")){
-      ask("Quelles contraintes responsive (desktop+mobile) ?",
-          "Les variations layout/visuelles cassent souvent le responsive.",
-          "“Ne pas casser la grille; conserver spacing; mobile prioritaire.”");
-    }
-    if(need.has("format")){
-      ask("Quel format de sortie QA-friendly veux-tu ?",
-          "Un format imposé rend la vérification immédiate.",
-          "“Résumé + changements exacts + checklist QA (5 points max).”");
-    }
-
-    if(questions.length === 0){
-      questions.push("- Ton brief est complet ✅\n  - Pourquoi : where/target/what/constraints/output sont présents.");
-    }
-
-    const policy = fields.missingPolicy.value === "ask"
-      ? "Poser jusqu’à 3 questions puis attendre."
-      : "Faire jusqu’à 3 hypothèses explicites puis produire.";
-
-    return `
-🧪 Validation du brief (anti-crédits)
-
-État : ${q.ready ? "✅ Brief prêt" : "⛔ Brief incomplet"}
-Score : ${q.score}%
-Politique manques : ${policy}
-
-Questions à clarifier (max 3) :
-${questions.join("\n\n")}
-
-Ensuite : clique “Générer le prompt (PBX-ready)”.
-`.trim();
-  }
-
-  function buildFinalPrompt(){
-    const mode = fields.mode.value;
-    const missingPolicy = fields.missingPolicy.value;
-
-    const creativeNote = mode === "creative"
-      ? "Be more audacious/creative while staying strictly within scope and constraints."
-      : "Stay minimal and scoped. Prefer the smallest change likely to impact the KPI.";
-
-    const mustAsk = missingPolicy === "ask"
-      ? "If critical information is missing, ask up to 3 questions and WAIT."
-      : "If critical information is missing, make up to 3 explicit assumptions, then proceed.";
-
-    const where = [
-      `Page/route: ${fields.page.value.trim() || "(not provided; see scope)"}`,
-      `Target element: ${fields.target.value.trim()}`,
-      fields.identifier.value.trim() ? `Stable identifier(s): ${fields.identifier.value.trim()}` : "Stable identifier(s): (not provided — use visible text or accessibility attributes if possible)",
-      `Allowed scope: ${fields.scope.value.trim() || "Only modify the target element and its immediate container. Do not change unrelated sections."}`
-    ].join("\n");
-
-    const what = [
-      `Variation type: ${fields.variationType.value}`,
-      `Exact change (WHAT): ${fields.action.value.trim()}`,
-      fields.hypothesis.value.trim() ? `Hypothesis: ${fields.hypothesis.value.trim()}` : null,
-      fields.goal.value.trim() ? `Primary KPI/goal: ${fields.goal.value.trim()}` : null,
-      fields.audience.value.trim() ? `Audience/context: ${fields.audience.value.trim()}` : null,
-      fields.data.value.trim() ? `Useful info (value prop/proof/objections): ${fields.data.value.trim()}` : null
-    ].filter(Boolean).join("\n");
-
-    const how = [
-      "Hard constraints:",
-      fields.constraints.value.trim() ? `- ${fields.constraints.value.trim().split("\n").map(s=>s.trim()).filter(Boolean).join("\n- ")}` : "- (none provided)",
-      "",
-      "Avoid:",
-      fields.avoid.value.trim() ? `- ${fields.avoid.value.trim().split("\n").map(s=>s.trim()).filter(Boolean).join("\n- ")}` : "- (none provided)",
-      "",
-      `Responsive requirements: ${requiresResponsive() ? (fields.responsive.value.trim() || "(not provided)") : "N/A (copy-only)"}`,
-      fields.style.value.trim() ? `Brand/style: ${fields.style.value.trim()}` : null,
-      fields.tech.value.trim() ? `Technical constraints (front-end only): ${fields.tech.value.trim()}` : null,
-    ].filter(Boolean).join("\n");
-
-    const output = fields.format.value.trim();
-
-    const prompt =
-`You are helping create a single PBX AI-generated variation on an existing webpage (front-end only).
-No back-end changes. Do not propose server logic, permissions, payment rules, or database changes.
-
-${mustAsk}
-
-${creativeNote}
-
-## WHERE
-${where}
-
-## WHAT
-${what}
-
-## HOW
-${how}
-
-## OUTPUT FORMAT (mandatory)
-${output}
-
-Final instruction:
-- Produce ONE variation only (do not generate multiple alternatives).
-- Keep changes strictly within the allowed scope.
-- End with a short QA checklist (max 5 bullets) to verify in simulation mode.`;
-
-    return prompt.trim();
-  }
-
-  async function copyResult(){
-    const v = fields.result.value.trim();
-    if(!v) return;
-    try{
-      await navigator.clipboard.writeText(v);
-      toast("Copié ✅");
-    }catch(e){
-      fields.result.select();
-      document.execCommand("copy");
-      toast("Copié ✅");
-    }
-    fields.btnCopy.disabled = false;
+    els.checks.innerHTML = items.join("");
   }
 
   function updateUI(){
-    updateResponsiveHint();
-
-    // counters
-    setCounter(fields.c_goal, fields.goal.value);
-    setCounter(fields.c_usecase, fields.useCase.value);
-    setCounter(fields.c_page, fields.page.value);
-    setCounter(fields.c_target, fields.target.value);
-    setCounter(fields.c_scope, fields.scope.value);
-    setCounter(fields.c_action, fields.action.value);
-    setCounter(fields.c_audience, fields.audience.value);
-    setCounter(fields.c_data, fields.data.value);
-    setCounter(fields.c_constraints, fields.constraints.value);
-    setCounter(fields.c_avoid, fields.avoid.value);
-    setCounter(fields.c_format, fields.format.value);
+    setCounter(els.c_prompt, els.prompt.value);
+    setCounter(els.c_constraints, els.constraints.value);
+    setCounter(els.c_responsive, els.responsive.value);
+    setCounter(els.c_format, els.format.value);
 
     const q = computeQuality();
 
-    fields.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
-    fields.scoreBar.style.width = `${q.score}%`;
+    els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
+    els.scoreBar.style.width = `${q.score}%`;
 
     if(q.state === "ready"){
-      fields.scoreBar.style.background = "linear-gradient(90deg, #22C55E, #14B8A6)";
-      fields.dotState.style.background = "var(--good)";
-      fields.stateLabel.textContent = "Brief prêt (PBX-ready)";
-      fields.genBadge.textContent = "PBX-ready";
+      els.scoreBar.style.background = "linear-gradient(90deg, #22C55E, #14B8A6)";
+      els.dotState.style.background = "var(--good)";
+      els.stateLabel.textContent = "Prompt prêt";
+      els.genBadge.textContent = "PBX-ready";
     } else if(q.state === "warn"){
-      fields.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
-      fields.dotState.style.background = "var(--warn)";
-      fields.stateLabel.textContent = "Presque prêt";
-      fields.genBadge.textContent = "Incomplet";
+      els.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
+      els.dotState.style.background = "var(--warn)";
+      els.stateLabel.textContent = "Presque prêt";
+      els.genBadge.textContent = "Incomplet";
     } else {
-      fields.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
-      fields.dotState.style.background = "var(--bad)";
-      fields.stateLabel.textContent = "Brief incomplet";
-      fields.genBadge.textContent = "Incomplet";
+      els.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
+      els.dotState.style.background = "var(--bad)";
+      els.stateLabel.textContent = "Prompt incomplet";
+      els.genBadge.textContent = "Incomplet";
     }
 
     renderChecks(q);
-
-    fields.btnGenerate.disabled = !q.ready;
-    fields.btnCopy.disabled = !fields.result.value.trim();
+    els.btnGenerate.disabled = !q.ready;
+    els.btnCopy.disabled = !els.result.value.trim();
 
     save();
     return q;
   }
 
-  function renderChecks(q){
-    // (same UI layout as screenshot)
-    const items = [];
-    const add = (state, title, desc) => {
-      const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
-      items.push(`
-        <div class="item ${state}">
-          <div class="ico">${icon}</div>
-          <div>
-            <p class="itT">${title}</p>
-            <p class="itD">${desc}</p>
-          </div>
-        </div>
-      `);
+  function buildQuestions(){
+    // max 3, only the essentials, PBX-style
+    const p = els.prompt.value.trim();
+    const qs = [];
+
+    const add = (q, ex) => {
+      if(qs.length >= 3) return;
+      qs.push(`- ${q}\n  - Exemple : ${ex}`);
     };
 
-    const okUseCase = nonEmpty(fields.useCase.value, 18) && !multiObjective(fields.useCase.value);
-    add(okUseCase ? "ok" : (nonEmpty(fields.useCase.value, 18) ? "warn" : "bad"),
-        "Use case unique",
-        okUseCase ? "OK — 1 variation = 1 objectif." : "Réécris en 1 phrase / 1 objectif.");
+    if(!p || p.length < 40 || looksVague(p)){
+      add("Quel est le changement EXACT (verbe + élément) ?",
+          "“Replace the main CTA text with ‘Voir les tarifs’, keep layout unchanged.”");
+    }
 
-    const hasLocation = nonEmpty(fields.page.value, 6) || nonEmpty(fields.scope.value, 24);
-    add(hasLocation ? "ok" : "bad",
-        "Where (page/emplacement)",
-        hasLocation ? "OK — page/emplacement défini." : "Ajoute URL/route ou emplacement précis.");
+    // Target clarity if missing UI keyword + no quotes/number
+    const lower = p.toLowerCase();
+    const hasUI = uiKeywords.some(k => lower.includes(k));
+    const hasConcrete = /["“”']|(\d+)|(?:px)|(?:ne pas)|(?:keep layout)/i.test(p);
+    if(!hasUI && !hasConcrete){
+      add("Quel élément précis est modifié (CTA, H1, badge, champ…) ?",
+          "“The hero H1 headline” / “The primary button CTA”");
+    }
 
-    const okTarget = nonEmpty(fields.target.value, 16);
-    add(okTarget ? "ok" : "bad",
-        "Target précis",
-        okTarget ? "OK — élément principal défini." : "Ex : “libellé du CTA du bloc pricing”.");
+    if(!els.constraints.value.trim()){
+      add("Quelles contraintes/interdits non négociables ?",
+          "“FR, 2–4 words, no emoji, no unprovable claims, do not change layout.”");
+    }
 
-    const okIdentifier = nonEmpty(fields.identifier.value, 8);
-    add(okIdentifier ? "ok" : "warn",
-        "Identifiant stable (reco)",
-        okIdentifier ? "OK — plus robuste." : "Ex : aria-label / data-testid / texte exact.");
+    if(needsResponsive(p) && !els.responsive.value.trim()){
+      add("Quelles contraintes responsive (mobile/desktop) ?",
+          "“No horizontal scroll on mobile, keep existing grid and spacing.”");
+    }
 
-    const okWhat = nonEmpty(fields.action.value, 28) && !looksVague(fields.action.value);
-    add(okWhat ? "ok" : "bad",
-        "What (changement concret)",
-        okWhat ? "OK — variation décrite." : "Décris le changement concret (pas “optimiser”).");
+    if(qs.length === 0){
+      qs.push("- Ton prompt est déjà exploitable ✅");
+    }
 
-    const okRules = nonEmpty(fields.constraints.value, 12) || nonEmpty(fields.avoid.value, 8);
-    add(okRules ? "ok" : "bad",
-        "Contraintes",
-        okRules ? "OK — garde-fous présents." : "Ajoute au moins 1 hard rule + ban list.");
+    return `
+🧪 Validation (anti-crédits) — questions utiles (max 3)
 
-    const okResp = !requiresResponsive() || nonEmpty(fields.responsive.value, 14);
-    add(okResp ? "ok" : "bad",
-        "Responsive",
-        okResp ? (requiresResponsive() ? "OK — mobile/desktop cadré." : "N/A (copy-only).") : "Obligatoire si layout/visuel/composant.");
-
-    const okFormat = nonEmpty(fields.format.value, 22);
-    add(okFormat ? "ok" : "bad",
-        "Format exploitable",
-        okFormat ? "OK — QA-friendly." : "Ex : résumé + changements + checklist QA.");
-
-    add(nonEmpty(fields.goal.value, 14) ? "ok" : "warn",
-        "KPI / succès (reco)",
-        nonEmpty(fields.goal.value, 14) ? "OK — variation alignée." : "Ajoute un KPI (CTR, conversion, abandon…).");
-
-    fields.checks.innerHTML = items.join("");
+${qs.join("\n\n")}
+`.trim();
   }
 
-  function validateBrief(){
-    const q = updateUI();
-    fields.result.value = buildValidation(q);
-    fields.btnCopy.disabled = !fields.result.value.trim();
+  function buildPBXPrompt(){
+    const p = els.prompt.value.trim();
+    const blocks = [];
+
+    blocks.push(p);
+
+    const c = els.constraints.value.trim();
+    const r = els.responsive.value.trim();
+    const f = els.format.value.trim();
+    const m = els.missing.value.trim();
+
+    if(c) blocks.push(`\nConstraints / avoid:\n${c}`);
+    if(r) blocks.push(`\nResponsive:\n${r}`);
+    if(f) blocks.push(`\nOutput format:\n${f}`);
+    if(m) blocks.push(`\nMissing info policy:\n${m}`);
+
+    // Keep it minimal + explicit about front-end only
+    return `Front-end variation only (no back-end changes).\n\n${blocks.join("\n")}`.trim();
+  }
+
+  function validate(){
+    els.result.value = buildQuestions();
+    els.btnCopy.disabled = !els.result.value.trim();
     toast("Questions générées ✅");
   }
 
-  function generatePrompt(){
+  function generate(){
     const q = updateUI();
     if(!q.ready) return;
-    fields.result.value = buildFinalPrompt();
-    fields.btnCopy.disabled = !fields.result.value.trim();
+    els.result.value = buildPBXPrompt();
+    els.btnCopy.disabled = !els.result.value.trim();
     toast("Prompt généré ✅");
   }
 
+  async function copy(){
+    const v = els.result.value.trim();
+    if(!v) return;
+    try{
+      await navigator.clipboard.writeText(v);
+      toast("Copié ✅");
+    }catch(e){
+      els.result.select();
+      document.execCommand("copy");
+      toast("Copié ✅");
+    }
+    els.btnCopy.disabled = false;
+  }
+
+  function toast(msg){
+    els.toast.textContent = msg;
+    els.toast.style.display = "block";
+    setTimeout(()=> els.toast.style.display="none", 2000);
+  }
+
+  function save(){
+    const payload = {
+      prompt: els.prompt.value,
+      constraints: els.constraints.value,
+      responsive: els.responsive.value,
+      format: els.format.value,
+      missing: els.missing.value,
+      advOpen: els.adv.open
+    };
+    try{ localStorage.setItem(SKEY, JSON.stringify(payload)); }catch(e){}
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(SKEY);
+      if(!raw) return;
+      const payload = JSON.parse(raw);
+      if(payload.prompt != null) els.prompt.value = payload.prompt;
+      if(payload.constraints != null) els.constraints.value = payload.constraints;
+      if(payload.responsive != null) els.responsive.value = payload.responsive;
+      if(payload.format != null) els.format.value = payload.format;
+      if(payload.missing != null) els.missing.value = payload.missing;
+      if(payload.advOpen != null) els.adv.open = !!payload.advOpen;
+    }catch(e){}
+  }
+
   function resetAll(){
-    const ok = confirm("Réinitialiser tous les champs ?");
+    const ok = confirm("Réinitialiser ?");
     if(!ok) return;
-    [
-      "goal","useCase","page","target","identifier","scope",
-      "variationType","action","hypothesis","audience","data",
-      "constraints","avoid","responsive","style","tech",
-      "format","examples","missingPolicy","mode"
-    ].forEach(id=>{
-      const el = $(id);
-      if(!el) return;
-      if(el.tagName === "SELECT"){
-        if(id === "variationType") el.value = "copy";
-        else if(id === "missingPolicy") el.value = "ask";
-        else if(id === "mode") el.value = "strict";
-        else el.value = el.options[0]?.value ?? "";
-      }else{
-        el.value = "";
-      }
-    });
-    fields.result.value = "";
-    clearStore();
+    els.prompt.value = "";
+    els.constraints.value = "";
+    els.responsive.value = "";
+    els.format.value = "";
+    els.missing.value = "If something important is missing, ask up to 3 questions and WAIT.";
+    els.result.value = "";
+    els.adv.open = false;
+    try{ localStorage.removeItem(SKEY); }catch(e){}
     updateUI();
   }
 
-  // Keyboard shortcut
+  // chips
+  document.querySelectorAll(".chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      const add = chip.getAttribute("data-add") || "";
+      if(!add) return;
+      if(!els.prompt.value.trim()){
+        els.prompt.value = add;
+      } else {
+        els.prompt.value = (els.prompt.value.trim() + "\n\n" + add).trim();
+      }
+      els.prompt.focus();
+      updateUI();
+    });
+  });
+
+  // watchers
+  ["prompt","constraints","responsive","format","missing"].forEach(id=>{
+    $(id).addEventListener("input", updateUI);
+    $(id).addEventListener("change", updateUI);
+  });
+
+  // buttons
+  els.btnValidate.addEventListener("click", validate);
+  els.btnGenerate.addEventListener("click", generate);
+  els.btnCopy.addEventListener("click", copy);
+  els.btnReset.addEventListener("click", resetAll);
+
+  // shortcut Ctrl+Enter (validate if blocked, else generate)
   document.addEventListener("keydown", (e)=>{
     const isMac = navigator.platform.toUpperCase().includes("MAC");
     const ctrl = isMac ? e.metaKey : e.ctrlKey;
     if(ctrl && e.key === "Enter"){
       e.preventDefault();
-      if(!fields.btnGenerate.disabled) generatePrompt();
-      else validateBrief();
+      const q = updateUI();
+      if(q.ready) generate();
+      else validate();
     }
   });
 
-  // Watchers
-  const watchIds = [
-    "goal","useCase","page","target","identifier","scope",
-    "variationType","action","hypothesis","audience","data",
-    "constraints","avoid","responsive","style","tech",
-    "format","examples","missingPolicy","mode"
-  ];
-  watchIds.forEach(id=>{
-    const el = $(id);
-    el.addEventListener("input", updateUI);
-    el.addEventListener("change", updateUI);
-  });
-
-  fields.btnValidate.addEventListener("click", validateBrief);
-  fields.btnGenerate.addEventListener("click", generatePrompt);
-  fields.btnCopy.addEventListener("click", copyResult);
-  fields.btnReset.addEventListener("click", resetAll);
-
-  // Init
+  // init
   load();
   updateUI();
-
-  function load(){
-    try{
-      const raw = localStorage.getItem(KEY);
-      if(!raw) return;
-      const payload = JSON.parse(raw);
-      Object.keys(payload).forEach(k=>{
-        const el = fields[k];
-        if(el && (el.tagName==="TEXTAREA" || el.tagName==="INPUT" || el.tagName==="SELECT")){
-          el.value = payload[k];
-        }
-      });
-    }catch(e){}
-  }
 </script>
 </body>
 </html>
