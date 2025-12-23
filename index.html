@@ -578,32 +578,21 @@
   </div>
 
 <script>
-  console.log("[DEBUG] V1";
+  console.log("[DEBUG] PBX_FORM_SCRIPT_V2");
+
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
 
-  // Safe RegExp builder to avoid "Invalid regular expression flags" killing the whole script
   function RX(pattern, flags = "i") {
-    try {
-      return new RegExp(pattern, flags);
-    } catch (e) {
-      console.error("[DEBUG] RX invalid:", { pattern, flags, error: e });
-      return null; // fallback
-    }
+    try { return new RegExp(pattern, flags); }
+    catch { return null; }
   }
   function testRX(re, value) {
     if (!re) return false;
-    try {
-      return re.test(value);
-    } catch (e) {
-      console.error("[DEBUG] RX test failed:", { re, value, error: e });
-      return false;
-    }
+    try { return re.test(value); } catch { return false; }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    console.log("[DEBUG] DOMContentLoaded fired");
-
     const SKEY = "pbx_prompt_form_debug_v2";
 
     const els = {
@@ -639,18 +628,12 @@
       c_verify: $("c_verify"),
     };
 
-    console.log("[DEBUG] Element presence:", Object.fromEntries(
-      Object.entries(els).map(([k,v]) => [k, !!v])
-    ));
-
-    // hard fail visibility (but no crash)
-    if (!els.btnGenerate || !els.btnCopy || !els.btnReset) {
-      console.error("[DEBUG] Missing CTA buttons. Expected IDs:", ["btnGenerate","btnCopy","btnReset"]);
+    // Guard: if critical UI missing, at least show it in result (no console spam)
+    if (!els.btnGenerate || !els.btnCopy || !els.btnReset || !els.scorePill || !els.scoreBar) {
       if (els.result) {
         els.result.value =
-          "❌ [DEBUG] Boutons introuvables.\n" +
-          "IDs attendus : btnGenerate / btnCopy / btnReset.\n" +
-          "Regarde la console pour le détail.";
+          "❌ PBX_FORM_SCRIPT_V2 : éléments manquants (boutons ou score UI).\n" +
+          "Attendus: btnGenerate, btnCopy, btnReset, scorePill, scoreBar.";
       }
       return;
     }
@@ -686,7 +669,6 @@
         if(hasVague && !hasUrl && !hasState) return true;
         return false;
       }
-
       if(kind === "where"){
         const hasHint = testRX(reWhereHints, t);
         const hasSpecific = testRX(reWhereSpecific, t);
@@ -695,7 +677,6 @@
         if(hasVague && !hasHint) return true;
         return false;
       }
-
       if(kind === "action"){
         const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
         if(t.length < 10) return true;
@@ -703,7 +684,6 @@
         if(hasVague) return true;
         return false;
       }
-
       if(kind === "content"){
         const hasConcrete = testRX(reContentConcrete, t);
         if(t.length < 12) return true;
@@ -711,7 +691,6 @@
         if(!hasConcrete) return true;
         return false;
       }
-
       if(kind === "limits"){ return t.length < 18; }
       if(kind === "approach"){ return t.length < 18; }
       return false;
@@ -720,9 +699,7 @@
     function needsApproachFromContext(){
       const t = `${els.context?.value || ""} ${els.where?.value || ""}`.toLowerCase();
       const reDyn = RX("(overlay|modal|voir tout|voir le détail|pagination|filtre|lazy|dynamique|ajax|infinite|scroll)");
-      const res = testRX(reDyn, t);
-      console.log("[DEBUG] needsApproachFromContext?", res, "input=", t);
-      return res;
+      return testRX(reDyn, t);
     }
 
     function computeQuality(){
@@ -735,8 +712,6 @@
       const cnt = (els.content?.value || "").trim();
       const lim = (els.limits?.value || "").trim();
       const app = (els.approach?.value || "").trim();
-
-      console.log("[DEBUG] computeQuality values:", {ctx, whr, act, cnt, lim, app});
 
       if(!ctx || looksVagueSection(ctx,"context")){
         missing.push({ key:"Contexte", d:"Ajoute l’URL + au moins 1 état (initial / après clic / overlay / dynamique).",
@@ -769,16 +744,103 @@
       let score = 100;
       score -= missing.length * 28;
       score -= warnings.length * 12;
+
+      // HARDEN: avoid NaN and clamp
+      if (!Number.isFinite(score)) score = 0;
       score = Math.max(0, Math.min(100, score));
 
       const ready = (missing.length === 0 && score >= 70);
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
-      console.log("[DEBUG] computeQuality result:", {score, ready, state, missingCount: missing.length, warningsCount: warnings.length});
+
       return {score, ready, state, missing, warnings, needApp};
     }
 
+    function renderChecks(q){
+      if(!els.checks) return;
+      const items = [];
+      const row = (state, title, desc, example) => {
+        const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
+        const ex = example ? `<br><span style="color: var(--muted2);">Ex : ${example}</span>` : "";
+        items.push(`
+          <div class="item ${state}">
+            <div class="ico">${icon}</div>
+            <div>
+              <p class="itT">${title}</p>
+              <p class="itD">${desc}${ex}</p>
+            </div>
+          </div>
+        `);
+      };
+
+      const ctx = (els.context?.value || "").trim();
+      const whr = (els.where?.value || "").trim();
+      const act = (els.action?.value || "").trim();
+      const cnt = (els.content?.value || "").trim();
+
+      row(!ctx || looksVagueSection(ctx,"context") ? "bad" : "ok", "Contexte",
+          !ctx || looksVagueSection(ctx,"context") ? "Manque URL + état(s) (initial / après clic / overlay)." : "OK — exploitable.",
+          "URL: https://… + overlay/voir tout si présent.");
+
+      row(!whr || looksVagueSection(whr,"where") ? "bad" : "ok", "Où (cible/position)",
+          !whr || looksVagueSection(whr,"where") ? "Manque élément ciblé + position exacte." : "OK — clair.",
+          "Dans la tuile X, sous l’image, centré.");
+
+      row(!act || looksVagueSection(act,"action") ? "bad" : "ok", "Action",
+          !act || looksVagueSection(act,"action") ? "Manque un verbe clair." : "OK — action claire.",
+          "Ajouter / Remplacer / Calculer / Déplacer…");
+
+      row(!cnt || looksVagueSection(cnt,"content") ? "bad" : "ok", "Contenu / format",
+          !cnt || looksVagueSection(cnt,"content") ? "Manque texte exact OU format/formule." : "OK — concret.",
+          "“À partir d’1€ …” OU “9,99€/mois = prix + |remise|”");
+
+      if(q.missing.length || q.warnings.length){
+        items.push(`<div style="margin-top:6px;"></div>`);
+        [...q.missing, ...q.warnings].slice(0, 8).forEach(m => {
+          const isBad = q.missing.includes(m);
+          row(isBad ? "bad" : "warn", `${m.key} — à compléter`, m.d, m.example);
+        });
+      }
+
+      els.checks.innerHTML = items.join("");
+    }
+
+    function updateUI(){
+      setCounter(els.c_context, els.context?.value);
+      setCounter(els.c_where, els.where?.value);
+      setCounter(els.c_action, els.action?.value);
+      setCounter(els.c_content, els.content?.value);
+      setCounter(els.c_limits, els.limits?.value);
+      setCounter(els.c_approach, els.approach?.value);
+      setCounter(els.c_verify, els.verify?.value);
+
+      const q = computeQuality();
+
+      // Apply score
+      els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
+      els.scoreBar.style.width = `${q.score}%`;
+
+      if (els.dotState) els.dotState.style.background = q.state === "ready" ? "var(--good)" : (q.state === "warn" ? "var(--warn)" : "var(--bad)");
+      if (els.stateLabel) els.stateLabel.textContent = q.state === "ready" ? "Prompt prêt" : (q.state === "warn" ? "Presque prêt" : "Prompt incomplet");
+      if (els.genBadge) els.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
+
+      renderChecks(q);
+
+      try{
+        localStorage.setItem(SKEY, JSON.stringify({
+          context: els.context?.value || "",
+          where: els.where?.value || "",
+          action: els.action?.value || "",
+          content: els.content?.value || "",
+          limits: els.limits?.value || "",
+          approach: els.approach?.value || "",
+          verify: els.verify?.value || ""
+        }));
+      }catch(e){}
+
+      return q;
+    }
+
     function buildPBXPrompt(q){
-      console.log("[DEBUG] buildPBXPrompt called");
       const blocks = [];
       blocks.push("Front-end variation only (no back-end changes).");
       blocks.push("\nContexte :\n" + (els.context?.value || "").trim());
@@ -794,7 +856,6 @@
     }
 
     function buildMissingPreview(q){
-      console.log("[DEBUG] buildMissingPreview called");
       const lines = ["Ce qui manque pour un prompt PBX exploitable :\n"];
       q.missing.forEach(m => lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}\n  Ex : ${m.example}\n`));
       q.warnings.forEach(w => lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}\n  Ex : ${w.example}\n`));
@@ -802,93 +863,27 @@
     }
 
     function toast(msg){
-      console.log("[DEBUG] toast:", msg);
       if(!els.toast) return;
       els.toast.textContent = msg;
       els.toast.style.display = "block";
-      setTimeout(()=> els.toast.style.display="none", 1600);
-    }
-
-    function updateUI(){
-      console.log("[DEBUG] updateUI called");
-      setCounter(els.c_context, els.context?.value);
-      setCounter(els.c_where, els.where?.value);
-      setCounter(els.c_action, els.action?.value);
-      setCounter(els.c_content, els.content?.value);
-      setCounter(els.c_limits, els.limits?.value);
-      setCounter(els.c_approach, els.approach?.value);
-      setCounter(els.c_verify, els.verify?.value);
-
-      const q = computeQuality();
-
-      if (els.scorePill) els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
-      if (els.scoreBar) els.scoreBar.style.width = `${q.score}%`;
-
-      if (els.dotState) els.dotState.style.background = q.state === "ready" ? "var(--good)" : (q.state === "warn" ? "var(--warn)" : "var(--bad)");
-      if (els.stateLabel) els.stateLabel.textContent = q.state === "ready" ? "Prompt prêt" : (q.state === "warn" ? "Presque prêt" : "Prompt incomplet");
-      if (els.genBadge) els.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
-
-      try{
-        localStorage.setItem(SKEY, JSON.stringify({
-          context: els.context?.value || "",
-          where: els.where?.value || "",
-          action: els.action?.value || "",
-          content: els.content?.value || "",
-          limits: els.limits?.value || "",
-          approach: els.approach?.value || "",
-          verify: els.verify?.value || ""
-        }));
-        console.log("[DEBUG] saved to localStorage", SKEY);
-      }catch(e){
-        console.warn("[DEBUG] localStorage save failed", e);
-      }
-
-      return q;
-    }
-
-    function load(){
-      console.log("[DEBUG] load() called");
-      try{
-        const raw = localStorage.getItem(SKEY);
-        console.log("[DEBUG] localStorage get", SKEY, raw ? "(found)" : "(empty)");
-        if(!raw) return;
-        const p = JSON.parse(raw);
-        if(els.context && p.context != null) els.context.value = p.context;
-        if(els.where && p.where != null) els.where.value = p.where;
-        if(els.action && p.action != null) els.action.value = p.action;
-        if(els.content && p.content != null) els.content.value = p.content;
-        if(els.limits && p.limits != null) els.limits.value = p.limits;
-        if(els.approach && p.approach != null) els.approach.value = p.approach;
-        if(els.verify && p.verify != null) els.verify.value = p.verify;
-      }catch(e){
-        console.warn("[DEBUG] load failed", e);
-      }
+      setTimeout(()=> els.toast.style.display="none", 1200);
     }
 
     function generate(){
-      console.log("[DEBUG] CLICK generate");
       const q = updateUI();
-      if(!els.result){
-        console.error("[DEBUG] result textarea not found (#result)");
-        return;
-      }
+      if(!els.result) return;
       els.result.value = q.ready ? buildPBXPrompt(q) : buildMissingPreview(q);
       els.btnCopy.disabled = !els.result.value.trim();
       toast(q.ready ? "Prompt généré ✅" : "À compléter ⚠️");
     }
 
     async function copy(){
-      console.log("[DEBUG] CLICK copy");
       const v = (els.result?.value || "").trim();
-      if(!v){
-        console.warn("[DEBUG] copy: nothing to copy");
-        return;
-      }
+      if(!v) return;
       try{
         await navigator.clipboard.writeText(v);
         toast("Copié ✅");
       }catch(e){
-        console.warn("[DEBUG] clipboard failed, fallback", e);
         els.result?.select?.();
         document.execCommand("copy");
         toast("Copié ✅");
@@ -896,9 +891,7 @@
     }
 
     function resetAll(){
-      console.log("[DEBUG] CLICK reset");
       const ok = confirm("Réinitialiser ?");
-      console.log("[DEBUG] reset confirm =", ok);
       if(!ok) return;
 
       ["context","where","action","content","limits","approach","verify"].forEach(k => {
@@ -907,13 +900,7 @@
       if(els.result) els.result.value = "";
       els.btnCopy.disabled = true;
 
-      try{
-        localStorage.removeItem(SKEY);
-        console.log("[DEBUG] localStorage removed", SKEY);
-      }catch(e){
-        console.warn("[DEBUG] localStorage remove failed", e);
-      }
-
+      try{ localStorage.removeItem(SKEY); }catch(e){}
       updateUI();
       toast("Réinitialisé ✅");
     }
@@ -921,30 +908,31 @@
     // Bind inputs
     ["context","where","action","content","limits","approach","verify"].forEach(id=>{
       const el = $(id);
-      if(!el) console.warn("[DEBUG] missing input element #"+id);
       on(el, "input", updateUI);
       on(el, "change", updateUI);
     });
 
     // Bind CTAs
-    console.log("[DEBUG] binding CTA events...");
     on(els.btnGenerate, "click", generate);
     on(els.btnCopy, "click", copy);
     on(els.btnReset, "click", resetAll);
-    console.log("[DEBUG] CTA events bound ✅");
-
-    // Catch runtime errors
-    window.addEventListener("error", (e) => {
-      console.error("[DEBUG] window.error", e.message, e.filename, e.lineno, e.colno, e.error);
-    });
-    window.addEventListener("unhandledrejection", (e) => {
-      console.error("[DEBUG] unhandledrejection", e.reason);
-    });
 
     // init
-    load();
+    try{
+      const raw = localStorage.getItem(SKEY);
+      if(raw){
+        const p = JSON.parse(raw);
+        if(els.context && p.context != null) els.context.value = p.context;
+        if(els.where && p.where != null) els.where.value = p.where;
+        if(els.action && p.action != null) els.action.value = p.action;
+        if(els.content && p.content != null) els.content.value = p.content;
+        if(els.limits && p.limits != null) els.limits.value = p.limits;
+        if(els.approach && p.approach != null) els.approach.value = p.approach;
+        if(els.verify && p.verify != null) els.verify.value = p.verify;
+      }
+    }catch(e){}
+
     updateUI();
-    console.log("[DEBUG] init done ✅");
   });
 </script>
 </body>
