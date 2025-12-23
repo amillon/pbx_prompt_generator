@@ -1,171 +1,1680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PBX Prompt Builder — Brief Qualité</title>
+  <style>
+    :root{
+      --bg:#F5F6FA;
+      --card:#FFFFFF;
+      --ink:#0F172A;
+      --muted:#64748B;
+      --muted2:#94A3B8;
+      --line:#E2E8F0;
+
+      --primary:#6D28D9;      /* violet */
+      --primary2:#7C3AED;
+      --teal:#14B8A6;
+      --green:#22C55E;
+      --amber:#F59E0B;
+      --red:#EF4444;
+
+      --shadow: 0 18px 55px rgba(15, 23, 42, 0.12);
+      --shadow2: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+      --radius2: 14px;
+    }
+
+    *{ box-sizing:border-box; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 450px at 20% -10%, rgba(109,40,217,0.15), transparent 50%),
+                  radial-gradient(1200px 450px at 80% -10%, rgba(20,184,166,0.14), transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding: 22px 14px 48px;
+    }
+
+    .wrap{
+      width:100%;
+      max-width: 1040px;
+    }
+
+    /* Header */
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .mark{
+      width:42px;
+      height:42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--teal));
+      box-shadow: var(--shadow2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:800;
+      letter-spacing: -0.5px;
+    }
+    h1{
+      margin:0;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+    .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      max-width: 620px;
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,0.85);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12.5px;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.05);
+      white-space: nowrap;
+    }
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--muted2);
+    }
+
+    /* Layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .sidebar{ position: static !important; }
+      .header{ flex-direction: column; }
+      .header-actions{ justify-content:flex-start; }
+    }
+
+    /* Cards */
+    .card{
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+    }
+    .card .inner{ padding: 16px; }
+    .card-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .card-title h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: -0.1px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      font-size:12px;
+      color: var(--muted);
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    /* Stepper */
+    .steps{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0 16px;
+    }
+    @media (max-width: 720px){
+      .steps{ grid-template-columns: 1fr 1fr; }
+    }
+    .step{
+      padding: 12px 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.8);
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .step .num{
+      width:26px; height:26px;
+      border-radius: 999px;
+      background: rgba(109,40,217,0.12);
+      color: var(--primary);
+      font-weight: 800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .step .t{
+      font-size: 12.8px;
+      font-weight: 750;
+      margin: 0 0 3px;
+      letter-spacing: -0.1px;
+    }
+    .step .d{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      margin:0;
+    }
+
+    /* Form */
+    .section{
+      padding: 14px 14px;
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.78);
+      margin-bottom: 12px;
+    }
+    .section-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .sec-left{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .sec-icon{
+      width:34px; height:34px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(109,40,217,0.12), rgba(20,184,166,0.12));
+      border: 1px solid rgba(109,40,217,0.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--primary);
+      flex-shrink: 0;
+      font-weight: 900;
+    }
+    .sec-title{
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .sec-desc{
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+    .sec-right{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+    .tag.req{
+      border-color: rgba(239,68,68,0.25);
+      color: #991B1B;
+      background: rgba(239,68,68,0.06);
+    }
+
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    @media (max-width: 820px){
+      .row2, .row3{ grid-template-columns: 1fr; }
+    }
+
+    .field{ margin-top: 10px; }
+    .label{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 6px;
+    }
+    .label span{
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.1px;
+    }
+    .help{
+      font-size: 11.5px;
+      color: var(--muted2);
+    }
+    textarea, input[type="text"], select{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(248,250,252,0.8);
+      padding: 10px 11px;
+      font-size: 13.5px;
+      outline: none;
+      transition: box-shadow .15s, border-color .15s, background .15s;
+      line-height: 1.35;
+    }
+    textarea{ min-height: 88px; resize: vertical; }
+    textarea:focus, input:focus, select:focus{
+      border-color: rgba(109,40,217,0.55);
+      box-shadow: 0 0 0 3px rgba(109,40,217,0.18);
+      background: #fff;
+    }
+    .hint{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: rgba(2,6,23,0.03);
+      border: 1px dashed rgba(100,116,139,0.25);
+    }
+    .hint strong{ color: var(--ink); }
+
+    .counter{
+      font-size: 11.5px;
+      color: var(--muted2);
+      white-space: nowrap;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      position: sticky;
+      top: 14px;
+    }
+
+    .quality{
+      padding: 14px;
+    }
+    .quality-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .qtitle{
+      margin:0;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+    .qscore{
+      font-weight: 900;
+      font-size: 12.8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .bar{
+      height: 10px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow:hidden;
+      margin-bottom: 10px;
+    }
+    .bar > div{
+      height: 100%;
+      width: 0%;
+      background: var(--green);
+      transition: width .2s ease, background .2s ease;
+    }
+
+    .checklist{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .item{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 10px 10px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,0.85);
+    }
+    .ico{
+      width:26px; height:26px; border-radius: 999px;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+      font-weight: 900;
+      color:#fff;
+      background: var(--muted2);
+    }
+    .item.ok .ico{ background: var(--green); }
+    .item.warn .ico{ background: var(--amber); }
+    .item.bad .ico{ background: var(--red); }
+
+    .it-t{ margin:0; font-weight: 800; font-size: 12.5px; letter-spacing: -0.1px; }
+    .it-d{ margin:2px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+
+    .actions{
+      display:flex;
+      flex-direction: column;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .btn{
+      border: none;
+      border-radius: 16px;
+      padding: 11px 12px;
+      font-weight: 900;
+      font-size: 13.5px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition: transform .06s ease, opacity .15s ease, box-shadow .15s ease;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--primary), var(--teal));
+      color:#fff;
+      box-shadow: 0 14px 30px rgba(109,40,217,0.22);
+    }
+    .btn.ghost{
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .btn.danger{
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.22);
+      color: #991B1B;
+    }
+    .btn[disabled]{
+      opacity: .45;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .mini{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .result-card .inner{ padding: 14px; }
+    .result-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .result-head h3{
+      margin:0;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    #result{
+      width:100%;
+      min-height: 220px;
+      border-radius: 16px;
+      border: none;
+      outline:none;
+      padding: 12px 12px;
+      background: #020617;
+      color: #E5E7EB;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.8px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .toast{
+      display:none;
+      margin-top: 8px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(34,197,94,0.25);
+      background: rgba(34,197,94,0.08);
+      color: #14532D;
+      font-weight: 800;
+      font-size: 12.5px;
+      text-align:center;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11.5px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(2,6,23,0.06);
+      border: 1px solid rgba(15,23,42,0.10);
+      color: #0f172a;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">
+        <div class="mark">PBX</div>
+        <div>
+          <h1>Prompt Builder — Brief Qualité (anti-crédits grillés)</h1>
+          <p class="sub">
+            Ce formulaire <strong>bloque</strong> la génération tant qu’il manque des infos critiques.
+            Objectif : obtenir un prompt <strong>exploitable</strong> (1 use case, action claire, cible précise, contraintes, format).
+          </p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="pill"><span class="dot" id="dotState"></span><span id="stateLabel">Brief incomplet</span></div>
+        <div class="pill">Raccourcis : <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> pour générer</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- MAIN -->
+      <div>
+        <div class="card">
+          <div class="inner">
+            <div class="steps">
+              <div class="step">
+                <div class="num">1</div>
+                <div>
+                  <p class="t">Action</p>
+                  <p class="d">Décrire exactement ce que tu veux obtenir.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="num">2</div>
+                <div>
+                  <p class="t">Cible + détails</p>
+                  <p class="d">Élément à modifier + détails visuels/texte.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="num">3</div>
+                <div>
+                  <p class="t">Comportement</p>
+                  <p class="d">Step-by-step, variantes, questions si manque.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="num">4</div>
+                <div>
+                  <p class="t">Contraintes</p>
+                  <p class="d">Limites, interdits, exigences, format.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 0 : use case -->
+            <div class="section" id="secUseCase">
+              <div class="section-head">
+                <div class="sec-left">
+                  <div class="sec-icon">◎</div>
+                  <div>
+                    <p class="sec-title">0) Un prompt = un use case</p>
+                    <p class="sec-desc">Formule une intention unique. Si tu as plusieurs objectifs, tu feras plusieurs prompts.</p>
+                  </div>
+                </div>
+                <div class="sec-right">
+                  <span class="tag req">Obligatoire</span>
+                  <span class="tag">Anti “mélange d’objectifs”</span>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Titre du use case (1 phrase)</span>
+                    <span class="counter" id="c_usecase"></span>
+                  </div>
+                  <input id="useCase" type="text" placeholder="Ex : Générer des variantes de CTA pour augmenter le clic sur le pricing" />
+                  <div class="hint">
+                    <strong>Bon :</strong> “Créer 5 variantes de headline pour clarifier la proposition de valeur sur la page Home”<br/>
+                    <strong>À éviter :</strong> “Optimiser le site” / “Améliorer l’UX”
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Type de demande</span>
+                    <span class="help">Pour adapter les contrôles</span>
+                  </div>
+                  <select id="useCaseType">
+                    <option value="variants">Variantes (copy/UI) / Idéation</option>
+                    <option value="audit">Audit / recommandations</option>
+                    <option value="rewrite">Réécriture / polishing</option>
+                    <option value="spec">Spécification / plan / structure</option>
+                    <option value="other">Autre</option>
+                  </select>
+                  <div class="hint">
+                    Le type aide à vérifier les infos : <strong>variantes ⇒ nombre + format</strong>, <strong>audit ⇒ contexte + données</strong>, etc.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 1 : Action -->
+            <div class="section" id="secAction">
+              <div class="section-head">
+                <div class="sec-left">
+                  <div class="sec-icon">➊</div>
+                  <div>
+                    <p class="sec-title">1) Action — ce que l’IA doit faire</p>
+                    <p class="sec-desc">Décris un livrable concret + objectif. Pas de verbe vague sans objet.</p>
+                  </div>
+                </div>
+                <div class="sec-right">
+                  <span class="tag req">Obligatoire</span>
+                  <span class="tag">Brief clair</span>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Action / livrable attendu</span>
+                    <span class="counter" id="c_action"></span>
+                  </div>
+                  <textarea id="action" placeholder="Ex : Proposer 6 variantes de texte pour le CTA du bloc pricing (2 conservatrices, 2 intermédiaires, 2 audacieuses)."></textarea>
+                  <div class="hint">
+                    <strong>Astuce :</strong> commence par “Produis… / Propose… / Génère…” et donne un nombre + un objet précis.
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Critères de succès (KPI / définition d’une bonne réponse)</span>
+                    <span class="counter" id="c_success"></span>
+                  </div>
+                  <textarea id="success" placeholder="Ex : Objectif = augmenter le clic vers le pricing. Une bonne variante est courte (2–4 mots), claire, non agressive, cohérente marque."></textarea>
+                  <div class="hint">
+                    <strong>Donne un “thermomètre” :</strong> + clic / + conversion / - abandon / + clarté / + confiance.
+                  </div>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Audience / contexte d’usage</span>
+                    <span class="counter" id="c_audience"></span>
+                  </div>
+                  <textarea id="audience" placeholder="Ex : Prospects B2B (PME), mobile majoritaire, France, nouveaux visiteurs, pas experts du produit."></textarea>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Où ça se passe ? (page / étape / module)</span>
+                    <span class="counter" id="c_scope"></span>
+                  </div>
+                  <textarea id="scope" placeholder="Ex : Page Home > section Pricing teaser (juste avant FAQ)."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2 : Cible + détails -->
+            <div class="section" id="secTarget">
+              <div class="section-head">
+                <div class="sec-left">
+                  <div class="sec-icon">➋</div>
+                  <div>
+                    <p class="sec-title">2) Cible + détails (visuels / texte / structure)</p>
+                    <p class="sec-desc">Indique l’élément exact à modifier, puis précise style/longueur/contraintes.</p>
+                  </div>
+                </div>
+                <div class="sec-right">
+                  <span class="tag req">Obligatoire</span>
+                  <span class="tag">Précision = moins de crédits</span>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Élément ciblé (1 principal)</span>
+                    <span class="counter" id="c_target"></span>
+                  </div>
+                  <textarea id="target" placeholder="Ex : Bouton CTA du bloc pricing (libellé du bouton uniquement)."></textarea>
+                  <div class="hint">
+                    <strong>Sois chirurgical :</strong> “hero headline”, “CTA label”, “microcopy erreur formulaire”, “titre carte produit”, etc.
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Détails attendus (style / longueur / vocabulaire / UI)</span>
+                    <span class="counter" id="c_details"></span>
+                  </div>
+                  <textarea id="details" placeholder="Ex : 2–4 mots, ton rassurant, éviter l’impératif agressif, privilégier bénéfice clair, pas d’anglicismes."></textarea>
+                  <div class="hint">
+                    <strong>Plus c’est précis, mieux c’est :</strong> taille (mots/caractères), ton (rassurant/direct), style (sobre), mots interdits.
+                  </div>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Contraintes de marque / design system (si applicable)</span>
+                    <span class="counter" id="c_brand"></span>
+                  </div>
+                  <textarea id="brand" placeholder="Ex : Tutoiement, vocabulaire simple, pas de promesses (“garanti”), tonalité premium mais accessible."></textarea>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Exemples (1 bon + 1 à éviter)</span>
+                    <span class="counter" id="c_examples"></span>
+                  </div>
+                  <textarea id="examples" placeholder="Bon : “Voir les offres” / À éviter : “Achetez maintenant !!!”"></textarea>
+                  <div class="hint">
+                    L’exemple est le moyen le plus rapide de stabiliser la qualité (et éviter des itérations coûteuses).
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3 : Comportement attendu -->
+            <div class="section" id="secBehavior">
+              <div class="section-head">
+                <div class="sec-left">
+                  <div class="sec-icon">➌</div>
+                  <div>
+                    <p class="sec-title">3) Comportement attendu (step-by-step + itération)</p>
+                    <p class="sec-desc">Définis comment produire : variantes, checks, questions si info manquante.</p>
+                  </div>
+                </div>
+                <div class="sec-right">
+                  <span class="tag req" id="tagBehaviorReq">Obligatoire</span>
+                  <span class="tag">Fiabilité</span>
+                </div>
+              </div>
+
+              <div class="row3">
+                <div class="field">
+                  <div class="label">
+                    <span>Nombre de variantes</span>
+                    <span class="help">Si “variantes”</span>
+                  </div>
+                  <select id="variantCount">
+                    <option value="0">N/A</option>
+                    <option value="3">3</option>
+                    <option value="5" selected>5</option>
+                    <option value="6">6</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                  </select>
+                  <div class="hint">
+                    <strong>Recommandé :</strong> 5–8 variantes pour obtenir de la diversité sans bruit.
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Niveau d’audace</span>
+                    <span class="help">Mix conseillé</span>
+                  </div>
+                  <select id="boldness">
+                    <option value="mix" selected>Mix (conservateur → audacieux)</option>
+                    <option value="safe">Plutôt safe</option>
+                    <option value="bold">Plutôt audacieux</option>
+                  </select>
+                  <div class="hint">
+                    Mix = utile en expérimentation (évite de tester uniquement des variations trop proches).
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Gestion des manques</span>
+                    <span class="help">Anti “IA devine”</span>
+                  </div>
+                  <select id="missingPolicy">
+                    <option value="ask" selected>Poser des questions (max 3) puis attendre</option>
+                    <option value="assume">Formuler des hypothèses explicites puis produire</option>
+                  </select>
+                  <div class="hint">
+                    Pour ne pas brûler des crédits : si manque critique → <strong>questions d’abord</strong>.
+                  </div>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Process de production (optionnel mais recommandé)</span>
+                    <span class="counter" id="c_workflow"></span>
+                  </div>
+                  <textarea id="workflow" placeholder="Ex : 1) rappeler le but/KPI, 2) proposer variantes, 3) pour chaque variante : intention + pourquoi ça marche, 4) checklist conformité."></textarea>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Informations supplémentaires déjà disponibles (si tu en as)</span>
+                    <span class="counter" id="c_data"></span>
+                  </div>
+                  <textarea id="data" placeholder="Ex : Performances actuelles : CTA “Découvrir” = CTR 1.2%. Objection fréquente : prix. Avantage clé : mise en place en 10 min."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4 : Contraintes + format -->
+            <div class="section" id="secConstraints">
+              <div class="section-head">
+                <div class="sec-left">
+                  <div class="sec-icon">➍</div>
+                  <div>
+                    <p class="sec-title">4) Contraintes (limitations + à éviter) & format de sortie</p>
+                    <p class="sec-desc">C’est la barrière anti réponses génériques : contraintes + format exploitable.</p>
+                  </div>
+                </div>
+                <div class="sec-right">
+                  <span class="tag req">Obligatoire</span>
+                  <span class="tag">Sortie exploitable</span>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Contraintes (hard rules)</span>
+                    <span class="counter" id="c_constraints"></span>
+                  </div>
+                  <textarea id="constraints" placeholder="Ex : FR uniquement. Pas de promesse (“garanti”). Max 4 mots. Pas d’emoji. Ton rassurant."></textarea>
+                  <div class="hint">
+                    <strong>Minimum :</strong> 1 règle claire (longueur/ton/interdits). Sinon la sortie part en freestyle.
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>À éviter (pièges / interdits)</span>
+                    <span class="counter" id="c_avoid"></span>
+                  </div>
+                  <textarea id="avoid" placeholder="Ex : éviter “acheter”, “urgent”, “promo”, le jargon, les anglicismes."></textarea>
+                  <div class="hint">
+                    Donne une “ban list” : mots, styles, promesses, claims non prouvables.
+                  </div>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <div class="label">
+                    <span>Format de sortie (obligatoire)</span>
+                    <span class="counter" id="c_format"></span>
+                  </div>
+                  <textarea id="format" placeholder="Ex : Tableau markdown avec colonnes : Variante | Texte | Intention | Pourquoi ça peut performer | Risque."></textarea>
+                  <div class="hint">
+                    Pour PBX : impose un format <strong>copiable</strong> (tableau/JSON) + champs exacts.
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="label">
+                    <span>Brouillon à améliorer (optionnel)</span>
+                    <span class="counter" id="c_draft"></span>
+                  </div>
+                  <textarea id="draft" placeholder="Ex : CTA actuel = “Découvrir”. Headline actuelle = “La solution la plus simple”"></textarea>
+                </div>
+              </div>
+
+              <div class="field" style="margin-top:12px;">
+                <div class="label">
+                  <span>Infos techniques (optionnel — seulement si ça change la recommandation)</span>
+                  <span class="help">Évite le “back-end noise”</span>
+                </div>
+                <textarea id="tech" placeholder="Ex : Impossible de modifier le layout. On peut changer uniquement le texte (headline + CTA)."></textarea>
+                <div class="hint">
+                  <strong>Règle :</strong> ajoute ici uniquement des contraintes techniques qui impactent le livrable. Sinon, laisse vide.
+                </div>
+              </div>
+            </div>
+
+            <!-- RESULT -->
+            <div class="card result-card">
+              <div class="inner">
+                <div class="result-head">
+                  <h3>Prompt généré</h3>
+                  <span class="badge" id="genBadge">—</span>
+                </div>
+                <textarea id="result" readonly placeholder="Le prompt final apparaîtra ici (bloqué tant que le brief n'est pas suffisamment complet)."></textarea>
+                <div class="toast" id="toast">Prompt copié ✅</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="card">
+          <div class="quality">
+            <div class="quality-top">
+              <p class="qtitle">Contrôle qualité</p>
+              <div class="qscore" id="scorePill">0% ⛔</div>
+            </div>
+            <div class="bar"><div id="scoreBar"></div></div>
+
+            <div class="checklist" id="checklist"></div>
+
+            <div class="actions">
+              <button class="btn ghost" id="btnValidate" type="button">🧪 Valider le brief (questions)</button>
+              <button class="btn primary" id="btnGenerate" type="button" disabled>⚙️ Générer le prompt (PBX-ready)</button>
+              <button class="btn ghost" id="btnCopy" type="button" disabled>📋 Copier</button>
+              <button class="btn danger" id="btnReset" type="button">🗑️ Réinitialiser</button>
+            </div>
+
+            <div class="mini" id="miniHelp">
+              <strong>Valider le brief</strong> génère des <em>questions utiles</em> si des infos manquent (pour éviter de brûler des crédits).
+              <br/><br/>
+              <strong>Générer</strong> est activé uniquement quand les essentiels sont présents.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <script>
-  function buildPromptSection(title, content) {
-    if (!content || !content.trim()) return "";
-    return title + ":\n" + content.trim() + "\n\n";
+/* =========================
+   PBX Prompt Builder (Quality Gate)
+   ========================= */
+
+  // --- Field references
+  const $ = (id) => document.getElementById(id);
+
+  const fields = {
+    useCase: $("useCase"),
+    useCaseType: $("useCaseType"),
+
+    action: $("action"),
+    success: $("success"),
+    audience: $("audience"),
+    scope: $("scope"),
+
+    target: $("target"),
+    details: $("details"),
+    brand: $("brand"),
+    examples: $("examples"),
+
+    variantCount: $("variantCount"),
+    boldness: $("boldness"),
+    missingPolicy: $("missingPolicy"),
+    workflow: $("workflow"),
+    data: $("data"),
+
+    constraints: $("constraints"),
+    avoid: $("avoid"),
+    format: $("format"),
+    draft: $("draft"),
+    tech: $("tech"),
+
+    result: $("result"),
+
+    btnValidate: $("btnValidate"),
+    btnGenerate: $("btnGenerate"),
+    btnCopy: $("btnCopy"),
+    btnReset: $("btnReset"),
+
+    scorePill: $("scorePill"),
+    scoreBar: $("scoreBar"),
+    checklist: $("checklist"),
+
+    stateLabel: $("stateLabel"),
+    dotState: $("dotState"),
+    toast: $("toast"),
+    genBadge: $("genBadge"),
+    tagBehaviorReq: $("tagBehaviorReq"),
+  };
+
+  // --- Character counters
+  const counters = [
+    ["c_usecase", fields.useCase],
+    ["c_action", fields.action],
+    ["c_success", fields.success],
+    ["c_audience", fields.audience],
+    ["c_scope", fields.scope],
+    ["c_target", fields.target],
+    ["c_details", fields.details],
+    ["c_brand", fields.brand],
+    ["c_examples", fields.examples],
+    ["c_workflow", fields.workflow],
+    ["c_data", fields.data],
+    ["c_constraints", fields.constraints],
+    ["c_avoid", fields.avoid],
+    ["c_format", fields.format],
+    ["c_draft", fields.draft],
+  ];
+
+  function setCounter(elId, value){
+    const el = $(elId);
+    const len = (value || "").trim().length;
+    el.textContent = len ? `${len} car.` : "";
   }
 
-  const vagueWords = ["améliorer","optimiser","faire mieux","rendre plus","augmenter","peaufiner","quelque chose","comme tu veux","à ta guise"];
-  function looksVague(text) {
-    if (!text) return true;
+  // --- Helpers: risk detection
+  const vagueMarkers = [
+    "améliorer","optimiser","faire mieux","rendre plus","augmenter","peaufiner",
+    "un truc","quelque chose","comme tu veux","à ta guise","peu importe"
+  ];
+
+  function looksVague(text){
+    if(!text) return true;
     const t = text.trim().toLowerCase();
-    if (t.length < 25) return true;
-    return vagueWords.some(w => t.includes(w)) && t.length < 90;
+    if(t.length < 35) return true;
+    const hasVague = vagueMarkers.some(m => t.includes(m));
+    // vague + no concrete signals
+    const hasConcrete = /(\d+)|(?:variante)|(?:tableau)|(?:json)|(?:colonnes)|(?:max)|(?:mots)|(?:caract)/i.test(text);
+    return hasVague && !hasConcrete;
   }
-  function likelyMultiObjective(text) {
-    if (!text) return false;
+
+  function multiObjective(text){
+    if(!text) return false;
     const t = (" " + text.toLowerCase() + " ");
     const hits = [" et ", " puis ", " en même temps ", " à la fois ", " + "]
       .reduce((acc, k) => acc + (t.split(k).length - 1), 0);
+    // "et" can be normal once or twice, but too many indicates mixing
     return hits >= 4;
   }
 
-  // Map tes champs existants -> bonnes pratiques
-  function readForm() {
-    return {
-      // Action / tâche
-      action: document.getElementById("immediateRequest").value || document.getElementById("detailedTask").value,
-      // Cible + détails
-      targetDetails: document.getElementById("backgroundData").value, // (tu peux garder, mais idéalement tu ajoutes un champ "élément à modifier")
-      // Comportement attendu
-      behavior: document.getElementById("thinkingInstructions").value,
-      // Contraintes
-      constraints: document.getElementById("detailedTask").value, // contient souvent règles/à éviter — sinon ajoute un champ dédié
-      // Format
-      format: document.getElementById("outputFormatting").value,
-      // Bonus
-      success: document.getElementById("taskContext").value,
-      tone: document.getElementById("toneContext").value,
-      examples: document.getElementById("examples").value,
-      history: document.getElementById("conversationHistory").value,
-      draft: document.getElementById("prefilledResponse").value,
-    };
+  function hasTarget(text){
+    if(!text) return false;
+    const t = text.toLowerCase();
+    const signals = ["cta","hero","headline","titre","bouton","pricing","formulaire","champ","panier","checkout","cart","banner","bannière","bloc","section","card","carte","tooltip","microcopy","error","erreur"];
+    return signals.some(s => t.includes(s)) || text.trim().length >= 18;
   }
 
-  function computeQuality(data) {
+  function nonEmpty(text, min=8){
+    return (text || "").trim().length >= min;
+  }
+
+  // --- Quality model
+  // Essentials to unlock generate:
+  // useCase, action, target, details, constraints OR avoid, format
+  // plus behavior required if useCaseType == variants OR audit
+  function computeQuality(){
+    const type = fields.useCaseType.value;
+
     const missing = [];
-    const risks = [];
+    const warnings = [];
+    const ok = [];
 
-    // Critiques
-    if (!data.action || !data.action.trim()) missing.push("❌ Action manquante : écris ce que tu veux obtenir (livrable concret).");
-    if (data.action && looksVague(data.action)) risks.push("⚠️ Action vague : évite “optimiser/améliorer”. Donne un livrable + contraintes (ex: 5 variantes de CTA, 12 mots max…).");
-    if (data.action && likelyMultiObjective(data.action)) risks.push("⚠️ Plusieurs objectifs détectés : fais 1 prompt = 1 use case.");
-
-    // Ici, ton formulaire n'a pas un champ “cible à modifier”. Tu dois le forcer d’une manière ou d’une autre.
-    // À défaut, on exige une précision dans backgroundData ou detailedTask.
-    const hasTargetSignal = (data.targetDetails && data.targetDetails.trim().length >= 20) ||
-                            (document.getElementById("detailedTask").value || "").toLowerCase().includes("cta") ||
-                            (document.getElementById("detailedTask").value || "").toLowerCase().includes("hero") ||
-                            (document.getElementById("detailedTask").value || "").toLowerCase().includes("bloc");
-    if (!hasTargetSignal) missing.push("❌ Cible floue : indique l’élément exact (hero/CTA/pricing/formulaire…) et où il se trouve.");
-
-    // Contraintes : au moins une règle / un interdit
-    const rulesText = (document.getElementById("detailedTask").value || "") + " " + (data.format || "");
-    if (!rulesText.trim() || rulesText.trim().length < 20) missing.push("❌ Contraintes manquantes : ajoute au moins 1 règle (longueur, ton, mots interdits, accessibilité, etc.).");
-
-    if (!data.format || !data.format.trim()) missing.push("❌ Format manquant : impose un format exploitable (tableau/JSON/markdown + champs).");
-
-    // Recommandés
-    if (!data.success || data.success.trim().length < 15) risks.push("ℹ️ Ajoute des critères de succès (KPI/objectif) pour guider l’IA.");
-    if (!data.behavior || data.behavior.trim().length < 15) risks.push("ℹ️ Ajoute un comportement attendu (nombre de variantes, step-by-step, validations).");
-    if (!data.examples || data.examples.trim().length < 10) risks.push("ℹ️ Ajoute 1 exemple (à suivre / à éviter) pour stabiliser la qualité.");
-    
-    // Score
-    // Base = 100, on retire selon manques/risques (les manques pèsent lourd)
-    let score = 100;
-    score -= missing.length * 25;
-    score -= risks.filter(r => r.startsWith("⚠️")).length * 10;
-    score -= risks.filter(r => r.startsWith("ℹ️")).length * 5;
-    if (score < 0) score = 0;
-    if (score > 100) score = 100;
-
-    const ready = missing.length === 0 && score >= 70;
-    return { score, ready, missing, risks };
-  }
-
-  function updateQualityUI() {
-    const data = readForm();
-    const q = computeQuality(data);
-
-    const scoreEl = document.getElementById("qualityScore");
-    const barEl = document.getElementById("qualityBar");
-    const missingEl = document.getElementById("missingList");
-    const riskEl = document.getElementById("riskList");
-    const btn = document.getElementById("generateBtn");
-
-    scoreEl.textContent = q.score + "% " + (q.ready ? "✅ prêt" : "⛔ incomplet");
-    barEl.style.width = q.score + "%";
-    barEl.style.background = q.ready ? "#22c55e" : (q.score >= 50 ? "#f59e0b" : "#ef4444");
-
-    missingEl.innerHTML = q.missing.length ? ("<strong>À compléter :</strong><br>" + q.missing.join("<br>")) : "";
-    riskEl.innerHTML = q.risks.length ? ("<strong>À risque / recommandé :</strong><br>" + q.risks.join("<br>")) : "";
-
-    btn.disabled = !q.ready;
-    btn.style.opacity = q.ready ? "1" : "0.5";
-    btn.style.cursor = q.ready ? "pointer" : "not-allowed";
-
-    return { data, q };
-  }
-
-  // Mise à jour en live
-  const watchedIds = [
-    "taskContext","toneContext","backgroundData","detailedTask","examples",
-    "conversationHistory","immediateRequest","thinkingInstructions","outputFormatting","prefilledResponse"
-  ];
-  watchedIds.forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener("input", updateQualityUI);
-  });
-
-  // Génération
-  document.getElementById("generateBtn").addEventListener("click", function () {
-    const { data, q } = updateQualityUI();
-    if (!q.ready) return; // sécurité
-
-    const promptParts = [];
-
-    // Prompt structuré selon les slides
-    const header =
-      "Tu es une IA spécialisée en Prompt-based Experimentation.\n" +
-      "Objectif : produire une réponse directement exploitable, sans ambiguïté.\n" +
-      "Règles :\n" +
-      "- Un prompt = un use case (si plusieurs objectifs, le signaler).\n" +
-      "- Ne pas deviner : si une info critique manque, poser jusqu’à 3 questions.\n" +
-      "- Éviter les détails back-end non nécessaires.\n\n";
-
-    promptParts.push(header);
-
-    promptParts.push(buildPromptSection("1) Une tâche / action (ce que tu dois faire)", data.action));
-    promptParts.push(buildPromptSection("2) Cible + détails (élément à modifier + détails visuels/texte)", data.targetDetails));
-    promptParts.push(buildPromptSection("3) Comportement attendu (step-by-step, itérations, vérifs)", data.behavior));
-    promptParts.push(buildPromptSection("4) Contraintes (limitations, exigences, éléments à éviter)", document.getElementById("detailedTask").value));
-
-    // Bonus : contexte / ton / exemples / format / brouillon
-    promptParts.push(buildPromptSection("Contexte utile", data.success));
-    promptParts.push(buildPromptSection("Ton & style", data.tone));
-    promptParts.push(buildPromptSection("Exemples (à suivre / à éviter)", data.examples));
-    promptParts.push(buildPromptSection("Format de sortie", data.format));
-    promptParts.push(buildPromptSection("Brouillon à retravailler (si présent)", data.draft));
-    promptParts.push(buildPromptSection("Historique pertinent (si présent)", data.history));
-
-    const finalPrompt = promptParts.join("").trim();
-    document.getElementById("result").value = finalPrompt;
-    document.getElementById("status").style.display = "none";
-  });
-
-  document.getElementById("copyBtn").addEventListener("click", function () {
-    const result = document.getElementById("result");
-    if (!result.value.trim()) return;
-
-    result.select();
-    result.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(result.value).then(function () {
-      const status = document.getElementById("status");
-      status.textContent = "Prompt copié !";
-      status.style.display = "inline";
-      setTimeout(() => { status.style.display = "none"; }, 2000);
+    // Required blocks
+    // 0) useCase
+    if(!nonEmpty(fields.useCase.value, 18)) missing.push({
+      key:"useCase",
+      title:"Use case unique",
+      msg:"Écris une intention en 1 phrase (objectif unique).",
+      fix:"Ex : “Créer 6 variantes de CTA pour augmenter le clic vers le pricing”."
     });
+    else {
+      ok.push("Use case");
+      if(multiObjective(fields.useCase.value)) warnings.push({
+        key:"useCase",
+        title:"Use case potentiellement multiple",
+        msg:"On détecte plusieurs objectifs. Idéalement : 1 intention = 1 prompt.",
+        fix:"Découpe en 2 prompts (ex : “audit” puis “variantes”)."
+      });
+    }
+
+    // 1) action
+    if(!nonEmpty(fields.action.value, 30)) missing.push({
+      key:"action",
+      title:"Action / livrable",
+      msg:"Décris ce que tu veux obtenir (livrable concret).",
+      fix:"Ajoute un nombre + un objet (ex : “6 variantes de CTA”, “tableau de recommandations”)."
+    });
+    else {
+      ok.push("Action");
+      if(looksVague(fields.action.value)) warnings.push({
+        key:"action",
+        title:"Action trop vague",
+        msg:"Verbes vagues détectés. Risque de réponse générique.",
+        fix:"Ajoute nombre, objet, limites (mots max), et contexte (où)."
+      });
+      if(multiObjective(fields.action.value)) warnings.push({
+        key:"action",
+        title:"Plusieurs objectifs",
+        msg:"Ton action contient probablement plusieurs livrables.",
+        fix:"Garde un seul livrable par prompt."
+      });
+    }
+
+    // 2) target + details
+    if(!nonEmpty(fields.target.value, 12) || !hasTarget(fields.target.value)) missing.push({
+      key:"target",
+      title:"Cible",
+      msg:"On ne sait pas exactement quel élément modifier.",
+      fix:"Ex : “libellé du bouton CTA du bloc pricing” / “hero headline” / “microcopy erreur email”."
+    });
+    else ok.push("Cible");
+
+    if(!nonEmpty(fields.details.value, 18)) missing.push({
+      key:"details",
+      title:"Détails attendus",
+      msg:"Ajoute des détails précis (longueur, ton, vocabulaire, style).",
+      fix:"Ex : “2–4 mots, ton rassurant, pas d’anglicismes, pas d’emoji”."
+    });
+    else ok.push("Détails");
+
+    // 4) constraints + format
+    const hasRules = nonEmpty(fields.constraints.value, 12) || nonEmpty(fields.avoid.value, 8);
+    if(!hasRules) missing.push({
+      key:"constraints",
+      title:"Contraintes / à éviter",
+      msg:"Sans règles, l’IA part en freestyle (crédits grillés).",
+      fix:"Ajoute au moins 1 hard rule (longueur/ton/interdits)."
+    });
+    else ok.push("Contraintes");
+
+    if(!nonEmpty(fields.format.value, 18)) missing.push({
+      key:"format",
+      title:"Format de sortie",
+      msg:"Sans format, la sortie est rarement exploitable dans PBX.",
+      fix:"Ex : “Tableau markdown : Variante | Texte | Intention | Pourquoi | Risque”."
+    });
+    else ok.push("Format");
+
+    // 3) behavior
+    const behaviorIsRequired = (type === "variants" || type === "audit");
+    // show required tag dynamically
+    fields.tagBehaviorReq.style.display = behaviorIsRequired ? "inline-flex" : "none";
+
+    if(behaviorIsRequired){
+      const vcount = parseInt(fields.variantCount.value || "0", 10);
+      if(type === "variants" && vcount <= 0){
+        missing.push({
+          key:"variantCount",
+          title:"Nombre de variantes",
+          msg:"Type “Variantes” ⇒ indique un nombre de variantes.",
+          fix:"5–8 est un bon compromis."
+        });
+      } else if(type === "variants") ok.push("Variantes");
+
+      if(fields.missingPolicy.value !== "ask" && fields.missingPolicy.value !== "assume"){
+        missing.push({
+          key:"missingPolicy",
+          title:"Gestion des manques",
+          msg:"Choisis une stratégie (questions vs hypothèses).",
+          fix:"Recommandé : poser jusqu’à 3 questions puis attendre."
+        });
+      } else ok.push("Gestion des manques");
+    }
+
+    // Optional but useful warnings
+    if(!nonEmpty(fields.success.value, 25)) warnings.push({
+      key:"success",
+      title:"Critères de succès manquants",
+      msg:"Sans KPI/définition de qualité, les variantes sont moins alignées.",
+      fix:"Ajoute objectif : + clic / + conversion / + clarté / + confiance."
+    });
+
+    if(type === "audit" && !nonEmpty(fields.data.value, 30)) warnings.push({
+      key:"data",
+      title:"Données utiles absentes",
+      msg:"Pour un audit, ajoute contexte/performances/contraintes.",
+      fix:"Ex : CTR actuel, objections clients, points de friction observés."
+    });
+
+    if(type === "variants" && !nonEmpty(fields.examples.value, 8)) warnings.push({
+      key:"examples",
+      title:"Exemples recommandés",
+      msg:"1 bon + 1 à éviter stabilise beaucoup la qualité.",
+      fix:"Colle 2 exemples très courts."
+    });
+
+    // Score
+    // Missing = -18 points each (hard), warnings = -6 points each (soft)
+    let score = 100;
+    score -= missing.length * 18;
+    score -= warnings.length * 6;
+
+    // clamp
+    score = Math.max(0, Math.min(100, score));
+
+    const ready = (missing.length === 0) && (score >= 72);
+
+    // Color state
+    const state = ready ? "ready" : (score >= 55 ? "warn" : "bad");
+    return { score, ready, missing, warnings, ok, state, type };
+  }
+
+  function renderChecklist(q){
+    const items = [];
+
+    // Essentials
+    const essentials = [
+      {
+        id:"uc",
+        title:"Use case unique",
+        pass: nonEmpty(fields.useCase.value, 18) && !multiObjective(fields.useCase.value),
+        warn: nonEmpty(fields.useCase.value, 18) && multiObjective(fields.useCase.value),
+        help: "Une intention unique (sinon l’IA priorise mal).",
+        fix: "Réécris en 1 phrase / 1 objectif."
+      },
+      {
+        id:"action",
+        title:"Action claire",
+        pass: nonEmpty(fields.action.value, 30) && !looksVague(fields.action.value),
+        warn: nonEmpty(fields.action.value, 30) && looksVague(fields.action.value),
+        help: "Livrable concret (nombre + objet).",
+        fix: "Ajoute : nombre, objet, limites (mots max)."
+      },
+      {
+        id:"target",
+        title:"Cible précise",
+        pass: nonEmpty(fields.target.value, 12) && hasTarget(fields.target.value),
+        warn: nonEmpty(fields.target.value, 12) && !hasTarget(fields.target.value),
+        help: "Élément exact à modifier.",
+        fix: "Ex : “libellé du CTA du bloc pricing”."
+      },
+      {
+        id:"details",
+        title:"Détails précis",
+        pass: nonEmpty(fields.details.value, 18),
+        warn: nonEmpty(fields.details.value, 12) && !nonEmpty(fields.details.value, 18),
+        help: "Longueur, ton, vocabulaire, style.",
+        fix: "Ex : “2–4 mots, ton rassurant, pas d’emoji”."
+      },
+      {
+        id:"constraints",
+        title:"Contraintes",
+        pass: nonEmpty(fields.constraints.value, 12) || nonEmpty(fields.avoid.value, 8),
+        warn: (nonEmpty(fields.constraints.value, 8) || nonEmpty(fields.avoid.value, 4)) && !(nonEmpty(fields.constraints.value, 12) || nonEmpty(fields.avoid.value, 8)),
+        help: "Interdits + règles (anti freestyle).",
+        fix: "Ajoute au moins 1 hard rule."
+      },
+      {
+        id:"format",
+        title:"Format exploitable",
+        pass: nonEmpty(fields.format.value, 18),
+        warn: nonEmpty(fields.format.value, 10) && !nonEmpty(fields.format.value, 18),
+        help: "Tableau/JSON + champs exacts.",
+        fix: "Ex : colonnes Variante | Texte | Intention | Pourquoi | Risque."
+      }
+    ];
+
+    // Type-specific
+    if(q.type === "variants"){
+      essentials.push({
+        id:"vcount",
+        title:"Nb variantes",
+        pass: parseInt(fields.variantCount.value || "0", 10) >= 3,
+        warn: parseInt(fields.variantCount.value || "0", 10) === 0,
+        help: "Variantes ⇒ préciser combien.",
+        fix: "Choisis 5–8."
+      });
+    }
+
+    const addItem = (title, desc, state) => {
+      const cls = state;
+      const icon = (state === "ok") ? "✓" : (state === "warn" ? "!" : "×");
+      return `
+        <div class="item ${cls}">
+          <div class="ico">${icon}</div>
+          <div>
+            <p class="it-t">${title}</p>
+            <p class="it-d">${desc}</p>
+          </div>
+        </div>
+      `;
+    };
+
+    essentials.forEach(e => {
+      if(e.pass) items.push(addItem(e.title, e.help, "ok"));
+      else if(e.warn) items.push(addItem(e.title, e.fix, "warn"));
+      else items.push(addItem(e.title, e.fix, "bad"));
+    });
+
+    // Soft recos
+    if(!nonEmpty(fields.success.value, 25)){
+      items.push(addItem("KPI / succès (reco)", "Ajoute un critère : + clic / + conversion / + clarté / + confiance.", "warn"));
+    } else {
+      items.push(addItem("KPI / succès (reco)", "OK — l’IA saura prioriser.", "ok"));
+    }
+
+    if(q.type === "variants"){
+      if(!nonEmpty(fields.examples.value, 8)) items.push(addItem("Exemples (reco)", "Ajoute 1 bon + 1 à éviter pour stabiliser la qualité.", "warn"));
+      else items.push(addItem("Exemples (reco)", "OK — guidance très efficace.", "ok"));
+    }
+
+    fields.checklist.innerHTML = items.join("");
+  }
+
+  function updateUI(){
+    const q = computeQuality();
+
+    // Counters
+    counters.forEach(([id, el]) => setCounter(id, el.value));
+
+    // Score pill
+    fields.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
+    fields.scoreBar.style.width = `${q.score}%`;
+    fields.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
+
+    // bar color + header dot
+    if(q.state === "ready"){
+      fields.scoreBar.style.background = "linear-gradient(90deg, #22C55E, #14B8A6)";
+      fields.dotState.style.background = "var(--green)";
+      fields.stateLabel.textContent = "Brief prêt (PBX-ready)";
+      fields.scorePill.style.color = "#14532D";
+      fields.scorePill.style.borderColor = "rgba(34,197,94,0.25)";
+      fields.scorePill.style.background = "rgba(34,197,94,0.08)";
+    } else if(q.state === "warn"){
+      fields.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
+      fields.dotState.style.background = "var(--amber)";
+      fields.stateLabel.textContent = "Brief presque prêt";
+      fields.scorePill.style.color = "#7C2D12";
+      fields.scorePill.style.borderColor = "rgba(245,158,11,0.25)";
+      fields.scorePill.style.background = "rgba(245,158,11,0.08)";
+    } else {
+      fields.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
+      fields.dotState.style.background = "var(--red)";
+      fields.stateLabel.textContent = "Brief incomplet";
+      fields.scorePill.style.color = "#991B1B";
+      fields.scorePill.style.borderColor = "rgba(239,68,68,0.25)";
+      fields.scorePill.style.background = "rgba(239,68,68,0.08)";
+    }
+
+    // checklist
+    renderChecklist(q);
+
+    // Buttons
+    fields.btnGenerate.disabled = !q.ready;
+    fields.btnCopy.disabled = !fields.result.value.trim();
+
+    // Save draft
+    saveToStorage();
+
+    return q;
+  }
+
+  // --- Storage
+  const STORAGE_KEY = "pbx_prompt_builder_v1";
+
+  function saveToStorage(){
+    const payload = {};
+    Object.keys(fields).forEach(k => {
+      const el = fields[k];
+      if(!el) return;
+      if(el.tagName === "TEXTAREA" || el.tagName === "INPUT" || el.tagName === "SELECT"){
+        payload[k] = el.value;
+      }
+    });
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch(e){}
+  }
+
+  function loadFromStorage(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const payload = JSON.parse(raw);
+      Object.keys(payload).forEach(k => {
+        if(fields[k] && (fields[k].tagName === "TEXTAREA" || fields[k].tagName === "INPUT" || fields[k].tagName === "SELECT")){
+          fields[k].value = payload[k];
+        }
+      });
+    } catch(e){}
+  }
+
+  function clearStorage(){
+    try{ localStorage.removeItem(STORAGE_KEY); } catch(e){}
+  }
+
+  // --- Prompt builders
+  function section(title, content){
+    if(!content || !content.trim()) return "";
+    return `## ${title}\n${content.trim()}\n\n`;
+  }
+
+  function buildQuestions(q){
+    // Generate targeted questions only for missing essentials, max 3
+    // Priority order: action, target, details, constraints, format, useCase, variants
+    const questions = [];
+
+    const ask = (qtext, why) => {
+      if(questions.length < 3){
+        questions.push(`- ${qtext}\n  - Pourquoi : ${why}`);
+      }
+    };
+
+    // Missing essentials from computeQuality
+    const missingKeys = new Set(q.missing.map(m => m.key));
+
+    if(missingKeys.has("useCase")){
+      ask("Quel est l’objectif UNIQUE de ce prompt (1 phrase) ?", "Éviter que l’IA mélange plusieurs objectifs et produise une sortie incohérente.");
+    }
+    if(missingKeys.has("action")){
+      ask("Quel livrable exact veux-tu (ex : X variantes / un tableau / une reco) ?", "Un livrable concret réduit les réponses génériques.");
+    }
+    if(missingKeys.has("target")){
+      ask("Quel est l’élément exact à modifier (ex : CTA label / hero headline / microcopy erreur) et où se situe-t-il ?", "La cible précise évite les propositions hors scope.");
+    }
+    if(missingKeys.has("details")){
+      ask("Quelles contraintes de forme doivent être respectées (mots/caractères, ton, style, vocabulaire) ?", "Plus de précision = moins d’itérations et moins de crédits consommés.");
+    }
+    if(missingKeys.has("constraints")){
+      ask("Quelles règles ou interdits sont NON négociables (ex : mots interdits, claims, longueur, pas d’emoji) ?", "Sans règles, la sortie est souvent inexploitable.");
+    }
+    if(missingKeys.has("format")){
+      ask("Quel format de sortie veux-tu (tableau/JSON) et quels champs exacts ?", "Un format imposé rend la sortie directement utilisable dans PBX.");
+    }
+    if(missingKeys.has("variantCount")){
+      ask("Combien de variantes dois-je produire (et veux-tu un mix safe/audacieux) ?", "Le nombre + la diversité sont essentiels pour tester.");
+    }
+
+    // If fewer than 3 and type variants: ask KPI or audience if empty
+    if(questions.length < 3 && q.type === "variants" && !nonEmpty(fields.success.value, 25)){
+      ask("Quel est le KPI / but (ex : + clic CTA, + conversion, + clarté) ?", "Le KPI permet d’aligner les variantes au test.");
+    }
+    if(questions.length < 3 && !nonEmpty(fields.audience.value, 18)){
+      ask("Qui est la cible (profil, niveau d’expertise, device) ?", "Le vocabulaire et l’angle dépendent fortement de l’audience.");
+    }
+
+    if(questions.length === 0){
+      questions.push("- Ton brief est suffisamment complet ✅\n  - Pourquoi : Les essentiels sont présents (action, cible, détails, contraintes, format).");
+    }
+
+    return questions.join("\n");
+  }
+
+  function buildFinalPrompt(q){
+    const type = fields.useCaseType.value;
+    const variantCount = parseInt(fields.variantCount.value || "0", 10);
+    const boldness = fields.boldness.value;
+    const missingPolicy = fields.missingPolicy.value;
+
+    const meta = [
+      `Use case: ${fields.useCase.value.trim()}`,
+      `Type: ${type}`,
+      (type === "variants" && variantCount > 0) ? `Variantes: ${variantCount} (${boldness})` : null,
+      `Gestion des manques: ${missingPolicy === "ask" ? "poser jusqu’à 3 questions puis attendre" : "hypothèses explicites puis production"}`,
+    ].filter(Boolean).join(" | ");
+
+    const system =
+`Tu es une IA experte en Prompt-based Experimentation (PBX).
+But: produire une sortie directement exploitable, précise, et alignée sur UN SEUL use case.
+Règles:
+- Un prompt = un use case (si plusieurs objectifs, le signaler).
+- Ne pas deviner: ${missingPolicy === "ask" ? "si une info critique manque, poser jusqu’à 3 questions puis attendre la réponse." : "si une info manque, formuler des hypothèses explicites (max 3) puis continuer."}
+- Éviter les considérations back-end sauf si elles impactent le livrable.
+- Respect strict des contraintes et du format de sortie.\n
+META: ${meta}\n`;
+
+    // PBX structured blocks (slides)
+    let out = system + "\n";
+    out += section("1) Une tâche / action", fields.action.value);
+    out += section("Critères de succès (KPI / qualité)", fields.success.value);
+    out += section("Audience & contexte d’usage", fields.audience.value);
+    out += section("Périmètre (où / page / module)", fields.scope.value);
+
+    out += section("2) Cible + détails", `Cible:\n${fields.target.value}\n\nDétails:\n${fields.details.value}`);
+    out += section("Charte / design system", fields.brand.value);
+    out += section("Exemples (à suivre / à éviter)", fields.examples.value);
+
+    if(type === "variants" && variantCount > 0){
+      out += section("3) Comportement attendu", [
+        `Produire ${variantCount} variantes.`,
+        boldness === "mix" ? "Inclure un mix : conservateur → audacieux." : (boldness === "safe" ? "Rester plutôt conservateur." : "Être plutôt audacieux."),
+        fields.workflow.value ? `Process:\n${fields.workflow.value.trim()}` : "Process recommandé: 1) rappeler objectif, 2) produire variantes, 3) justifier brièvement (intention), 4) checklist conformité."
+      ].join("\n"));
+    } else {
+      out += section("3) Comportement attendu", fields.workflow.value);
+    }
+
+    out += section("4) Contraintes (hard rules)", fields.constraints.value);
+    out += section("À éviter (interdits / pièges)", fields.avoid.value);
+
+    if(fields.tech.value.trim()){
+      out += section("Contraintes techniques pertinentes", fields.tech.value);
+    }
+
+    out += section("Données utiles", fields.data.value);
+    out += section("Brouillon (si applicable)", fields.draft.value);
+
+    out += section("Format de sortie (obligatoire)", fields.format.value);
+
+    out +=
+`Consigne finale:
+- Produit une V1 directement exploitable dans le format demandé.
+- Ne dépasse pas les contraintes.
+- Si tu dois faire des hypothèses, liste-les clairement (max 3) avant la réponse.\n`;
+
+    return out.trim();
+  }
+
+  // --- Actions
+  function validateBrief(){
+    const q = updateUI();
+    const questions = buildQuestions(q);
+
+    const text =
+`🧪 Validation du brief (anti-crédits grillés)
+
+État: ${q.ready ? "✅ Brief prêt" : "⛔ Brief incomplet"}
+Score: ${q.score}%
+
+Questions (max 3) à clarifier avant exécution PBX :
+${questions}
+
+Conseil:
+- Une fois répondu, clique “Générer le prompt (PBX-ready)”.`;
+
+    fields.result.value = text;
+    fields.btnCopy.disabled = !fields.result.value.trim();
+    showToast("Questions générées ✅");
+  }
+
+  function generatePrompt(){
+    const q = updateUI();
+    if(!q.ready) return;
+
+    const finalPrompt = buildFinalPrompt(q);
+    fields.result.value = finalPrompt;
+    fields.btnCopy.disabled = !fields.result.value.trim();
+    showToast("Prompt généré ✅");
+  }
+
+  async function copyResult(){
+    const v = fields.result.value.trim();
+    if(!v) return;
+    try{
+      await navigator.clipboard.writeText(v);
+      showToast("Prompt copié ✅");
+    } catch(e){
+      // fallback
+      fields.result.select();
+      document.execCommand("copy");
+      showToast("Prompt copié ✅");
+    }
+  }
+
+  function showToast(msg){
+    fields.toast.textContent = msg;
+    fields.toast.style.display = "block";
+    setTimeout(()=>{ fields.toast.style.display = "none"; }, 2000);
+  }
+
+  function resetAll(){
+    const ok = confirm("Réinitialiser tous les champs ?");
+    if(!ok) return;
+
+    [
+      fields.useCase, fields.useCaseType,
+      fields.action, fields.success, fields.audience, fields.scope,
+      fields.target, fields.details, fields.brand, fields.examples,
+      fields.variantCount, fields.boldness, fields.missingPolicy, fields.workflow, fields.data,
+      fields.constraints, fields.avoid, fields.format, fields.draft, fields.tech
+    ].forEach(el => {
+      if(!el) return;
+      if(el.tagName === "SELECT"){
+        // restore defaults
+        if(el === fields.useCaseType) el.value = "variants";
+        else if(el === fields.variantCount) el.value = "5";
+        else if(el === fields.boldness) el.value = "mix";
+        else if(el === fields.missingPolicy) el.value = "ask";
+        else el.value = el.options[0]?.value ?? "";
+      } else {
+        el.value = "";
+      }
+    });
+
+    fields.result.value = "";
+    clearStorage();
+    updateUI();
+  }
+
+  // --- Keyboard shortcut (Ctrl+Enter to generate)
+  document.addEventListener("keydown", (e)=>{
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const ctrl = isMac ? e.metaKey : e.ctrlKey;
+    if(ctrl && e.key === "Enter"){
+      e.preventDefault();
+      if(!fields.btnGenerate.disabled) generatePrompt();
+      else validateBrief();
+    }
   });
 
-  // init
-  updateQualityUI();
+  // --- Hook events
+  const watch = [
+    fields.useCase, fields.useCaseType,
+    fields.action, fields.success, fields.audience, fields.scope,
+    fields.target, fields.details, fields.brand, fields.examples,
+    fields.variantCount, fields.boldness, fields.missingPolicy, fields.workflow, fields.data,
+    fields.constraints, fields.avoid, fields.format, fields.draft, fields.tech
+  ];
+
+  watch.forEach(el => {
+    if(!el) return;
+    el.addEventListener("input", updateUI);
+    el.addEventListener("change", updateUI);
+  });
+
+  fields.btnValidate.addEventListener("click", validateBrief);
+  fields.btnGenerate.addEventListener("click", generatePrompt);
+  fields.btnCopy.addEventListener("click", copyResult);
+  fields.btnReset.addEventListener("click", resetAll);
+
+  // --- Initialize
+  loadFromStorage();
+  updateUI();
+
+  // Enable/disable generate live
+  const _updateUI = updateUI;
+  updateUI = function(){
+    const q = computeQuality();
+
+    // Toggle generate availability
+    fields.btnGenerate.disabled = !q.ready;
+
+    // Update counters
+    counters.forEach(([id, el]) => setCounter(id, el.value));
+
+    // UI state
+    fields.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
+    fields.scoreBar.style.width = `${q.score}%`;
+    fields.genBadge.textContent = q.ready ? "PBX-ready" : "Incomplet";
+
+    if(q.state === "ready"){
+      fields.scoreBar.style.background = "linear-gradient(90deg, #22C55E, #14B8A6)";
+      fields.dotState.style.background = "var(--green)";
+      fields.stateLabel.textContent = "Brief prêt (PBX-ready)";
+      fields.scorePill.style.color = "#14532D";
+      fields.scorePill.style.borderColor = "rgba(34,197,94,0.25)";
+      fields.scorePill.style.background = "rgba(34,197,94,0.08)";
+    } else if(q.state === "warn"){
+      fields.scoreBar.style.background = "linear-gradient(90deg, #F59E0B, #FBBF24)";
+      fields.dotState.style.background = "var(--amber)";
+      fields.stateLabel.textContent = "Brief presque prêt";
+      fields.scorePill.style.color = "#7C2D12";
+      fields.scorePill.style.borderColor = "rgba(245,158,11,0.25)";
+      fields.scorePill.style.background = "rgba(245,158,11,0.08)";
+    } else {
+      fields.scoreBar.style.background = "linear-gradient(90deg, #EF4444, #F97316)";
+      fields.dotState.style.background = "var(--red)";
+      fields.stateLabel.textContent = "Brief incomplet";
+      fields.scorePill.style.color = "#991B1B";
+      fields.scorePill.style.borderColor = "rgba(239,68,68,0.25)";
+      fields.scorePill.style.background = "rgba(239,68,68,0.08)";
+    }
+
+    // Behavior required tag
+    const behaviorRequired = (q.type === "variants" || q.type === "audit");
+    fields.tagBehaviorReq.style.display = behaviorRequired ? "inline-flex" : "none";
+
+    renderChecklist(q);
+
+    // Copy enabled if result exists
+    fields.btnCopy.disabled = !fields.result.value.trim();
+
+    saveToStorage();
+    return q;
+  };
+
+  // Final call to ensure overrides are applied
+  updateUI();
+
 </script>
+</body>
+</html>
