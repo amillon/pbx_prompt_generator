@@ -578,14 +578,13 @@
   </div>
 
 <script>
-  console.log("[DEBUG] PBX_FORM_SCRIPT_V2");
+  console.log("[DEBUG] PBX_FORM_SCRIPT_V3");
 
   const $ = (id) => document.getElementById(id);
   const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
 
   function RX(pattern, flags = "i") {
-    try { return new RegExp(pattern, flags); }
-    catch { return null; }
+    try { return new RegExp(pattern, flags); } catch { return null; }
   }
   function testRX(re, value) {
     if (!re) return false;
@@ -593,7 +592,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    const SKEY = "pbx_prompt_form_debug_v2";
+    const SKEY = "pbx_prompt_form_v3";
 
     const els = {
       context: $("context"),
@@ -628,11 +627,10 @@
       c_verify: $("c_verify"),
     };
 
-    // Guard: if critical UI missing, at least show it in result (no console spam)
     if (!els.btnGenerate || !els.btnCopy || !els.btnReset || !els.scorePill || !els.scoreBar) {
       if (els.result) {
         els.result.value =
-          "❌ PBX_FORM_SCRIPT_V2 : éléments manquants (boutons ou score UI).\n" +
+          "❌ PBX_FORM_SCRIPT_V3 : éléments manquants.\n" +
           "Attendus: btnGenerate, btnCopy, btnReset, scorePill, scoreBar.";
       }
       return;
@@ -664,7 +662,7 @@
       if(kind === "context"){
         const hasUrl = testRX(reHasUrl, t);
         const hasState = testRX(reHasState, t);
-        if(t.length < 30) return true;
+        if(t.length < 20) return true;               // un peu moins strict pour score progressif
         if(!hasUrl && !hasState) return true;
         if(hasVague && !hasUrl && !hasState) return true;
         return false;
@@ -672,27 +670,27 @@
       if(kind === "where"){
         const hasHint = testRX(reWhereHints, t);
         const hasSpecific = testRX(reWhereSpecific, t);
-        if(t.length < 20) return true;
+        if(t.length < 14) return true;
         if(!hasHint && !hasSpecific) return true;
         if(hasVague && !hasHint) return true;
         return false;
       }
       if(kind === "action"){
         const hasVerb = [...actionVerbsFR, ...actionVerbsEN].some(v => low.includes(v));
-        if(t.length < 10) return true;
+        if(t.length < 6) return true;
         if(!hasVerb) return true;
         if(hasVague) return true;
         return false;
       }
       if(kind === "content"){
         const hasConcrete = testRX(reContentConcrete, t);
-        if(t.length < 12) return true;
+        if(t.length < 8) return true;
         if(hasVague && !hasConcrete) return true;
         if(!hasConcrete) return true;
         return false;
       }
-      if(kind === "limits"){ return t.length < 18; }
-      if(kind === "approach"){ return t.length < 18; }
+      if(kind === "limits"){ return t.length < 10; }
+      if(kind === "approach"){ return t.length < 10; }
       return false;
     }
 
@@ -702,10 +700,11 @@
       return testRX(reDyn, t);
     }
 
+    // ✅ SCORE PROGRESSIF
+    // - 4 blocs obligatoires = 80 pts (20 chacun)
+    // - Limites = +10
+    // - Approche = +10 (ou +5 si pas nécessaire)
     function computeQuality(){
-      const missing = [];
-      const warnings = [];
-
       const ctx = (els.context?.value || "").trim();
       const whr = (els.where?.value || "").trim();
       const act = (els.action?.value || "").trim();
@@ -713,93 +712,63 @@
       const lim = (els.limits?.value || "").trim();
       const app = (els.approach?.value || "").trim();
 
-      if(!ctx || looksVagueSection(ctx,"context")){
-        missing.push({ key:"Contexte", d:"Ajoute l’URL + au moins 1 état (initial / après clic / overlay / dynamique).",
-          example:"URL: https://… / listing. Appliquer au chargement + après clic “voir tout” + overlay détail." });
-      }
-      if(!whr || looksVagueSection(whr,"where")){
-        missing.push({ key:"Où", d:"Indique l’élément ciblé ET/OU la position exacte de la modification.",
-          example:"Dans les tuiles iPhone 17/17 Pro/17 Pro Max, sous l’image, centré." });
-      }
-      if(!act || looksVagueSection(act,"action")){
-        missing.push({ key:"Action", d:"Utilise un verbe clair (ajouter / remplacer / calculer / déplacer…).",
-          example:"Remplacer la ligne au-dessus du prix." });
-      }
-      if(!cnt || looksVagueSection(cnt,"content")){
-        missing.push({ key:"Contenu", d:"Donne le texte exact OU un format + formule (si calcul).",
-          example:"“À partir d’1€ …” OU “Afficher 9,99€/mois = prix + |remise|”." });
-      }
-
-      if(!lim){
-        warnings.push({ key:"Limites", d:"Ajoute les garde-fous (charte/fond/typo/layout).",
-          example:"Ne pas modifier le layout. Respecter fond greige + typographie." });
-      }
-
       const needApp = needsApproachFromContext();
-      if(needApp && !app){
-        warnings.push({ key:"Approche", d:"Comme c’est dynamique (overlay/ajouts), précise ré-application + idempotence.",
-          example:"MutationObserver + apply() idempotent (data-processed) + overlays." });
-      }
 
-      let score = 100;
-      score -= missing.length * 28;
-      score -= warnings.length * 12;
+      const ok = {
+        context: !!ctx && !looksVagueSection(ctx,"context"),
+        where:   !!whr && !looksVagueSection(whr,"where"),
+        action:  !!act && !looksVagueSection(act,"action"),
+        content: !!cnt && !looksVagueSection(cnt,"content"),
+        limits:  !!lim && !looksVagueSection(lim,"limits"),
+        approach: !!app && !looksVagueSection(app,"approach"),
+      };
 
-      // HARDEN: avoid NaN and clamp
-      if (!Number.isFinite(score)) score = 0;
+      let score = 0;
+      score += ok.context ? 20 : 0;
+      score += ok.where   ? 20 : 0;
+      score += ok.action  ? 20 : 0;
+      score += ok.content ? 20 : 0;
+
+      score += ok.limits ? 10 : 0;
+
+      if (needApp) score += ok.approach ? 10 : 0;
+      else score += ok.approach ? 5 : 0; // bonus faible si pas "requis"
+
       score = Math.max(0, Math.min(100, score));
 
-      const ready = (missing.length === 0 && score >= 70);
+      const ready = ok.context && ok.where && ok.action && ok.content && (score >= 70);
       const state = ready ? "ready" : (score >= 50 ? "warn" : "bad");
 
-      return {score, ready, state, missing, warnings, needApp};
+      // On renvoie aussi le détail des checks
+      return { score, ready, state, needApp, ok };
     }
 
+    // ✅ CHECKS : titre uniquement
     function renderChecks(q){
       if(!els.checks) return;
-      const items = [];
-      const row = (state, title, desc, example) => {
+
+      const makeItem = (state, title) => {
         const icon = state === "ok" ? "✓" : (state === "warn" ? "!" : "×");
-        const ex = example ? `<br><span style="color: var(--muted2);">Ex : ${example}</span>` : "";
-        items.push(`
+        return `
           <div class="item ${state}">
             <div class="ico">${icon}</div>
             <div>
               <p class="itT">${title}</p>
-              <p class="itD">${desc}${ex}</p>
             </div>
           </div>
-        `);
+        `;
       };
 
-      const ctx = (els.context?.value || "").trim();
-      const whr = (els.where?.value || "").trim();
-      const act = (els.action?.value || "").trim();
-      const cnt = (els.content?.value || "").trim();
+      const items = [];
+      items.push(makeItem(q.ok.context ? "ok" : "bad", "Contexte"));
+      items.push(makeItem(q.ok.where   ? "ok" : "bad", "Où (cible/position)"));
+      items.push(makeItem(q.ok.action  ? "ok" : "bad", "Action"));
+      items.push(makeItem(q.ok.content ? "ok" : "bad", "Contenu / format"));
 
-      row(!ctx || looksVagueSection(ctx,"context") ? "bad" : "ok", "Contexte",
-          !ctx || looksVagueSection(ctx,"context") ? "Manque URL + état(s) (initial / après clic / overlay)." : "OK — exploitable.",
-          "URL: https://… + overlay/voir tout si présent.");
-
-      row(!whr || looksVagueSection(whr,"where") ? "bad" : "ok", "Où (cible/position)",
-          !whr || looksVagueSection(whr,"where") ? "Manque élément ciblé + position exacte." : "OK — clair.",
-          "Dans la tuile X, sous l’image, centré.");
-
-      row(!act || looksVagueSection(act,"action") ? "bad" : "ok", "Action",
-          !act || looksVagueSection(act,"action") ? "Manque un verbe clair." : "OK — action claire.",
-          "Ajouter / Remplacer / Calculer / Déplacer…");
-
-      row(!cnt || looksVagueSection(cnt,"content") ? "bad" : "ok", "Contenu / format",
-          !cnt || looksVagueSection(cnt,"content") ? "Manque texte exact OU format/formule." : "OK — concret.",
-          "“À partir d’1€ …” OU “9,99€/mois = prix + |remise|”");
-
-      if(q.missing.length || q.warnings.length){
-        items.push(`<div style="margin-top:6px;"></div>`);
-        [...q.missing, ...q.warnings].slice(0, 8).forEach(m => {
-          const isBad = q.missing.includes(m);
-          row(isBad ? "bad" : "warn", `${m.key} — à compléter`, m.d, m.example);
-        });
-      }
+      // Recommandés
+      items.push(makeItem(q.ok.limits ? "ok" : "warn", "Limites"));
+      if (q.needApp) items.push(makeItem(q.ok.approach ? "ok" : "warn", "Approche"));
+      else items.push(makeItem(q.ok.approach ? "ok" : "warn", "Approche (optionnel)"));
 
       els.checks.innerHTML = items.join("");
     }
@@ -815,7 +784,6 @@
 
       const q = computeQuality();
 
-      // Apply score
       els.scorePill.textContent = `${q.score}% ${q.ready ? "✅" : "⛔"}`;
       els.scoreBar.style.width = `${q.score}%`;
 
@@ -847,19 +815,19 @@
       blocks.push("\nOù :\n" + (els.where?.value || "").trim());
       blocks.push("\nAction :\n" + (els.action?.value || "").trim());
       blocks.push("\nContenu :\n" + (els.content?.value || "").trim());
+
       if((els.limits?.value || "").trim()) blocks.push("\nLimites :\n" + els.limits.value.trim());
       if((els.approach?.value || "").trim()) blocks.push("\nApproche :\n" + els.approach.value.trim());
-      else if(q.needApp) blocks.push("\nApproche :\nMutationObserver + idempotence (data-processed) + overlays + fallback safe.");
       if((els.verify?.value || "").trim()) blocks.push("\nVérification :\n" + els.verify.value.trim());
+
       blocks.push("\nAttendu :\nGénérer le code robuste qui applique strictement ces règles sans dégrader le design et sans erreur console.");
       return blocks.join("\n").trim();
     }
 
-    function buildMissingPreview(q){
-      const lines = ["Ce qui manque pour un prompt PBX exploitable :\n"];
-      q.missing.forEach(m => lines.push(`- [OBLIGATOIRE] ${m.key} : ${m.d}\n  Ex : ${m.example}\n`));
-      q.warnings.forEach(w => lines.push(`- [RECOMMANDÉ] ${w.key} : ${w.d}\n  Ex : ${w.example}\n`));
-      return lines.join("\n").trim();
+    function buildMissingPreview(){
+      // Ici, tu ne veux plus de descriptifs dans la sidebar,
+      // donc on laisse "Générer" produire soit le prompt, soit une phrase minimale.
+      return "Complète les sections marquées d’une croix pour devenir PBX-ready.";
     }
 
     function toast(msg){
@@ -872,7 +840,7 @@
     function generate(){
       const q = updateUI();
       if(!els.result) return;
-      els.result.value = q.ready ? buildPBXPrompt(q) : buildMissingPreview(q);
+      els.result.value = q.ready ? buildPBXPrompt(q) : buildMissingPreview();
       els.btnCopy.disabled = !els.result.value.trim();
       toast(q.ready ? "Prompt généré ✅" : "À compléter ⚠️");
     }
@@ -917,7 +885,7 @@
     on(els.btnCopy, "click", copy);
     on(els.btnReset, "click", resetAll);
 
-    // init
+    // init load + first render
     try{
       const raw = localStorage.getItem(SKEY);
       if(raw){
